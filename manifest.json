@@ -1,0 +1,19 @@
+{
+  "name": "NFL Cairo Auto Hub",
+  "short_name": "NFL Cairo",
+  "description": "Live NFL schedule in Cairo time, team records, broadcasts, lines and watch rankings.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#090c11",
+  "theme_color": "#090c11",
+  "icons": [
+    {
+      "src": "./icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
