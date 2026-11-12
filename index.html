@@ -1,354 +1,510 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>NFL Week — Cairo Time</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>NFL Match Centre · Cairo</title>
 
 <style>
 :root{
-  --bg:#0f1115;
-  --card:#181b20;
-  --card2:#20242a;
+  --bg:#0d0f12;
+  --surface:#15181d;
+  --surface2:#1b1f25;
+  --surface3:#22272e;
+  --line:#292e36;
   --text:#f5f7fa;
-  --muted:#9aa3ad;
-  --line:#2c3138;
+  --muted:#858e99;
+
   --green:#32d583;
-  --yellow:#ffc857;
-  --blue:#59a5ff;
-  --orange:#ff9f5a;
-  --purple:#b69cff;
+  --greenbg:#173627;
+
+  --blue:#69adff;
+  --purple:#bca8ff;
+
+  --gold:#ffc857;
+  --orange:#ff9c55;
 }
 
 *{box-sizing:border-box}
 
 body{
   margin:0;
-  background:linear-gradient(180deg,#0b0d10,#13161b);
+  background:
+    radial-gradient(circle at 50% 0,#1a1f27 0,#101318 33%,#0c0e11 75%);
   color:var(--text);
-  font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+  font-family:
+    Inter,system-ui,-apple-system,
+    "Segoe UI",Roboto,Arial,sans-serif;
 }
 
 .wrap{
-  max-width:1380px;
+  max-width:1450px;
   margin:auto;
-  padding:28px 18px 56px;
+  padding:28px 18px 60px;
 }
 
-/* HEADER */
+
+/* ================= HEADER ================= */
 
 .top{
   display:flex;
   justify-content:space-between;
-  align-items:end;
+  align-items:flex-end;
+  margin-bottom:24px;
   gap:16px;
-  margin-bottom:22px;
 }
 
 .title{
-  font-size:30px;
-  font-weight:850;
-  letter-spacing:-.8px;
+  font-size:32px;
+  font-weight:900;
+  letter-spacing:-1px;
 }
 
 .sub{
   color:var(--muted);
+  font-size:13px;
   margin-top:5px;
 }
 
-.badge{
-  background:#183526;
-  color:#6fe5a2;
-  border:1px solid #295a3d;
+.cairo{
+  font-size:11px;
+  font-weight:850;
+  letter-spacing:.5px;
+
+  color:#76e5aa;
+  background:#122d20;
+
+  border:1px solid #26583c;
   padding:8px 12px;
-  border-radius:999px;
-  font-size:13px;
-  font-weight:800;
+  border-radius:8px;
 }
 
 
-/* FILTERS */
+/* ================= FILTER BAR ================= */
 
 .filters{
   display:flex;
-  gap:8px;
+  gap:7px;
   flex-wrap:wrap;
-  margin:0 0 18px;
+
+  border-bottom:1px solid var(--line);
+  padding-bottom:15px;
+  margin-bottom:18px;
 }
 
 .filters button{
+  appearance:none;
   border:1px solid var(--line);
-  color:#cdd3da;
-  background:#171a1f;
-  border-radius:999px;
-  padding:8px 13px;
+  background:#15181d;
+  color:#aeb6c0;
+
+  border-radius:8px;
+  padding:8px 12px;
+
+  font-size:12px;
+  font-weight:750;
+
   cursor:pointer;
   transition:.15s;
 }
 
 .filters button:hover{
-  border-color:#5a626d;
+  background:#20242a;
+  color:#fff;
 }
 
 .filters button.active{
-  background:#fff;
-  color:#111;
-  border-color:#fff;
+  color:#101214;
+  background:#f5f7fa;
+  border-color:#f5f7fa;
 }
 
 
-/* DAY */
+/* ================= DATE ================= */
 
 .day{
-  color:#d7dce2;
+  display:flex;
+  align-items:center;
+  gap:10px;
+
+  margin:25px 3px 9px;
+
+  color:#e3e6ea;
+  font-size:13px;
   font-weight:850;
-  font-size:14px;
-  margin:25px 0 9px;
+}
+
+.day:after{
+  content:"";
+  height:1px;
+  background:#242932;
+  flex:1;
 }
 
 
-/* GRID */
+/* ================= TABLE HEADER ================= */
 
 .headers,
 .game{
   display:grid;
 
   grid-template-columns:
-    92px
-    minmax(275px,1.8fr)
     86px
+    minmax(280px,1.8fr)
+    84px
     62px
-    88px
     92px
-    105px
-    92px
-    minmax(220px,2.2fr);
+    96px
+    108px
+    94px
+    minmax(225px,2fr);
 
-  gap:11px;
+  gap:10px;
 }
-
-
-/* COLUMN HEADERS */
 
 .headers{
-  padding:0 15px;
-  color:#7f8994;
-  font-size:9px;
-  font-weight:800;
+  padding:0 15px 7px;
+
+  color:#6f7883;
+
   text-transform:uppercase;
   letter-spacing:.65px;
-  align-items:end;
+
+  font-size:9px;
+  font-weight:850;
 }
 
-.si-header{
-  color:#a99ae8;
+.si-head{
+  color:#9584d8;
 }
 
 
-/* GAME CARD */
+/* ================= GAME ================= */
 
 .game{
+  position:relative;
   align-items:center;
-  background:var(--card);
+
+  min-height:78px;
+
+  padding:11px 15px;
+
+  background:var(--surface);
   border:1px solid var(--line);
-  border-radius:13px;
-  padding:13px 15px;
-  margin:8px 0;
-  transition:.18s;
+  border-radius:10px;
+
+  margin:6px 0;
+
+  transition:
+    background .15s,
+    border-color .15s,
+    transform .15s;
 }
 
 .game:hover{
-  background:var(--card2);
+  background:var(--surface2);
+  border-color:#3b424d;
   transform:translateY(-1px);
-  border-color:#3b424b;
 }
 
-.hot{
-  box-shadow:inset 3px 0 0 var(--yellow);
+.game.featured:before{
+  content:"";
+  position:absolute;
+
+  left:-1px;
+  top:13px;
+  bottom:13px;
+
+  width:3px;
+  border-radius:0 4px 4px 0;
+
+  background:var(--gold);
 }
 
 
-/* TIME */
+/* ================= TIME ================= */
 
 .time{
+  font-size:13px;
   font-weight:850;
-  font-size:14px;
+  font-variant-numeric:tabular-nums;
 }
 
 
-/* MATCHUP */
+/* ================= MATCHUP ================= */
 
 .match{
+  display:grid;
+
+  grid-template-columns:
+    minmax(100px,1fr)
+    24px
+    minmax(100px,1fr);
+
+  align-items:center;
+  gap:5px;
+}
+
+.team{
   display:flex;
   align-items:center;
   gap:8px;
   min-width:0;
 }
 
-.team{
+.team:last-child{
+  justify-content:flex-start;
+}
+
+.logo-box{
+  width:36px;
+  height:36px;
+
+  flex:none;
+
   display:flex;
   align-items:center;
-  gap:7px;
-  min-width:0;
+  justify-content:center;
 }
 
 .team-logo{
-  width:29px;
-  height:29px;
+  max-width:33px;
+  max-height:33px;
   object-fit:contain;
-  flex:none;
 }
 
 .team-info{
-  display:flex;
-  flex-direction:column;
   min-width:0;
 }
 
 .team-name{
+  display:block;
+
+  color:#f8f9fb;
+
   font-size:14px;
   font-weight:850;
+
   white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
 }
 
 .record{
-  color:#8f98a3;
-  font-size:11px;
+  display:block;
+
+  margin-top:2px;
+
+  color:#7f8994;
+  font-size:10.5px;
   font-weight:650;
-  margin-top:1px;
 }
 
-.at{
-  color:#747d88;
+.venue{
+  text-align:center;
+
+  color:#626b76;
+
   font-size:11px;
-  font-weight:800;
-  flex:none;
+  font-weight:850;
 }
 
 
-/* NUMBERS */
+/* ================= ODDS ================= */
 
-.num{
-  font-weight:800;
-  font-variant-numeric:tabular-nums;
+.value{
+  font-size:13px;
+  font-weight:850;
+  white-space:nowrap;
 }
 
-.pick{
-  color:#75b7ff;
+.spread{
+  color:#78b7ff;
 }
 
-.highou{
+.ou.high{
   color:var(--orange);
 }
 
-.votes{
+
+/* ================= PICKS ================= */
+
+.pick-cell{
+  display:flex;
+  flex-direction:column;
+  align-items:flex-start;
+  gap:4px;
+}
+
+.expert{
   color:var(--green);
-  font-weight:850;
-  white-space:nowrap;
 }
 
-
-/* SI VOTES */
-
-.si-votes{
+.si{
   color:var(--purple);
+}
+
+.vote{
+  font-size:12.5px;
   font-weight:850;
   white-space:nowrap;
 }
 
-.split-vote{
-  color:#ffcf6e;
+.consensus{
+  display:inline-flex;
+  align-items:center;
+
+  border-radius:4px;
+  padding:2px 5px;
+
+  background:#183729;
+  color:#66dda0;
+
+  font-size:8px;
+  font-weight:900;
+  letter-spacing:.35px;
+}
+
+.unanimous{
+  background:#1b392c;
+  color:#72e9a9;
+}
+
+.split{
+  background:#392e18;
+  color:#ffd274;
 }
 
 
-/* RATINGS */
+/* ================= RATINGS ================= */
 
-.stars{
-  color:var(--yellow);
-  letter-spacing:.7px;
-  white-space:nowrap;
-  font-size:14px;
+.rating-box{
+  display:flex;
+  align-items:center;
+  gap:7px;
 }
 
-.empty-star{
-  color:#515862;
+.rating-number{
+  font-size:12px;
+  font-weight:900;
+  color:#e3e6ea;
+  width:12px;
+}
+
+.rating-dots{
+  display:flex;
+  gap:3px;
+}
+
+.dot{
+  width:6px;
+  height:6px;
+
+  border-radius:50%;
+
+  background:#3b4149;
+}
+
+.dot.on.ent{
+  background:var(--orange);
+}
+
+.dot.on.watch{
+  background:var(--gold);
 }
 
 
-/* WHY WATCH */
+/* ================= WHY WATCH ================= */
 
 .watch{
-  color:#c7cdd4;
-  font-size:12.5px;
+  color:#b2bac4;
+
+  font-size:11.5px;
   line-height:1.42;
+
+  display:-webkit-box;
+  -webkit-line-clamp:3;
+  -webkit-box-orient:vertical;
+
+  overflow:hidden;
 }
 
 
-/* MOBILE LABEL */
+/* ================= MOBILE LABELS ================= */
 
 .label{
   display:none;
-  color:var(--muted);
-  font-size:10px;
+
+  color:#727c87;
+
+  font-size:9px;
+  font-weight:800;
+
   text-transform:uppercase;
-  letter-spacing:.7px;
-  margin-bottom:2px;
+  letter-spacing:.6px;
+
+  margin-bottom:3px;
 }
 
 
-/* FOOTER */
+/* ================= FOOTER ================= */
 
 footer{
   margin-top:22px;
-  color:#707983;
-  font-size:12px;
+
+  color:#606975;
+  font-size:11px;
 }
 
 
-/* TABLET / MOBILE */
+/* ================= TABLET ================= */
 
-@media(max-width:1000px){
+@media(max-width:1050px){
 
   .headers{
     display:none;
   }
 
   .game{
-    grid-template-columns:1fr 1fr 1fr;
-    gap:13px;
-  }
-
-  .match,
-  .watch{
-    grid-column:1/-1;
+    grid-template-columns:
+      1fr 1fr 1fr;
+    gap:14px;
   }
 
   .match{
-    justify-content:flex-start;
-    padding:7px 0;
+    grid-column:1/-1;
+  }
+
+  .watch{
+    grid-column:1/-1;
+
+    border-top:1px solid var(--line);
+    padding-top:10px;
+
+    -webkit-line-clamp:unset;
   }
 
   .label{
     display:block;
   }
-
-  .watch{
-    padding-top:10px;
-    border-top:1px solid var(--line);
-  }
-
-  .top{
-    align-items:start;
-    flex-direction:column;
-  }
 }
 
 
-@media(max-width:600px){
+/* ================= PHONE ================= */
+
+@media(max-width:620px){
 
   .wrap{
-    padding-left:10px;
-    padding-right:10px;
+    padding:18px 10px 40px;
+  }
+
+  .top{
+    align-items:flex-start;
+    flex-direction:column;
+  }
+
+  .title{
+    font-size:27px;
   }
 
   .game{
@@ -361,24 +517,45 @@ footer{
     grid-column:1/-1;
   }
 
+  .match{
+    grid-template-columns:
+      minmax(100px,1fr)
+      22px
+      minmax(100px,1fr);
+
+    padding-bottom:5px;
+  }
+
   .team-logo{
-    width:27px;
-    height:27px;
+    max-width:30px;
+    max-height:30px;
+  }
+
+  .logo-box{
+    width:31px;
   }
 
   .team-name{
     font-size:13px;
   }
 
-  .record{
-    font-size:10px;
+  .filters{
+    overflow-x:auto;
+    flex-wrap:nowrap;
+
+    padding-bottom:12px;
+
+    scrollbar-width:none;
   }
 
-  .stars{
-    font-size:13px;
+  .filters::-webkit-scrollbar{
+    display:none;
+  }
+
+  .filters button{
+    white-space:nowrap;
   }
 }
-
 </style>
 </head>
 
@@ -387,6 +564,8 @@ footer{
 
 <main class="wrap">
 
+
+<!-- HEADER -->
 
 <section class="top">
 
@@ -397,78 +576,68 @@ footer{
     </div>
 
     <div class="sub">
-      Week slate · All kickoff times in Cairo (GMT+2)
+      Week 10 · Kickoff times converted to Cairo
     </div>
 
   </div>
 
-  <div class="badge">
-    CAIRO TIME
+  <div class="cairo">
+    CAIRO · GMT+2
   </div>
 
 </section>
 
 
+<!-- FILTERS -->
 
 <div class="filters">
 
-  <button
-    class="active"
-    onclick="filterGames('all',this)">
-    All games
-  </button>
+<button
+  class="active"
+  onclick="filterGames('all',this)">
+  All
+</button>
 
-  <button
-    onclick="filterGames('elite',this)">
-    ★★★★★ Entertainment
-  </button>
+<button
+  onclick="filterGames('best',this)">
+  🔥 Best games
+</button>
 
-  <button
-    onclick="filterGames('stars5',this)">
-    5-star watch
-  </button>
+<button
+  onclick="filterGames('consensus',this)">
+  ✓ Expert + SI agree
+</button>
 
-  <button
-    onclick="filterGames('highou',this)">
-    O/U 50+
-  </button>
+<button
+  onclick="filterGames('unanimous',this)">
+  10–0 SI picks
+</button>
 
-  <button
-    onclick="filterGames('consensus',this)">
-    Expert + SI consensus
-  </button>
+<button
+  onclick="filterGames('highou',this)">
+  O/U 50+
+</button>
 
 </div>
 
 
+<!-- COLUMN HEADERS -->
 
 <div class="headers">
 
-  <div>Time</div>
+<div>Cairo</div>
+<div>Matchup</div>
+<div>Spread</div>
+<div>O/U</div>
+<div>Experts</div>
 
-  <div>Matchup</div>
+<div class="si-head">
+SI · 10 Writers
+</div>
 
-  <div>Spread</div>
-
-  <div>O/U</div>
-
-  <div>Experts</div>
-
-  <div class="si-header">
-    SI Votes<br>(10)
-  </div>
-
-  <div>
-    Entertainment
-  </div>
-
-  <div>
-    Star rating
-  </div>
-
-  <div>
-    Why watch
-  </div>
+<div>Entertainment</div>
+<div>Watch</div>
+<div>Why it's worth watching</div>
 
 </div>
 
@@ -477,51 +646,19 @@ footer{
 
 
 <footer>
-  Cairo kickoff times · Expert votes + SI writers · Team records · ★ ratings highlight the best games to watch.
+Ratings: 5 = highest · Orange = entertainment · Gold = overall watch rating
 </footer>
-
 
 </main>
 
 
 <script>
 
-/*
-
-DATA FORMAT
-
-day
-time
-
-team 1
-record 1
-ESPN logo code
-
-venue
-
-team 2
-record 2
-ESPN logo code
-
-spread
-O/U
-
-expert votes
-expert pick
-
-SI votes
-SI pick
-
-entertainment rating
-star rating
-
-why watch
-
-*/
-
+/* ==========================================
+   DATA
+========================================== */
 
 const games=[
-
 
 [
 'Fri 13 Nov','3:15 AM',
@@ -535,7 +672,6 @@ const games=[
 'An NFC East Thursday night divisional clash with a tight 2.5-point spread as the 5-2-1 Giants defend home turf against Washington.'
 ],
 
-
 [
 'Sun 15 Nov','4:30 PM',
 'Patriots','5-4','ne',
@@ -547,7 +683,6 @@ const games=[
 5,4,
 'A high-scoring international showcase in Munich between two playoff contenders (5-4 Patriots vs. 6-2 Lions) with a 51.5 over/under.'
 ],
-
 
 [
 'Sun 15 Nov','8:00 PM',
@@ -561,7 +696,6 @@ const games=[
 'Patrick Mahomes and the 6-2 Chiefs debut new wideout Josh Downs on the road against Atlanta in a tightly lined 3.5-point matchup.'
 ],
 
-
 [
 'Sun 15 Nov','8:00 PM',
 'Texans','3-5','hou',
@@ -573,7 +707,6 @@ const games=[
 3,3,
 'C.J. Stroud and Houston try to climb back into the AFC wild-card picture against a resilient 5-4 Cleveland squad.'
 ],
-
 
 [
 'Sun 15 Nov','8:00 PM',
@@ -587,7 +720,6 @@ const games=[
 "A massive NFC North rivalry battle between 6-2 Minnesota and 6-3 Green Bay at Lambeau Field, highlighted by Kirk Cousins' return to the Vikings."
 ],
 
-
 [
 'Sun 15 Nov','8:00 PM',
 'Dolphins','1-7','mia',
@@ -599,7 +731,6 @@ const games=[
 2,2,
 'A low-total (37.5 O/U) AFC matchup between two struggling squads (1-7 Miami and 2-7 Indianapolis) playing for pride.'
 ],
-
 
 [
 'Sun 15 Nov','8:00 PM',
@@ -613,7 +744,6 @@ const games=[
 'Both 3-5 teams are knotted near the top of a wide-open NFC South, giving an otherwise low-profile game real division stakes.'
 ],
 
-
 [
 'Sun 15 Nov','8:00 PM',
 'Bills','7-1','buf',
@@ -625,7 +755,6 @@ const games=[
 4,3,
 "Josh Allen and the 7-1 Bills bring one of the league's most explosive offenses to New Jersey as 7.5-point favorites over the 2-7 Jets."
 ],
-
 
 [
 'Sun 15 Nov','8:00 PM',
@@ -639,7 +768,6 @@ const games=[
 'The surging 6-2 Jaguars debut three trade-deadline defensive acquisitions as heavy 10.5-point favorites over 1-7 Tennessee.'
 ],
 
-
 [
 'Sun 15 Nov','11:05 PM',
 'Rams','5-4','lar',
@@ -651,7 +779,6 @@ const games=[
 2,3,
 'The 5-4 Rams look to keep pace in the NFC West wild-card hunt as 9.5-point road favorites in Arizona.'
 ],
-
 
 [
 'Sun 15 Nov','11:05 PM',
@@ -665,7 +792,6 @@ const games=[
 'The 5-4 Seahawks head to Las Vegas in a competitive inter-conference spot where Seattle needs a win to stay in the NFC playoff mix.'
 ],
 
-
 [
 'Sun 15 Nov','11:25 PM',
 '49ers','7-1','sf',
@@ -677,7 +803,6 @@ const games=[
 5,5,
 "The week's highest projected shootout (55.5 O/U) pits the 7-1 49ers—bolstered by Nick Bosa and DeForest Buckner—against Dallas."
 ],
-
 
 [
 'Mon 16 Nov','3:20 AM',
@@ -691,7 +816,6 @@ const games=[
 "Sunday Night Football features a deadlocked battle for first place in the AFC North between two 6-2 rivals led by Joe Burrow and Pittsburgh's defense."
 ],
 
-
 [
 'Tue 17 Nov','3:15 AM',
 'Chargers','0-8','lac',
@@ -699,7 +823,7 @@ const games=[
 'Ravens','4-5','bal',
 'BAL -4.5','38.5',
 'BAL 5–0','BAL',
-'BAL 5–5 LAC (tie)','TIE',
+'BAL 5–5 LAC','TIE',
 2,2,
 'Monday Night Football features the 4-5 Ravens trying to hold the fort without Lamar Jackson against the winless 0-8 Chargers.'
 ]
@@ -707,334 +831,388 @@ const games=[
 ];
 
 
-
-/* TEAM LOGOS */
+/* ==========================================
+   HELPERS
+========================================== */
 
 function logo(team){
-
   return `https://a.espncdn.com/i/teamlogos/nfl/500/${team}.png`;
-
 }
 
 
+function ratingDots(score,type){
 
-/* RATINGS */
+  let dots='';
 
-function stars(number){
+  for(let i=1;i<=5;i++){
 
-  return (
-    '★'.repeat(number) +
-    `<span class="empty-star">${'☆'.repeat(5-number)}</span>`
-  );
-
-}
-
-
-
-/* RENDER */
-
-function render(mode='all'){
-
-  let html='';
-  let last='';
-
-
-  for(const g of games){
-
-    const [
-
-      day,time,
-
-      team1,record1,logo1,
-
-      venue,
-
-      team2,record2,logo2,
-
-      spread,ou,
-
-      votes,expertPick,
-
-      siVotes,siPick,
-
-      entertainment,
-      starRating,
-
-      why
-
-    ]=g;
-
-
-
-    if(mode==='elite' && entertainment!==5)
-      continue;
-
-
-    if(mode==='stars5' && starRating!==5)
-      continue;
-
-
-    if(mode==='highou' && +ou<50)
-      continue;
-
-
-    if(
-      mode==='consensus' &&
-      expertPick!==siPick
-    )
-      continue;
-
-
-
-    if(day!==last){
-
-      html+=`
-
-      <div class="day">
-        ${day}
-      </div>
-
-      `;
-
-      last=day;
-
-    }
-
-
-
-    html+=`
-
-    <article
-      class="game ${
-        entertainment===5 || starRating===5
-        ? 'hot'
+    dots+=`
+      <span class="dot ${
+        i<=score
+        ? `on ${type}`
         : ''
-      }"
-    >
-
-
-
-      <!-- CAIRO TIME -->
-
-      <div>
-
-        <span class="label">
-          Cairo
-        </span>
-
-        <span class="time">
-          ${time}
-        </span>
-
-      </div>
-
-
-
-      <!-- MATCHUP -->
-
-      <div class="match">
-
-
-        <div class="team">
-
-          <img
-            class="team-logo"
-            src="${logo(logo1)}"
-            alt="${team1} logo"
-          >
-
-          <div class="team-info">
-
-            <span class="team-name">
-              ${team1}
-            </span>
-
-            <span class="record">
-              ${record1}
-            </span>
-
-          </div>
-
-        </div>
-
-
-
-        <span class="at">
-          ${venue}
-        </span>
-
-
-
-        <div class="team">
-
-          <img
-            class="team-logo"
-            src="${logo(logo2)}"
-            alt="${team2} logo"
-          >
-
-          <div class="team-info">
-
-            <span class="team-name">
-              ${team2}
-            </span>
-
-            <span class="record">
-              ${record2}
-            </span>
-
-          </div>
-
-        </div>
-
-      </div>
-
-
-
-      <!-- SPREAD -->
-
-      <div>
-
-        <span class="label">
-          Spread
-        </span>
-
-        <span class="num pick">
-          ${spread}
-        </span>
-
-      </div>
-
-
-
-      <!-- O/U -->
-
-      <div>
-
-        <span class="label">
-          O/U
-        </span>
-
-        <span class="
-          num
-          ${+ou>=50 ? 'highou' : ''}
-        ">
-
-          ${ou}
-
-        </span>
-
-      </div>
-
-
-
-      <!-- EXPERT VOTES -->
-
-      <div>
-
-        <span class="label">
-          Expert Votes
-        </span>
-
-        <span class="votes">
-          ${votes}
-        </span>
-
-      </div>
-
-
-
-      <!-- SI VOTES -->
-
-      <div>
-
-        <span class="label">
-          SI Votes
-        </span>
-
-        <span class="
-          si-votes
-          ${siPick==='TIE' ? 'split-vote' : ''}
-        ">
-
-          ${siVotes}
-
-        </span>
-
-      </div>
-
-
-
-      <!-- ENTERTAINMENT -->
-
-      <div>
-
-        <span class="label">
-          Entertainment
-        </span>
-
-        <span class="stars">
-          ${stars(entertainment)}
-        </span>
-
-      </div>
-
-
-
-      <!-- STAR RATING -->
-
-      <div>
-
-        <span class="label">
-          Star Rating
-        </span>
-
-        <span class="stars">
-          ${stars(starRating)}
-        </span>
-
-      </div>
-
-
-
-      <!-- WHY WATCH -->
-
-      <div class="watch">
-
-        ${why}
-
-      </div>
-
-
-    </article>
-
+      }"></span>
     `;
 
   }
 
+  return `
+    <div class="rating-box">
 
-  document
-    .getElementById('list')
-    .innerHTML=html;
+      <span class="rating-number">
+        ${score}
+      </span>
+
+      <div class="rating-dots">
+        ${dots}
+      </div>
+
+    </div>
+  `;
+}
+
+
+function voteTag(expertPick,siPick,siVotes){
+
+  if(siPick==='TIE'){
+
+    return `
+      <span class="consensus split">
+        SPLIT
+      </span>
+    `;
+
+  }
+
+  if(siVotes.includes('10–0')){
+
+    return `
+      <span class="consensus unanimous">
+        UNANIMOUS
+      </span>
+    `;
+
+  }
+
+  if(expertPick===siPick){
+
+    return `
+      <span class="consensus">
+        AGREE
+      </span>
+    `;
+
+  }
+
+  return '';
 
 }
 
 
+/* ==========================================
+   RENDER
+========================================== */
 
-/* FILTER BUTTONS */
+function render(mode='all'){
 
-function filterGames(mode,btn){
+let html='';
+let last='';
 
-  document
-    .querySelectorAll('.filters button')
-    .forEach(
-      x=>x.classList.remove('active')
-    );
+for(const g of games){
+
+const[
+day,time,
+
+team1,record1,logo1,
+venue,
+team2,record2,logo2,
+
+spread,ou,
+
+experts,
+expertPick,
+
+siVotes,
+siPick,
+
+entertainment,
+watchRating,
+
+why
+]=g;
 
 
-  btn.classList.add('active');
+/* FILTERS */
 
-  render(mode);
+if(
+  mode==='best' &&
+  entertainment<5 &&
+  watchRating<5
+) continue;
+
+
+if(
+  mode==='consensus' &&
+  expertPick!==siPick
+) continue;
+
+
+if(
+  mode==='unanimous' &&
+  !siVotes.includes('10–0')
+) continue;
+
+
+if(
+  mode==='highou' &&
+  +ou<50
+) continue;
+
+
+/* DATE */
+
+if(day!==last){
+
+html+=`
+<div class="day">
+  ${day}
+</div>
+`;
+
+last=day;
+
+}
+
+
+const featured =
+  entertainment===5 ||
+  watchRating===5;
+
+
+html+=`
+
+<article class="game ${featured ? 'featured' : ''}">
+
+
+<!-- TIME -->
+
+<div>
+
+<span class="label">
+Cairo
+</span>
+
+<span class="time">
+${time}
+</span>
+
+</div>
+
+
+<!-- MATCHUP -->
+
+<div class="match">
+
+
+<div class="team">
+
+<div class="logo-box">
+
+<img
+class="team-logo"
+src="${logo(logo1)}"
+alt="${team1}">
+
+</div>
+
+<div class="team-info">
+
+<span class="team-name">
+${team1}
+</span>
+
+<span class="record">
+${record1}
+</span>
+
+</div>
+
+</div>
+
+
+<div class="venue">
+${venue}
+</div>
+
+
+<div class="team">
+
+<div class="logo-box">
+
+<img
+class="team-logo"
+src="${logo(logo2)}"
+alt="${team2}">
+
+</div>
+
+<div class="team-info">
+
+<span class="team-name">
+${team2}
+</span>
+
+<span class="record">
+${record2}
+</span>
+
+</div>
+
+</div>
+
+
+</div>
+
+
+<!-- SPREAD -->
+
+<div>
+
+<span class="label">
+Spread
+</span>
+
+<span class="value spread">
+${spread}
+</span>
+
+</div>
+
+
+<!-- O/U -->
+
+<div>
+
+<span class="label">
+O/U
+</span>
+
+<span class="value ou ${+ou>=50?'high':''}">
+${ou}
+</span>
+
+</div>
+
+
+<!-- EXPERT -->
+
+<div class="pick-cell">
+
+<span class="label">
+Experts
+</span>
+
+<span class="vote expert">
+${experts}
+</span>
+
+</div>
+
+
+<!-- SI -->
+
+<div class="pick-cell">
+
+<span class="label">
+SI · 10 Writers
+</span>
+
+<span class="vote si">
+${siVotes}
+</span>
+
+${voteTag(
+  expertPick,
+  siPick,
+  siVotes
+)}
+
+</div>
+
+
+<!-- ENTERTAINMENT -->
+
+<div>
+
+<span class="label">
+Entertainment
+</span>
+
+${ratingDots(
+  entertainment,
+  'ent'
+)}
+
+</div>
+
+
+<!-- WATCH -->
+
+<div>
+
+<span class="label">
+Watch rating
+</span>
+
+${ratingDots(
+  watchRating,
+  'watch'
+)}
+
+</div>
+
+
+<!-- WHY -->
+
+<div class="watch">
+
+<span class="label">
+Why watch
+</span>
+
+${why}
+
+</div>
+
+
+</article>
+
+`;
+
+}
+
+document
+.getElementById('list')
+.innerHTML=html;
+
+}
+
+
+/* ==========================================
+   FILTER HANDLER
+========================================== */
+
+function filterGames(mode,button){
+
+document
+.querySelectorAll('.filters button')
+.forEach(
+  b=>b.classList.remove('active')
+);
+
+button.classList.add('active');
+
+render(mode);
 
 }
 
