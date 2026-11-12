@@ -17,6 +17,7 @@
   --yellow:#ffc857;
   --blue:#59a5ff;
   --orange:#ff9f5a;
+  --purple:#b69cff;
 }
 
 *{box-sizing:border-box}
@@ -29,12 +30,13 @@ body{
 }
 
 .wrap{
-  max-width:1280px;
+  max-width:1380px;
   margin:auto;
   padding:28px 18px 56px;
 }
 
-/* Header */
+/* HEADER */
+
 .top{
   display:flex;
   justify-content:space-between;
@@ -64,7 +66,9 @@ body{
   font-weight:800;
 }
 
-/* Filters */
+
+/* FILTERS */
+
 .filters{
   display:flex;
   gap:8px;
@@ -92,7 +96,9 @@ body{
   border-color:#fff;
 }
 
-/* Day heading */
+
+/* DAY */
+
 .day{
   color:#d7dce2;
   font-weight:850;
@@ -100,37 +106,54 @@ body{
   margin:25px 0 9px;
 }
 
-/* Column headings */
-.headers{
-  display:grid;
-  grid-template-columns:
-    94px minmax(265px,1.8fr)
-    88px 66px 92px 108px 94px minmax(220px,2.2fr);
-  gap:12px;
-  padding:0 15px;
-  color:#7f8994;
-  font-size:10px;
-  font-weight:800;
-  text-transform:uppercase;
-  letter-spacing:.7px;
-}
 
-/* Game card */
+/* GRID */
+
+.headers,
 .game{
   display:grid;
-  grid-template-columns:
-    94px minmax(265px,1.8fr)
-    88px 66px 92px 108px 94px minmax(220px,2.2fr);
-  gap:12px;
-  align-items:center;
 
+  grid-template-columns:
+    92px
+    minmax(275px,1.8fr)
+    86px
+    62px
+    88px
+    92px
+    105px
+    92px
+    minmax(220px,2.2fr);
+
+  gap:11px;
+}
+
+
+/* COLUMN HEADERS */
+
+.headers{
+  padding:0 15px;
+  color:#7f8994;
+  font-size:9px;
+  font-weight:800;
+  text-transform:uppercase;
+  letter-spacing:.65px;
+  align-items:end;
+}
+
+.si-header{
+  color:#a99ae8;
+}
+
+
+/* GAME CARD */
+
+.game{
+  align-items:center;
   background:var(--card);
   border:1px solid var(--line);
   border-radius:13px;
-
   padding:13px 15px;
   margin:8px 0;
-
   transition:.18s;
 }
 
@@ -144,13 +167,17 @@ body{
   box-shadow:inset 3px 0 0 var(--yellow);
 }
 
-/* Time */
+
+/* TIME */
+
 .time{
   font-weight:850;
   font-size:14px;
 }
 
-/* Matchup */
+
+/* MATCHUP */
+
 .match{
   display:flex;
   align-items:center;
@@ -166,8 +193,8 @@ body{
 }
 
 .team-logo{
-  width:30px;
-  height:30px;
+  width:29px;
+  height:29px;
   object-fit:contain;
   flex:none;
 }
@@ -193,13 +220,14 @@ body{
 
 .at{
   color:#747d88;
-  font-size:12px;
+  font-size:11px;
   font-weight:800;
   flex:none;
-  padding:0 1px;
 }
 
-/* numbers */
+
+/* NUMBERS */
+
 .num{
   font-weight:800;
   font-variant-numeric:tabular-nums;
@@ -216,28 +244,48 @@ body{
 .votes{
   color:var(--green);
   font-weight:850;
+  white-space:nowrap;
 }
 
-/* Stars */
+
+/* SI VOTES */
+
+.si-votes{
+  color:var(--purple);
+  font-weight:850;
+  white-space:nowrap;
+}
+
+.split-vote{
+  color:#ffcf6e;
+}
+
+
+/* RATINGS */
+
 .stars{
   color:var(--yellow);
-  letter-spacing:1px;
+  letter-spacing:.7px;
   white-space:nowrap;
-  font-size:15px;
+  font-size:14px;
 }
 
 .empty-star{
-  color:#555d66;
+  color:#515862;
 }
 
-/* Why Watch */
+
+/* WHY WATCH */
+
 .watch{
   color:#c7cdd4;
   font-size:12.5px;
   line-height:1.42;
 }
 
-/* Mobile labels */
+
+/* MOBILE LABEL */
+
 .label{
   display:none;
   color:var(--muted);
@@ -247,22 +295,27 @@ body{
   margin-bottom:2px;
 }
 
+
+/* FOOTER */
+
 footer{
   margin-top:22px;
   color:#707983;
   font-size:12px;
 }
 
-/* Mobile */
-@media(max-width:900px){
+
+/* TABLET / MOBILE */
+
+@media(max-width:1000px){
 
   .headers{
     display:none;
   }
 
   .game{
-    grid-template-columns:1fr 1fr;
-    gap:12px;
+    grid-template-columns:1fr 1fr 1fr;
+    gap:13px;
   }
 
   .match,
@@ -290,7 +343,8 @@ footer{
   }
 }
 
-@media(max-width:520px){
+
+@media(max-width:600px){
 
   .wrap{
     padding-left:10px;
@@ -300,6 +354,11 @@ footer{
   .game{
     grid-template-columns:1fr 1fr;
     padding:13px;
+  }
+
+  .match,
+  .watch{
+    grid-column:1/-1;
   }
 
   .team-logo{
@@ -315,37 +374,53 @@ footer{
     font-size:10px;
   }
 
-  .at{
-    font-size:10px;
+  .stars{
+    font-size:13px;
   }
 }
+
 </style>
 </head>
+
 
 <body>
 
 <main class="wrap">
 
+
 <section class="top">
+
   <div>
-    <div class="title">NFL Match Centre</div>
-    <div class="sub">Week slate · All kickoff times in Cairo (GMT+2)</div>
+
+    <div class="title">
+      NFL Match Centre
+    </div>
+
+    <div class="sub">
+      Week slate · All kickoff times in Cairo (GMT+2)
+    </div>
+
   </div>
 
-  <div class="badge">CAIRO TIME</div>
+  <div class="badge">
+    CAIRO TIME
+  </div>
+
 </section>
+
 
 
 <div class="filters">
 
-  <button class="active"
+  <button
+    class="active"
     onclick="filterGames('all',this)">
     All games
   </button>
 
   <button
     onclick="filterGames('elite',this)">
-    ★★★★★ entertainment
+    ★★★★★ Entertainment
   </button>
 
   <button
@@ -358,26 +433,53 @@ footer{
     O/U 50+
   </button>
 
+  <button
+    onclick="filterGames('consensus',this)">
+    Expert + SI consensus
+  </button>
+
 </div>
 
 
+
 <div class="headers">
+
   <div>Time</div>
+
   <div>Matchup</div>
+
   <div>Spread</div>
+
   <div>O/U</div>
+
   <div>Experts</div>
-  <div>Entertainment</div>
-  <div>Star rating</div>
-  <div>Why watch</div>
+
+  <div class="si-header">
+    SI Votes<br>(10)
+  </div>
+
+  <div>
+    Entertainment
+  </div>
+
+  <div>
+    Star rating
+  </div>
+
+  <div>
+    Why watch
+  </div>
+
 </div>
 
 
 <div id="list"></div>
 
+
 <footer>
-  Cairo kickoff times · Team records shown with each matchup · ★ ratings highlight the best games to watch.
+  Cairo kickoff times · Expert votes + SI writers · Team records · ★ ratings highlight the best games to watch.
 </footer>
+
 
 </main>
 
@@ -385,163 +487,219 @@ footer{
 <script>
 
 /*
+
 DATA FORMAT
 
-day,
-time,
-team1,
-record1,
-team1 ESPN abbreviation,
-@ / vs,
-team2,
-record2,
-team2 ESPN abbreviation,
-spread,
-O/U,
-expert votes,
-entertainment rating,
-star rating,
+day
+time
+
+team 1
+record 1
+ESPN logo code
+
+venue
+
+team 2
+record 2
+ESPN logo code
+
+spread
+O/U
+
+expert votes
+expert pick
+
+SI votes
+SI pick
+
+entertainment rating
+star rating
+
 why watch
+
 */
 
+
 const games=[
+
 
 [
 'Fri 13 Nov','3:15 AM',
 'Commanders','2-5-1','wsh',
 '@',
 'Giants','5-2-1','nyg',
-'NYG -1.5','40.5','NYG 3–2',
+'NYG -1.5','40.5',
+'NYG 3–2','NYG',
+'NYG 8–2','NYG',
 4,3,
 'An NFC East Thursday night divisional clash with a tight 2.5-point spread as the 5-2-1 Giants defend home turf against Washington.'
 ],
+
 
 [
 'Sun 15 Nov','4:30 PM',
 'Patriots','5-4','ne',
 'vs',
 'Lions','6-2','det',
-'DET -2.5','50.5','DET 4–1',
+'DET -2.5','50.5',
+'DET 4–1','DET',
+'DET 8–2','DET',
 5,4,
 'A high-scoring international showcase in Munich between two playoff contenders (5-4 Patriots vs. 6-2 Lions) with a 51.5 over/under.'
 ],
+
 
 [
 'Sun 15 Nov','8:00 PM',
 'Chiefs','6-2','kc',
 '@',
 'Falcons','3-6','atl',
-'KC -3.5','47.5','KC 4–1',
+'KC -3.5','47.5',
+'KC 4–1','KC',
+'KC 10–0','KC',
 4,4,
 'Patrick Mahomes and the 6-2 Chiefs debut new wideout Josh Downs on the road against Atlanta in a tightly lined 3.5-point matchup.'
 ],
+
 
 [
 'Sun 15 Nov','8:00 PM',
 'Texans','3-5','hou',
 '@',
 'Browns','5-4','cle',
-'HOU -4.5','40.5','HOU 5–0',
+'HOU -4.5','40.5',
+'HOU 5–0','HOU',
+'HOU 8–2','HOU',
 3,3,
 'C.J. Stroud and Houston try to climb back into the AFC wild-card picture against a resilient 5-4 Cleveland squad.'
 ],
+
 
 [
 'Sun 15 Nov','8:00 PM',
 'Vikings','6-2','min',
 '@',
 'Packers','6-3','gb',
-'GB -3','42.5','GB 5–0',
+'GB -3','42.5',
+'GB 5–0','GB',
+'GB 9–1','GB',
 4,5,
 "A massive NFC North rivalry battle between 6-2 Minnesota and 6-3 Green Bay at Lambeau Field, highlighted by Kirk Cousins' return to the Vikings."
 ],
+
 
 [
 'Sun 15 Nov','8:00 PM',
 'Dolphins','1-7','mia',
 '@',
 'Colts','2-7','ind',
-'IND -3.5','38.5','IND 5–0',
+'IND -3.5','38.5',
+'IND 5–0','IND',
+'MIA 6–4','MIA',
 2,2,
 'A low-total (37.5 O/U) AFC matchup between two struggling squads (1-7 Miami and 2-7 Indianapolis) playing for pride.'
 ],
+
 
 [
 'Sun 15 Nov','8:00 PM',
 'Panthers','3-5','car',
 '@',
 'Saints','3-5','no',
-'NO -2.5','48.5','CAR 4–1',
+'NO -2.5','48.5',
+'CAR 4–1','CAR',
+'CAR 6–4','CAR',
 5,2,
 'Both 3-5 teams are knotted near the top of a wide-open NFC South, giving an otherwise low-profile game real division stakes.'
 ],
+
 
 [
 'Sun 15 Nov','8:00 PM',
 'Bills','7-1','buf',
 '@',
 'Jets','2-7','nyj',
-'BUF -7.5','50.5','BUF 5–0',
+'BUF -7.5','50.5',
+'BUF 5–0','BUF',
+'BUF 10–0','BUF',
 4,3,
 "Josh Allen and the 7-1 Bills bring one of the league's most explosive offenses to New Jersey as 7.5-point favorites over the 2-7 Jets."
 ],
+
 
 [
 'Sun 15 Nov','8:00 PM',
 'Jaguars','6-2','jax',
 '@',
 'Titans','1-7','ten',
-'JAX -10.5','46.5','JAX 5–0',
+'JAX -10.5','46.5',
+'JAX 5–0','JAX',
+'JAX 10–0','JAX',
 3,3,
 'The surging 6-2 Jaguars debut three trade-deadline defensive acquisitions as heavy 10.5-point favorites over 1-7 Tennessee.'
 ],
+
 
 [
 'Sun 15 Nov','11:05 PM',
 'Rams','5-4','lar',
 '@',
 'Cardinals','3-6','ari',
-'LAR -9.5','39.5','LAR 5–0',
+'LAR -9.5','39.5',
+'LAR 5–0','LAR',
+'LAR 10–0','LAR',
 2,3,
 'The 5-4 Rams look to keep pace in the NFC West wild-card hunt as 9.5-point road favorites in Arizona.'
 ],
+
 
 [
 'Sun 15 Nov','11:05 PM',
 'Seahawks','5-4','sea',
 '@',
 'Raiders','4-5','lv',
-'SEA -6.5','40.5','SEA 5–0',
+'SEA -6.5','40.5',
+'SEA 5–0','SEA',
+'SEA 9–1','SEA',
 2,3,
 'The 5-4 Seahawks head to Las Vegas in a competitive inter-conference spot where Seattle needs a win to stay in the NFC playoff mix.'
 ],
+
 
 [
 'Sun 15 Nov','11:25 PM',
 '49ers','7-1','sf',
 '@',
 'Cowboys','4-5','dal',
-'SF -4.5','55.5','SF 5–0',
+'SF -4.5','55.5',
+'SF 5–0','SF',
+'SF 9–1','SF',
 5,5,
 "The week's highest projected shootout (55.5 O/U) pits the 7-1 49ers—bolstered by Nick Bosa and DeForest Buckner—against Dallas."
 ],
+
 
 [
 'Mon 16 Nov','3:20 AM',
 'Steelers','6-2','pit',
 '@',
 'Bengals','6-2','cin',
-'CIN -3.5','49.5','CIN 5–0',
+'CIN -3.5','49.5',
+'CIN 5–0','CIN',
+'CIN 10–0','CIN',
 5,5,
 "Sunday Night Football features a deadlocked battle for first place in the AFC North between two 6-2 rivals led by Joe Burrow and Pittsburgh's defense."
 ],
+
 
 [
 'Tue 17 Nov','3:15 AM',
 'Chargers','0-8','lac',
 '@',
 'Ravens','4-5','bal',
-'BAL -4.5','38.5','BAL 5–0',
+'BAL -4.5','38.5',
+'BAL 5–0','BAL',
+'BAL 5–5 LAC (tie)','TIE',
 2,2,
 'Monday Night Football features the 4-5 Ravens trying to hold the fort without Lamar Jackson against the winless 0-8 Chargers.'
 ]
@@ -549,7 +707,8 @@ const games=[
 ];
 
 
-/* ESPN team logo helper */
+
+/* TEAM LOGOS */
 
 function logo(team){
 
@@ -558,7 +717,8 @@ function logo(team){
 }
 
 
-/* star helper */
+
+/* RATINGS */
 
 function stars(number){
 
@@ -570,54 +730,88 @@ function stars(number){
 }
 
 
+
+/* RENDER */
+
 function render(mode='all'){
 
   let html='';
   let last='';
 
+
   for(const g of games){
 
     const [
+
       day,time,
+
       team1,record1,logo1,
+
       venue,
+
       team2,record2,logo2,
-      spread,ou,votes,
+
+      spread,ou,
+
+      votes,expertPick,
+
+      siVotes,siPick,
+
       entertainment,
       starRating,
+
       why
+
     ]=g;
+
 
 
     if(mode==='elite' && entertainment!==5)
       continue;
 
+
     if(mode==='stars5' && starRating!==5)
       continue;
+
 
     if(mode==='highou' && +ou<50)
       continue;
 
 
+    if(
+      mode==='consensus' &&
+      expertPick!==siPick
+    )
+      continue;
+
+
+
     if(day!==last){
 
       html+=`
-        <div class="day">
-          ${day}
-        </div>
+
+      <div class="day">
+        ${day}
+      </div>
+
       `;
 
       last=day;
+
     }
+
 
 
     html+=`
 
-    <article class="game ${
-      entertainment===5 || starRating===5
-      ? 'hot'
-      : ''
-    }">
+    <article
+      class="game ${
+        entertainment===5 || starRating===5
+        ? 'hot'
+        : ''
+      }"
+    >
+
 
 
       <!-- CAIRO TIME -->
@@ -633,6 +827,7 @@ function render(mode='all'){
         </span>
 
       </div>
+
 
 
       <!-- MATCHUP -->
@@ -663,9 +858,11 @@ function render(mode='all'){
         </div>
 
 
+
         <span class="at">
           ${venue}
         </span>
+
 
 
         <div class="team">
@@ -690,8 +887,8 @@ function render(mode='all'){
 
         </div>
 
-
       </div>
+
 
 
       <!-- SPREAD -->
@@ -709,7 +906,8 @@ function render(mode='all'){
       </div>
 
 
-      <!-- OVER UNDER -->
+
+      <!-- O/U -->
 
       <div>
 
@@ -717,15 +915,17 @@ function render(mode='all'){
           O/U
         </span>
 
-        <span class="num ${
-          +ou>=50
-          ? 'highou'
-          : ''
-        }">
+        <span class="
+          num
+          ${+ou>=50 ? 'highou' : ''}
+        ">
+
           ${ou}
+
         </span>
 
       </div>
+
 
 
       <!-- EXPERT VOTES -->
@@ -733,7 +933,7 @@ function render(mode='all'){
       <div>
 
         <span class="label">
-          Experts
+          Expert Votes
         </span>
 
         <span class="votes">
@@ -741,6 +941,28 @@ function render(mode='all'){
         </span>
 
       </div>
+
+
+
+      <!-- SI VOTES -->
+
+      <div>
+
+        <span class="label">
+          SI Votes
+        </span>
+
+        <span class="
+          si-votes
+          ${siPick==='TIE' ? 'split-vote' : ''}
+        ">
+
+          ${siVotes}
+
+        </span>
+
+      </div>
+
 
 
       <!-- ENTERTAINMENT -->
@@ -758,6 +980,7 @@ function render(mode='all'){
       </div>
 
 
+
       <!-- STAR RATING -->
 
       <div>
@@ -773,10 +996,13 @@ function render(mode='all'){
       </div>
 
 
+
       <!-- WHY WATCH -->
 
       <div class="watch">
+
         ${why}
+
       </div>
 
 
@@ -787,18 +1013,24 @@ function render(mode='all'){
   }
 
 
-  document.getElementById('list').innerHTML=html;
+  document
+    .getElementById('list')
+    .innerHTML=html;
 
 }
 
+
+
+/* FILTER BUTTONS */
 
 function filterGames(mode,btn){
 
   document
     .querySelectorAll('.filters button')
-    .forEach(x =>
-      x.classList.remove('active')
+    .forEach(
+      x=>x.classList.remove('active')
     );
+
 
   btn.classList.add('active');
 
