@@ -268,9 +268,8 @@
     details.drawer[open] summary::after { transform: rotate(180deg); }
 
     .drawerBody {
-      padding: 0 14px 14px;
+      padding: 12px 14px 14px;
       border-top: 1px solid var(--line);
-      padding-top: 12px;
     }
 
     .guide {
@@ -395,10 +394,11 @@
       padding: 14px 16px;
       margin: 8px 0;
       box-shadow: var(--shadow);
-      transition: transform 0.15s ease, border-color 0.2s ease;
     }
 
-    .game.hot { border-left: 4px solid var(--gold); }
+    .game.hot {
+      border-left: 4px solid var(--gold);
+    }
 
     .time { font-weight: 900; font-size: 13.5px; }
 
@@ -632,4 +632,358 @@
           <div class="guideItem">
             <b>Watch Score · 0–100</b>
             <span>Our viewing score. Higher is better. It combines game closeness (42%), scoring potential from O/U (32%), team-record quality (18%) and an 8-point national-window bonus. 70+ earns BEST GAME.</span>
-          
+          </div>
+          <div class="guideItem">
+            <b>🔥 Best Game</b>
+            <span>A game with Watch Score 70+. This is a viewing recommendation, not a prediction that a team will win.</span>
+          </div>
+          <div class="guideItem">
+            <b>🔥 Shootout</b>
+            <span>Displayed when ESPN's listed O/U is 50.0 or higher. O/U is the market's combined-points line for both teams.</span>
+          </div>
+          <div class="guideItem">
+            <b>🌙 Prime Time</b>
+            <span>A nationally featured broadcast detected from the feed, such as NBC, ESPN, ABC, Prime Video or Netflix. Prime Time and Best Game are separate labels.</span>
+          </div>
+        </section>
+      </div>
+    </details>
+
+    <details class="drawer" id="keyDrawer">
+      <summary>📖 Data & Abbreviation Key</summary>
+      <div class="drawerBody">
+        <div class="keychips">
+          <span class="keychip"><b>Cairo</b> kickoff converted to Africa/Cairo</span>
+          <span class="keychip"><b>Record</b> W-L-T = wins-losses-ties</span>
+          <span class="keychip"><b>Line / Spread</b> e.g. NYG -3 means Giants favored by 3</span>
+          <span class="keychip"><b>O/U</b> Over/Under combined points</span>
+          <span class="keychip"><b>Watch</b> 0–100 viewing score, not win probability</span>
+          <span class="keychip"><b>TBA</b> To Be Announced</span>
+          <span class="keychip"><b>TNF</b> Thursday Night Football</span>
+          <span class="keychip"><b>SNF</b> Sunday Night Football</span>
+          <span class="keychip"><b>MNF</b> Monday Night Football</span>
+          <span class="keychip"><b>OT</b> Overtime</span>
+          <span class="keychip"><b>ESPN</b> live scoreboard data source</span>
+          <span class="keychip"><b>BEST GAME</b> Watch Score ≥ 70</span>
+          <span class="keychip"><b>SHOOTOUT</b> O/U ≥ 50</span>
+          <span class="keychip"><b>PRIME TIME</b> detected national featured window</span>
+        </div>
+      </div>
+    </details>
+
+    <div class="bestTitle">🔥 Best Games This Week</div>
+    <section class="best" id="best"></section>
+
+    <div class="colheads">
+      <div>Cairo</div>
+      <div>Matchup / Record</div>
+      <div>Line</div>
+      <div>O/U</div>
+      <div>Broadcast</div>
+      <div>Watch</div>
+      <div>Why watch</div>
+    </div>
+
+    <section id="list"></section>
+
+    <div class="note">
+      <b>How it works:</b> this app calls the public JSON used by ESPN's scoreboard pages directly from the browser. No API key, GitHub Action or server is required. The watch score is calculated locally from spread closeness, projected total, teams’ records and national broadcast status. Because the endpoint is unofficial and undocumented, the page includes a clear retry/error state and may require adjustment if ESPN changes its JSON structure.
+    </div>
+  </main>
+
+  <script>
+    const END = 'https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard';
+    let all = [], filter = 'all', season = 2026, currentWeek = 10;
+    const el = id => document.getElementById(id);
+
+    if (window.innerWidth > 980) {
+      el('guideDrawer').open = true;
+      el('keyDrawer').open = true;
+    }
+
+    const themeBtn = el('themeToggle');
+    function updateThemeUI(theme) {
+      document.documentElement.setAttribute('data-theme', theme);
+      localStorage.setItem('nfl-cairo-theme', theme);
+      themeBtn.innerHTML = theme === 'light' ? '🌙 Dark' : '☀️ Light';
+      el('themeMeta').setAttribute('content', theme === 'light' ? '#f3f6fa' : '#090c11');
+    }
+    updateThemeUI(document.documentElement.getAttribute('data-theme') || 'dark');
+
+    themeBtn.onclick = () => {
+      const current = document.documentElement.getAttribute('data-theme');
+      updateThemeUI(current === 'light' ? 'dark' : 'light');
+    };
+
+    function updateOnlineStatus() {
+      el('offlineBar').style.display = navigator.onLine ? 'none' : 'block';
+    }
+    window.addEventListener('online', () => { updateOnlineStatus(); load(); });
+    window.addEventListener('offline', updateOnlineStatus);
+    updateOnlineStatus();
+
+    let deferredPrompt;
+    const installBtn = el('installBtn');
+    window.addEventListener('beforeinstallprompt', e => {
+      e.preventDefault();
+      deferredPrompt = e;
+      installBtn.style.display = 'inline-flex';
+    });
+    installBtn.onclick = async () => {
+      if (!deferredPrompt) return;
+      deferredPrompt.prompt();
+      await deferredPrompt.userChoice;
+      deferredPrompt = null;
+      installBtn.style.display = 'none';
+    };
+
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js').catch(() => {});
+      });
+    }
+
+    const cairo = d => new Intl.DateTimeFormat('en-GB', {
+      timeZone: 'Africa/Cairo', weekday: 'short', day: 'numeric', month: 'short', hour: 'numeric', minute: '2-digit'
+    }).format(new Date(d));
+
+    const day = d => new Intl.DateTimeFormat('en-GB', {
+      timeZone: 'Africa/Cairo', weekday: 'long', day: 'numeric', month: 'long'
+    }).format(new Date(d));
+
+    function winPct(r) {
+      if (!r) return 50;
+      const m = r.match(/(\d+)-(\d+)(?:-(\d+))?/);
+      if (!m) return 50;
+      let w = +m[1], l = +m[2], t = +(m[3] || 0);
+      return (w + l + t) === 0 ? 50 : Math.round((w + t * 0.5) / (w + l + t) * 100);
+    }
+
+    function prime(b) {
+      const s = (b || []).join(' ');
+      return /NBC|ESPN|ABC|Prime Video|Netflix/i.test(s);
+    }
+
+    function watchScore(g) {
+      const close = Math.max(0, 100 - Math.abs(g.spread || 0) * 9);
+      const scoring = Math.max(0, Math.min(100, ((g.total || 40) - 34) * 4.8));
+      const quality = (winPct(g.away.record) + winPct(g.home.record)) / 2;
+      return Math.round(close * 0.42 + scoring * 0.32 + quality * 0.18 + (g.prime ? 8 : 0));
+    }
+
+    function parse(x) {
+      const c = x.competitions?.[0] || {};
+      const teams = c.competitors || [];
+      const home = teams.find(t => t.homeAway === 'home') || {};
+      const away = teams.find(t => t.homeAway === 'away') || {};
+      const od = c.odds?.[0] || {};
+      const broadcasts = (c.broadcasts || []).flatMap(b => b.names || []);
+      let spread = Number.isFinite(od.spread) ? od.spread : null;
+      return {
+        id: x.id,
+        date: x.date,
+        status: c.status?.type?.shortDetail || '',
+        completed: !!c.status?.type?.completed,
+        away: {
+          name: away.team?.shortDisplayName || away.team?.displayName || 'Away',
+          abbr: away.team?.abbreviation || '',
+          logo: away.team?.logo || '',
+          record: away.records?.[0]?.summary || '',
+          score: Number(away.score ?? 0),
+          winner: !!away.winner
+        },
+        home: {
+          name: home.team?.shortDisplayName || home.team?.displayName || 'Home',
+          abbr: home.team?.abbreviation || '',
+          logo: home.team?.logo || '',
+          record: home.records?.[0]?.summary || '',
+          score: Number(home.score ?? 0),
+          winner: !!home.winner
+        },
+        details: od.details || '—',
+        spread,
+        total: od.overUnder ?? null,
+        broadcasts,
+        prime: prime(broadcasts),
+        venue: c.venue?.fullName || '',
+        note: (c.notes?.[0]?.headline) || ''
+      };
+    }
+
+    function reason(g) {
+      let a = [];
+      if (g.total >= 50) a.push(`High-scoring profile with an O/U of ${g.total}.`);
+      if (Math.abs(g.spread || 99) <= 3) a.push('The market projects a one-score contest.');
+      if (g.prime) a.push(`National window on ${g.broadcasts.join(', ')}.`);
+      const q = (winPct(g.away.record) + winPct(g.home.record)) / 2;
+      if (q >= 65) a.push('Strong combined team records raise the matchup quality.');
+      if (!a.length) a.push('Worth monitoring for line movement and late team news.');
+      return a.join(' ');
+    }
+
+    function render() {
+      const historical = all.length && all.every(g => g.completed);
+      document.querySelector('.bestTitle').textContent = historical ? 'Final Scores' : '🔥 Best Games This Week';
+      document.querySelector('.colheads').innerHTML = historical
+        ? '<div>Status</div><div>Matchup / Record</div><div>Away</div><div>Home</div><div>Winner</div><div>Played</div><div>Result note</div>'
+        : '<div>Cairo</div><div>Matchup / Record</div><div>Line</div><div>O/U</div><div>Broadcast</div><div>Watch</div><div>Why watch</div>';
+      el('best').style.display = historical ? 'none' : '';
+
+      const games = all.filter(g =>
+        filter === 'all' ||
+        (filter === 'best' && g.watch >= 70) ||
+        (filter === 'prime' && g.prime) ||
+        (filter === 'shootout' && g.total >= 50)
+      );
+
+      const best = [...all].sort((a, b) => b.watch - a.watch).slice(0, 4);
+      el('best').innerHTML = best.map((g, i) => `
+        <div class="bestCard">
+          <b>#${i + 1} ${g.away.name} @ ${g.home.name}</b>
+          <span>${cairo(g.date)} · Watch ${g.watch}/100 · ${g.details}${g.total ? ` · O/U ${g.total}` : ''}</span>
+        </div>
+      `).join('');
+
+      let h = '', last = '';
+      games.forEach(g => {
+        const d = day(g.date);
+        if (d !== last) {
+          h += `<div class="day">${d}</div>`;
+          last = d;
+        }
+        let tags = `${g.prime ? '<span class="tag prime">PRIME TIME</span>' : ''}${g.total >= 50 ? '<span class="tag shootout">SHOOTOUT</span>' : ''}${g.watch >= 70 ? '<span class="tag">BEST GAME</span>' : ''}`;
+
+        if (historical) {
+          h += `
+            <article class="game">
+              <div class="gameTop">
+                <div><span class="finalTag">${g.status || 'FINAL'}</span></div>
+                <div class="gameWatchRow"><span class="pick">${g.away.winner ? g.away.name : g.home.name} won</span></div>
+              </div>
+              <div class="match">
+                <div class="team">
+                  <div class="teamLeft">
+                    <img class="logo" src="${g.away.logo}" alt="${g.away.name}">
+                    <div>
+                      <div class="name ${g.away.winner ? 'winner' : 'loser'}">${g.away.name}</div>
+                      <div class="rec">${g.away.record}</div>
+                    </div>
+                  </div>
+                  <span class="teamRole scoreFinal ${g.away.winner ? 'winner' : 'loser'}">${g.away.score}</span>
+                </div>
+                <div class="at">@</div>
+                <div class="team">
+                  <div class="teamLeft">
+                    <img class="logo" src="${g.home.logo}" alt="${g.home.name}">
+                    <div>
+                      <div class="name ${g.home.winner ? 'winner' : 'loser'}">${g.home.name}</div>
+                      <div class="rec">${g.home.record}</div>
+                    </div>
+                  </div>
+                  <span class="teamRole scoreFinal ${g.home.winner ? 'winner' : 'loser'}">${g.home.score}</span>
+                </div>
+              </div>
+              <div class="statsGrid">
+                <div class="statBox"><span class="label">Away</span><span class="scoreFinal ${g.away.winner ? 'winner' : 'loser'}">${g.away.score}</span></div>
+                <div class="statBox"><span class="label">Home</span><span class="scoreFinal ${g.home.winner ? 'winner' : 'loser'}">${g.home.score}</span></div>
+                <div class="statBox"><span class="label">Played</span><span class="value">${cairo(g.date).split(', ').pop()}</span></div>
+              </div>
+              <div class="statBox" style="display:none"><span class="pick">${g.away.winner ? g.away.name : g.home.name} won</span></div>
+              <div class="resultNote">${g.note || `${g.away.name} ${g.away.score} – ${g.home.score} ${g.home.name}`}</div>
+            </article>`;
+          return;
+        }
+
+        h += `
+          <article class="game ${g.watch >= 70 ? 'hot' : ''}">
+            <div class="gameTop">
+              <div><span class="time">🕒 ${cairo(g.date).split(', ').pop()}</span></div>
+              <div class="gameWatchRow">
+                <span class="watch">${g.watch}<span class="watchMax">/100</span></span>
+                <div class="tags">${tags}</div>
+              </div>
+            </div>
+
+            <div class="match">
+              <div class="team">
+                <div class="teamLeft">
+                  <img class="logo" src="${g.away.logo}" alt="${g.away.name}">
+                  <div>
+                    <div class="name">${g.away.name}</div>
+                    <div class="rec">${g.away.record || 'Record unavailable'}</div>
+                  </div>
+                </div>
+                <span class="teamRole">Away</span>
+              </div>
+              <div class="at">@</div>
+              <div class="team">
+                <div class="teamLeft">
+                  <img class="logo" src="${g.home.logo}" alt="${g.home.name}">
+                  <div>
+                    <div class="name">${g.home.name}</div>
+                    <div class="rec">${g.home.record || 'Record unavailable'}</div>
+                  </div>
+                </div>
+                <span class="teamRole">Home</span>
+              </div>
+            </div>
+
+            <div class="statsGrid">
+              <div class="statBox"><span class="label">Line</span><span class="value">${g.details}</span></div>
+              <div class="statBox"><span class="label">O/U</span><span class="value total ${g.total >= 50 ? 'high' : ''}">${g.total ?? '—'}</span></div>
+              <div class="statBox"><span class="label">Broadcast</span><span class="pick">${g.broadcasts.join(', ') || 'TBA'}</span></div>
+            </div>
+
+            <div class="why">
+              <span class="label">Why watch</span>
+              ${reason(g)}${g.venue ? `<br><small>📍 ${g.venue}</small>` : ''}
+            </div>
+          </article>`;
+      });
+
+      el('list').innerHTML = h || '<div class="empty">No games match this filter.</div>';
+    }
+
+    async function load() {
+      el('status').textContent = 'REFRESHING…';
+      el('status').className = 'status';
+      try {
+        const week = +el('week').value || currentWeek;
+        const r = await fetch(`${END}?dates=${season}&seasontype=2&week=${week}&limit=100`, { cache: 'no-store' });
+        if (!r.ok) throw Error(`HTTP ${r.status}`);
+        const j = await r.json();
+        season = j.leagues?.[0]?.season?.year || season;
+        currentWeek = j.week?.number || week;
+        all = (j.events || [])
+          .map(parse)
+          .map(g => ({ ...g, watch: watchScore(g) }))
+          .sort((a, b) => new Date(a.date) - new Date(b.date));
+        el('status').textContent = `LIVE · W${currentWeek} · ${all.length} GAMES`;
+        render();
+      } catch (e) {
+        el('status').textContent = 'OFFLINE / ERROR';
+        el('status').className = 'status error';
+        el('list').innerHTML = `<div class="empty"><b>Could not load the live scoreboard.</b><br>${e.message}<br><br>Check your connection and tap Refresh.</div>`;
+      }
+    }
+
+    for (let i = 1; i <= 18; i++) {
+      let o = document.createElement('option');
+      o.value = i;
+      o.textContent = `Week ${i}`;
+      if (i === 10) o.selected = true;
+      el('week').appendChild(o);
+    }
+
+    el('week').onchange = load;
+    document.querySelectorAll('[data-filter]').forEach(b => b.onclick = () => {
+      document.querySelectorAll('[data-filter]').forEach(x => x.classList.remove('active'));
+      b.classList.add('active');
+      filter = b.dataset.filter;
+      render();
+    });
+
+    load();
+  </script>
+</body>
+</html>
