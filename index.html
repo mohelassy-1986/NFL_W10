@@ -467,7 +467,7 @@
       color: var(--txt-soft);
       line-height: 1.45;
     }
-    .why small { color: var(--mut); display: inline-block; margin-top: 3px; }
+    .why small { color: var(--mut); display: block; margin-top: 3px; }
 
     .tags { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 4px; }
     .tag {
@@ -812,15 +812,48 @@
       };
     }
 
+    // Deep Narrative "Why Watch" Engine
     function reason(g) {
-      let a = [];
-      if (g.total >= 50) a.push(`High-scoring profile with an O/U of ${g.total}.`);
-      if (Math.abs(g.spread || 99) <= 3) a.push('The market projects a one-score contest.');
-      if (g.prime) a.push(`National window on ${g.broadcasts.join(', ')}.`);
-      const q = (winPct(g.away.record) + winPct(g.home.record)) / 2;
-      if (q >= 65) a.push('Strong combined team records raise the matchup quality.');
-      if (!a.length) a.push('Worth monitoring for line movement and late team news.');
-      return a.join(' ');
+      let insights = [];
+
+      // 1. Scoring & Pace narrative
+      if (g.total !== null) {
+        if (g.total >= 51.5) {
+          insights.push(`🔥 <b>High-Voltage Shootout:</b> Vegas expects explosive fireworks with a lofty ${g.total} O/U total.`);
+        } else if (g.total <= 38.5) {
+          insights.push(`🛡️ <b>Trench Warfare:</b> Low projected scoring (${g.total} O/U) signals a gritty defensive chess match.`);
+        }
+      }
+
+      // 2. Closeness & Friction narrative
+      if (g.spread !== null) {
+        if (Math.abs(g.spread) <= 2.5) {
+          insights.push(`⚖️ <b>Coin-Flip Margin:</b> A razor-thin ${g.spread}-point spread points to a tense, down-to-the-wire finish.`);
+        } else if (Math.abs(g.spread) >= 9.5) {
+          insights.push(`⚠️ <b>David vs. Goliath:</b> A heavy underdog spot (${g.details}). Watch to see if an upset brews or if it turns into a showcase blowout.`);
+        }
+      }
+
+      // 3. National Primetime Stage
+      if (g.prime) {
+        insights.push(`🌙 <b>National Spotlight:</b> Primetime window on ${g.broadcasts.join(', ')} ramps up player intensity.`);
+      }
+
+      // 4. Combined Quality / Heavyweight Matchup
+      const avgWinPct = (winPct(g.away.record) + winPct(g.home.record)) / 2;
+      if (avgWinPct >= 68) {
+        insights.push(`👑 <b>Heavyweight Tilt:</b> Two elite-tier rosters colliding with serious competitive stakes.`);
+      }
+
+      if (insights.length === 0) {
+        insights.push(`👀 <b>Under-the-Radar Battle:</b> Look for tactical adjustments and late-game execution shifts.`);
+      }
+
+      let html = insights.join('<br>');
+      if (g.venue) {
+        html += `<small>📍 ${g.venue}</small>`;
+      }
+      return html;
     }
 
     function render() {
@@ -940,7 +973,7 @@
 
             <div class="why">
               <span class="label">Why watch</span>
-              ${reason(g)}${g.venue ? `<br><small>📍 ${g.venue}</small>` : ''}
+              ${reason(g)}
             </div>
           </article>`;
       });
