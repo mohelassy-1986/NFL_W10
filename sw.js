@@ -1,4 +1,4 @@
-const CACHE_NAME = 'nfl-cairo-hub-v5';
+const CACHE_NAME = 'nfl-cairo-hub-v6';
 const APP_SHELL = [
   './',
   './index.html',
