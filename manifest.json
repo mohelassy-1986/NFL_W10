@@ -1,20 +1,42 @@
 {
   "name": "NFL Cairo Auto Hub",
   "short_name": "NFL Cairo",
-  "description": "Live NFL scores, schedule in Cairo time, team records, broadcasts, real ESPN analytics, and Watch Scores.",
+  "description": "Live NFL scores, Cairo time schedule, team records, broadcasts, and watch rankings.",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
   "orientation": "any",
   "background_color": "#090c11",
   "theme_color": "#090c11",
+  "lang": "en",
+  "dir": "ltr",
+  "categories": ["sports", "news", "entertainment"],
   "icons": [
     {
       "src": "./icon.svg",
       "sizes": "any",
       "type": "image/svg+xml",
       "purpose": "any maskable"
+    },
+    {
+      "src": "./icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "./icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Live Games",
+      "short_name": "Live",
+      "url": "./index.html#live",
+      "description": "Jump to live games"
     }
   ]
 }
-
