@@ -3,12 +3,12 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-  <title>NFL Cairo Auto Hub</title>
-  <meta name="description" content="Live NFL scores, Cairo time schedule, team records, broadcasts, reporter consensus and watch rankings.">
+  <title>US Sports Cairo Auto Hub</title>
+  <meta name="description" content="Live NFL, NBA, MLB & NHL scores, Cairo time schedule, team records, broadcasts, model consensus and watch rankings.">
   <meta name="theme-color" content="#090c11" id="themeMeta">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="NFL Cairo">
+  <meta name="apple-mobile-web-app-title" content="Sports Cairo">
   <link rel="manifest" href="./manifest.json">
   <link rel="icon" type="image/svg+xml" href="./icon.svg">
   <link rel="apple-touch-icon" href="./icon.svg">
@@ -156,13 +156,7 @@
       letter-spacing: 0.3px;
     }
 
-    .status.liveNow {
-      border-color: var(--red-border);
-      background: var(--red-bg);
-      color: var(--red);
-    }
-
-    .status.error {
+    .status.liveNow, .status.error {
       border-color: var(--red-border);
       background: var(--red-bg);
       color: var(--red);
@@ -195,6 +189,41 @@
       display: none;
     }
 
+    /* Sport Switcher Bar */
+    .sportBar {
+      display: flex;
+      gap: 8px;
+      margin: 18px 0 0;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+    .sportBar::-webkit-scrollbar { display: none; }
+
+    .sportBtn {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      height: 40px;
+      padding: 0 16px;
+      border-radius: 11px;
+      border: 1px solid var(--line);
+      background: var(--card);
+      color: var(--btn-txt);
+      font-size: 13px;
+      font-weight: 900;
+      letter-spacing: 0.3px;
+      cursor: pointer;
+      box-shadow: var(--shadow);
+      transition: all 0.15s ease;
+      flex-shrink: 0;
+    }
+    .sportBtn:hover { border-color: var(--g-border); }
+    .sportBtn.active {
+      background: var(--g-bg);
+      color: var(--g);
+      border-color: var(--g-border);
+    }
+
     .offlineBar {
       display: none;
       margin-top: 14px;
@@ -211,7 +240,7 @@
       display: flex;
       align-items: center;
       gap: 8px;
-      margin: 18px 0 14px;
+      margin: 12px 0 14px;
       overflow-x: auto;
       padding-bottom: 4px;
       scrollbar-width: none;
@@ -219,6 +248,7 @@
     .controls::-webkit-scrollbar { display: none; }
 
     .controls select,
+    .controls input[type="date"],
     .controls button {
       flex-shrink: 0;
       height: 40px;
@@ -229,14 +259,25 @@
       border-radius: 10px;
       font-size: 13px;
       font-weight: 800;
+      font-family: inherit;
       box-shadow: var(--shadow);
       transition: all 0.15s ease;
     }
 
-    .controls select {
+    .controls select,
+    .controls input[type="date"] {
       color: var(--txt);
-      padding-right: 28px;
       cursor: pointer;
+    }
+
+    .dateNav {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      flex-shrink: 0;
+    }
+    .dateNav button {
+      padding: 0 10px;
     }
 
     .controls button { cursor: pointer; }
@@ -728,8 +769,8 @@
     <header class="top">
       <div class="brand">
         <div class="eyebrow">NO KEY · NO ACCOUNT · LIVE JSON · AUTO-POLL</div>
-        <h1>NFL Cairo Auto Hub</h1>
-        <p>Live scores, Cairo time schedule, team records, broadcasts, reporter consensus and watch rankings</p>
+        <h1 id="hubTitle">US Sports Cairo Auto Hub</h1>
+        <p>Live NFL, NBA, MLB & NHL scores, Cairo time schedule, records, broadcasts, model consensus and watch rankings</p>
       </div>
       <div class="topActions">
         <div id="status" class="status" aria-live="polite">CONNECTING…</div>
@@ -743,35 +784,48 @@
       📡 You are offline — showing cached schedule data if available.
     </div>
 
+    <!-- Sport Selector Toggle -->
+    <nav class="sportBar" id="sportBar" aria-label="Select US Sport">
+      <button class="sportBtn active" data-sport="nfl" type="button">🏈 NFL</button>
+      <button class="sportBtn" data-sport="nba" type="button">🏀 NBA</button>
+      <button class="sportBtn" data-sport="mlb" type="button">⚾ MLB</button>
+      <button class="sportBtn" data-sport="nhl" type="button">🏒 NHL</button>
+    </nav>
+
     <div class="controls">
       <select id="week" aria-label="Select NFL Week or Postseason Round"></select>
+      <div class="dateNav" id="dateNav" style="display:none;">
+        <button type="button" id="prevDayBtn" title="Previous Day" aria-label="Previous Day">◀</button>
+        <input type="date" id="gameDate" aria-label="Select Game Date">
+        <button type="button" id="nextDayBtn" title="Next Day" aria-label="Next Day">▶</button>
+      </div>
       <button class="active" data-filter="all" type="button">All</button>
       <button data-filter="live" id="liveFilterBtn" type="button">🔴 Live Now</button>
       <button data-filter="best" type="button">🔥 Best games</button>
       <button data-filter="prime" type="button">🌙 Prime time</button>
-      <button data-filter="shootout" type="button">O/U 50+</button>
+      <button data-filter="shootout" id="shootoutBtn" type="button">O/U 50+</button>
       <button id="refreshBtn" type="button">↻ Refresh</button>
     </div>
 
     <details class="drawer" id="guideDrawer">
-      <summary>📊 How Live Scores & Reporter Consensus Work</summary>
+      <summary>📊 How Live Scores & Model Consensus Work</summary>
       <div class="drawerBody">
         <section class="guide">
           <div class="guideItem">
             <b>🔴 Live Auto-Polling</b>
-            <span>Games in progress show real-time scores, quarter and clock, auto-refreshing every 60 seconds while games are active.</span>
+            <span>Games in progress show real-time scores, period/quarter and clock, auto-refreshing every 60 seconds while games are active.</span>
           </div>
           <div class="guideItem">
             <b>Watch Score · 0–100</b>
-            <span>Combines game closeness (42%), scoring potential from O/U (32%), team-record quality (18%) and an 8-point national-window bonus. 70+ earns BEST GAME.</span>
+            <span>Combines closeness (42%), sport-calibrated O/U scoring potential (32%), team-record quality (18%) and an 8-point national-TV bonus. 70+ earns BEST GAME.</span>
           </div>
           <div class="guideItem">
-            <b>✍️ Reporter Consensus</b>
-            <span>A transparent model derived from ESPN win probabilities and betting lines — <em>not</em> scraped staff picks. Tap any reporter scorecard for details.</span>
+            <b>✍️ Model Consensus</b>
+            <span>A transparent probability model derived from ESPN projections and sportsbook lines — <em>not</em> scraped staff picks. Tap any lean for details.</span>
           </div>
           <div class="guideItem">
-            <b>🔥 Shootout & 🌙 Prime Time</b>
-            <span>SHOOTOUT triggers when O/U is 50.0+. PRIME TIME highlights national broadcasts on NBC, ESPN, ABC, Prime Video or Netflix.</span>
+            <b>🔥 High-Scoring & 🌙 Prime Time</b>
+            <span>SHOOTOUT triggers on high-total games (NFL 50+, NBA 232+, MLB 9.5+, NHL 6.5+). PRIME TIME highlights major national US broadcasts.</span>
           </div>
         </section>
       </div>
@@ -781,11 +835,11 @@
       <summary>📖 Data & Abbreviation Key</summary>
       <div class="drawerBody">
         <div class="keychips">
-          <span class="keychip"><b>Cairo</b> kickoff in Africa/Cairo</span>
+          <span class="keychip"><b>Cairo</b> kickoff/tipoff/first pitch in Africa/Cairo</span>
           <span class="keychip"><b>🔴 LIVE</b> in progress (auto-updates every 60s)</span>
-          <span class="keychip"><b>Record</b> W-L-T</span>
-          <span class="keychip"><b>Line</b> e.g. NYG -3 = Giants favored by 3</span>
-          <span class="keychip"><b>O/U</b> Over/Under combined points</span>
+          <span class="keychip"><b>Record</b> W-L (or W-L-OTL / W-L-T)</span>
+          <span class="keychip"><b>Line</b> e.g. BOS -5.5 = Celtics favored by 5.5</span>
+          <span class="keychip"><b>O/U</b> Over/Under combined points/runs/goals</span>
           <span class="keychip"><b>Lean</b> model-based pick (ESPN proj + spread)</span>
           <span class="keychip"><b>Watch</b> 0–100 viewing score</span>
           <span class="keychip"><b>BEST GAME</b> Watch Score ≥ 70</span>
@@ -793,7 +847,7 @@
       </div>
     </details>
 
-    <div class="bestTitle" id="bestTitle">🔥 Best Games This Week</div>
+    <div class="bestTitle" id="bestTitle">🔥 Best Games</div>
     <section class="best best-scroll" id="best" aria-label="Top games"></section>
 
     <div class="colheads" id="colheads"></div>
@@ -801,7 +855,7 @@
     <section id="list" aria-live="polite"></section>
 
     <div class="note">
-      <b>Data source:</b> live JSON schedules from ESPN. Reporter "leans" are a transparent probability model, not verbatim staff picks.
+      <b>Data source:</b> live JSON scoreboards from ESPN. Model "leans" are a transparent probability calculation, not verbatim staff picks.
     </div>
   </main>
 
@@ -816,23 +870,104 @@
     // @ts-check
     'use strict';
 
-    const END = 'https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard';
     const POLL_MS = 60000;
     const FETCH_TIMEOUT_MS = 10000;
 
-    const PARAMS = {
-      closeWeight: 0.42,
-      scoringWeight: 0.32,
-      qualityWeight: 0.18,
-      primeBonus: 8,
-      scoringBaseline: 34,
-      scoringScale: 4.8,
-      spreadPenalty: 9,
-      bestThreshold: 70
+    const SPORTS = {
+      nfl: {
+        name: 'NFL',
+        icon: '🏈',
+        endpoint: 'https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard',
+        mode: 'week',
+        closeWeight: 0.42,
+        scoringWeight: 0.32,
+        qualityWeight: 0.18,
+        primeBonus: 8,
+        defaultSpread: 3,
+        spreadPenalty: 9,
+        defaultTotal: 44,
+        scoringBaseline: 34,
+        scoringScale: 4.8,
+        shootoutThreshold: 50,
+        highTotalNote: 51.5,
+        lowTotalNote: 38.5,
+        closeSpreadNote: 3,
+        spreadProbFactor: 3.1,
+        bestThreshold: 70,
+        primeRegex: /NBC|ESPN|ABC|Prime Video|Netflix/i
+      },
+      nba: {
+        name: 'NBA',
+        icon: '🏀',
+        endpoint: 'https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard',
+        mode: 'date',
+        closeWeight: 0.42,
+        scoringWeight: 0.32,
+        qualityWeight: 0.18,
+        primeBonus: 8,
+        defaultSpread: 4.5,
+        spreadPenalty: 6.5,
+        defaultTotal: 224,
+        scoringBaseline: 205,
+        scoringScale: 2.6,
+        shootoutThreshold: 232,
+        highTotalNote: 235,
+        lowTotalNote: 210,
+        closeSpreadNote: 3.5,
+        spreadProbFactor: 2.6,
+        bestThreshold: 70,
+        primeRegex: /ESPN|ABC|TNT|NBA TV|Prime Video|NBC/i
+      },
+      mlb: {
+        name: 'MLB',
+        icon: '⚾',
+        endpoint: 'https://site.api.espn.com/apis/site/v2/sports/baseball/mlb/scoreboard',
+        mode: 'date',
+        closeWeight: 0.42,
+        scoringWeight: 0.32,
+        qualityWeight: 0.18,
+        primeBonus: 8,
+        defaultSpread: 1.5,
+        spreadPenalty: 28,
+        defaultTotal: 8.5,
+        scoringBaseline: 6.5,
+        scoringScale: 22,
+        shootoutThreshold: 9.5,
+        highTotalNote: 10.0,
+        lowTotalNote: 7.0,
+        closeSpreadNote: 1.5,
+        spreadProbFactor: 14,
+        bestThreshold: 70,
+        primeRegex: /ESPN|FOX|FS1|TBS|Apple TV|Roku|MLB/i
+      },
+      nhl: {
+        name: 'NHL',
+        icon: '🏒',
+        endpoint: 'https://site.api.espn.com/apis/site/v2/sports/hockey/nhl/scoreboard',
+        mode: 'date',
+        closeWeight: 0.42,
+        scoringWeight: 0.32,
+        qualityWeight: 0.18,
+        primeBonus: 8,
+        defaultSpread: 1.5,
+        spreadPenalty: 28,
+        defaultTotal: 6.0,
+        scoringBaseline: 4.8,
+        scoringScale: 38,
+        shootoutThreshold: 6.5,
+        highTotalNote: 6.5,
+        lowTotalNote: 5.5,
+        closeSpreadNote: 1.5,
+        spreadProbFactor: 14,
+        bestThreshold: 70,
+        primeRegex: /ESPN|ABC|TNT|NHL Net|Hulu/i
+      }
     };
 
     /** @type {Array<any>} */
     let all = [];
+    let currentSport = localStorage.getItem('us-sports-cairo-sport') || 'nfl';
+    if (!SPORTS[currentSport]) currentSport = 'nfl';
     let filter = 'all';
     let season = new Date().getFullYear();
     let currentWeek = 1;
@@ -840,6 +975,7 @@
     let inFlight = false;
 
     const el = (id) => document.getElementById(id);
+    const cfg = () => SPORTS[currentSport];
 
     // ---------- Utilities ----------
     const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (m) => ({
@@ -872,17 +1008,18 @@
 
     function isPrime(broadcasts) {
       const s = (broadcasts || []).join(' ');
-      return /NBC|ESPN|ABC|Prime Video|Netflix/i.test(s);
+      return cfg().primeRegex.test(s);
     }
 
     function watchScore(g) {
-      const spread = Number.isFinite(g.spread) ? g.spread : 3;
-      const close = Math.max(0, Math.min(100, 100 - Math.abs(spread) * PARAMS.spreadPenalty));
-      const total = Number.isFinite(g.total) ? g.total : 44;
-      const scoring = Math.max(0, Math.min(100, (total - PARAMS.scoringBaseline) * PARAMS.scoringScale));
+      const c = cfg();
+      const spread = Number.isFinite(g.spread) ? g.spread : c.defaultSpread;
+      const close = Math.max(0, Math.min(100, 100 - Math.abs(spread) * c.spreadPenalty));
+      const total = Number.isFinite(g.total) ? g.total : c.defaultTotal;
+      const scoring = Math.max(0, Math.min(100, (total - c.scoringBaseline) * c.scoringScale));
       const quality = (winPct(g.away.record) + winPct(g.home.record)) / 2;
-      const bonus = g.prime ? PARAMS.primeBonus : 0;
-      const raw = close * PARAMS.closeWeight + scoring * PARAMS.scoringWeight + quality * PARAMS.qualityWeight + bonus;
+      const bonus = g.prime ? c.primeBonus : 0;
+      const raw = close * c.closeWeight + scoring * c.scoringWeight + quality * c.qualityWeight + bonus;
       return Math.max(0, Math.min(100, Math.round(raw)));
     }
 
@@ -898,6 +1035,7 @@
 
     // ---------- Parsing ----------
     function computeLean(competition, awayObj, homeObj, spread) {
+      const c = cfg();
       const pred = competition.predictor;
       let homeProb = 50;
       let awayProb = 50;
@@ -906,8 +1044,7 @@
         homeProb = Math.round(Number(pred.homeTeam.gameProjection));
         awayProb = Math.round(Number(pred.awayTeam.gameProjection));
       } else if (Number.isFinite(spread)) {
-        // ESPN convention: spread is the home team's line (negative = home favored)
-        homeProb = Math.max(5, Math.min(95, Math.round(50 + (-spread * 3.1))));
+        homeProb = Math.max(5, Math.min(95, Math.round(50 + (-spread * c.spreadProbFactor))));
         awayProb = 100 - homeProb;
       } else {
         const diff = winPct(homeObj.record) - winPct(awayObj.record);
@@ -956,17 +1093,6 @@
       const away = parseTeam(awayRaw);
       const home = parseTeam(homeRaw);
       const prime = isPrime(broadcasts);
-
-      const provisional = {
-        ...{
-          away,
-          home,
-          spread,
-          total: od.overUnder ?? null,
-          prime
-        }
-      };
-
       const lean = computeLean(c, away, home, spread);
 
       return {
@@ -989,48 +1115,49 @@
         prime,
         venue: c.venue?.fullName || '',
         note: c.notes?.[0]?.headline || '',
-        watch: 0 // set after
+        watch: 0
       };
     }
 
     // ---------- Rendering ----------
     function buildReason(g) {
+      const c = cfg();
       if (g.live) {
         const diff = Math.abs(g.away.score - g.home.score);
         const leader = g.away.score > g.home.score ? g.away.name
           : g.home.score > g.away.score ? g.home.name : 'Tied';
         const lines = [];
         if (diff === 0) lines.push(`🔴 <b>Deadlocked:</b> Tied ${g.away.score}–${g.home.score} (${esc(g.status)}).`);
-        else if (diff <= 8) lines.push(`🔴 <b>One-score thriller:</b> ${esc(leader)} up ${Math.max(g.away.score, g.home.score)}–${Math.min(g.away.score, g.home.score)} (${esc(g.status)}).`);
-        else lines.push(`🔴 <b>In progress:</b> ${esc(leader)} by ${diff} (${esc(g.status)}).`);
-        if (g.situation) lines.push(`🏈 <b>Situation:</b> ${esc(g.situation)}`);
+        else lines.push(`🔴 <b>In progress:</b> ${esc(leader)} up ${Math.max(g.away.score, g.home.score)}–${Math.min(g.away.score, g.home.score)} (${esc(g.status)}).`);
+        if (g.situation) lines.push(`${c.icon} <b>Situation:</b> ${esc(g.situation)}`);
         if (g.venue) lines.push(`<small>📍 ${esc(g.venue)}</small>`);
         return lines.join('<br>');
       }
 
       const insights = [];
       if (g.total !== null) {
-        if (g.total >= 51.5) insights.push(`🔥 <b>Shootout alert:</b> Vegas O/U ${g.total} suggests fireworks.`);
-        else if (g.total <= 38.5) insights.push(`🛡️ <b>Trench warfare:</b> Low O/U ${g.total} signals a defensive grind.`);
+        if (g.total >= c.highTotalNote) insights.push(`🔥 <b>High-scoring alert:</b> Vegas O/U ${g.total} suggests offensive fireworks.`);
+        else if (g.total <= c.lowTotalNote) insights.push(`🛡️ <b>Defensive battle:</b> Low O/U ${g.total} signals a tight grind.`);
       }
-      if (g.spread !== null && Math.abs(g.spread) <= 3) {
-        insights.push(`🎯 <b>Coin-flip:</b> ${esc(g.details)} spread points to a nail-biter.`);
+      if (g.spread !== null && Math.abs(g.spread) <= c.closeSpreadNote) {
+        insights.push(`🎯 <b>Tight matchup:</b> ${esc(g.details)} line points to a close finish.`);
       }
       if (g.prime) {
-        insights.push(`🌙 <b>National spotlight:</b> ${esc(g.broadcasts.join(', '))} in primetime.`);
+        insights.push(`🌙 <b>National spotlight:</b> ${esc(g.broadcasts.join(', '))} broadcast.`);
       }
       const avg = (winPct(g.away.record) + winPct(g.home.record)) / 2;
-      if (avg >= 68) insights.push(`👑 <b>Heavyweight clash:</b> Two elite rosters with playoff seeding at stake.`);
+      if (avg >= 65) insights.push(`👑 <b>Heavyweight clash:</b> Two top-performing rosters facing off.`);
       if (!insights.length) insights.push(`📊 Model lean: <b>${esc(g.lean.favoredTeam)}</b> (${esc(g.lean.confidence)} confidence).`);
       if (g.venue) insights.push(`<small>📍 ${esc(g.venue)}</small>`);
       return insights.join('<br>');
     }
 
     function gameTagsHTML(g) {
+      const c = cfg();
       return [
         g.prime ? '<span class="tag prime">PRIME TIME</span>' : '',
-        g.total >= 50 ? '<span class="tag shootout">SHOOTOUT</span>' : '',
-        g.watch >= PARAMS.bestThreshold ? '<span class="tag">BEST GAME</span>' : ''
+        g.total >= c.shootoutThreshold ? '<span class="tag shootout">SHOOTOUT</span>' : '',
+        g.watch >= c.bestThreshold ? '<span class="tag">BEST GAME</span>' : ''
       ].join('');
     }
 
@@ -1041,6 +1168,7 @@
     }
 
     function renderUpcomingCard(g) {
+      const c = cfg();
       const timeOrLive = g.live
         ? `<span class="livePill"><span class="liveDot"></span>LIVE</span><span class="liveClock">${esc(g.status)}</span>`
         : `<span class="time">🕒 ${esc(cairoTime(g.date))}</span>`;
@@ -1049,7 +1177,7 @@
       const homeScore = g.live ? `<span class="inlineScore liveScoreTxt">${g.home.score}</span>` : `<span class="teamRole">Home</span>`;
 
       return `
-        <article class="game ${g.live ? 'liveCard' : g.watch >= PARAMS.bestThreshold ? 'hot' : ''}">
+        <article class="game ${g.live ? 'liveCard' : g.watch >= c.bestThreshold ? 'hot' : ''}">
           <div class="gameTop">
             <div>${timeOrLive}</div>
             <div class="gameWatchRow">
@@ -1084,7 +1212,7 @@
 
           <div class="statsGrid">
             <div class="statBox"><span class="label">Line</span><span class="value">${esc(g.details)}</span></div>
-            <div class="statBox"><span class="label">O/U</span><span class="value total ${g.total >= 50 ? 'high' : ''}">${esc(g.total ?? '—')}</span></div>
+            <div class="statBox"><span class="label">O/U</span><span class="value total ${g.total >= c.shootoutThreshold ? 'high' : ''}">${esc(g.total ?? '—')}</span></div>
             <div class="statBox"><span class="label">Lean</span>${reportersCellHTML(g)}</div>
             <div class="statBox"><span class="label">Broadcast</span><span class="pick">${esc(g.broadcasts.join(', ') || 'TBA')}</span></div>
           </div>
@@ -1180,6 +1308,7 @@
     }
 
     function render() {
+      const c = cfg();
       const allCompleted = all.length > 0 && all.every((g) => g.completed);
       const liveCount = all.filter((g) => g.live).length;
 
@@ -1196,7 +1325,7 @@
       const showBest = !allCompleted && upcoming.length > 3;
 
       if (bestTitleEl) {
-        bestTitleEl.textContent = allCompleted ? '🏁 Final Scores' : '🔥 Best Games Remaining';
+        bestTitleEl.textContent = allCompleted ? `🏁 ${c.name} Final Scores` : `🔥 Best ${c.name} Games`;
         bestTitleEl.style.display = (allCompleted || showBest) ? '' : 'none';
       }
       if (bestEl) bestEl.style.display = showBest ? '' : 'none';
@@ -1210,9 +1339,9 @@
       const games = all.filter((g) =>
         filter === 'all' ||
         (filter === 'live' && g.live) ||
-        (filter === 'best' && g.watch >= PARAMS.bestThreshold) ||
+        (filter === 'best' && g.watch >= c.bestThreshold) ||
         (filter === 'prime' && g.prime) ||
-        (filter === 'shootout' && g.total >= 50)
+        (filter === 'shootout' && g.total >= c.shootoutThreshold)
       );
 
       if (bestEl && showBest) {
@@ -1242,7 +1371,9 @@
       const listEl = el('list');
       if (listEl) {
         listEl.innerHTML = chunks.join('') || `<div class="empty">${
-          filter === 'live' ? 'No NFL games are live right now.' : 'No games match this filter.'
+          filter === 'live'
+            ? `No ${c.name} games are live right now.`
+            : `No ${c.name} games scheduled or matching this filter.`
         }</div>`;
       }
     }
@@ -1260,7 +1391,7 @@
       if (!modal || !content) return;
 
       content.innerHTML = `
-        <div class="modalTitle" id="modalTitle">📊 Reporter Lean Breakdown</div>
+        <div class="modalTitle" id="modalTitle">📊 ${cfg().name} Model Lean Breakdown</div>
         <div class="modalSubtitle">${esc(g.away.name)} @ ${esc(g.home.name)}</div>
 
         <div class="modalSection">
@@ -1275,7 +1406,7 @@
 
         <div class="modalSection">
           <b>Market Line</b>
-          <span>Spread: <b>${esc(g.details)}</b>${Number.isFinite(g.spread) ? ` (${esc(g.provider)})` : ''} · O/U ${esc(g.total ?? '—')}</span>
+          <span>Spread/Line: <b>${esc(g.details)}</b>${Number.isFinite(g.spread) ? ` (${esc(g.provider)})` : ''} · O/U ${esc(g.total ?? '—')}</span>
         </div>
 
         <div class="modalSection">
@@ -1304,7 +1435,6 @@
       if (e.key === 'Escape') closeModal();
     });
 
-    // Delegate modal open + close + click-outside
     document.addEventListener('click', (e) => {
       const target = /** @type {HTMLElement} */ (e.target);
       if (!target) return;
@@ -1375,8 +1505,38 @@
       });
     }
 
-    // ---------- Week selector ----------
+    // ---------- Date & Week Selectors ----------
     const weekSelect = el('week');
+    const dateNav = el('dateNav');
+    const dateInput = /** @type {HTMLInputElement} */ (el('gameDate'));
+
+    function getUSDateString(offsetDays = 0) {
+      // Shift by -6h so late-night Cairo games align with the US sports slate date
+      const d = new Date(Date.now() - 6 * 3600 * 1000 + offsetDays * 86400 * 1000);
+      return d.toISOString().slice(0, 10);
+    }
+
+    if (dateInput) {
+      dateInput.value = getUSDateString(0);
+      dateInput.addEventListener('change', () => load());
+    }
+
+    el('prevDayBtn')?.addEventListener('click', () => {
+      if (!dateInput) return;
+      const d = new Date(dateInput.value + 'T12:00:00Z');
+      d.setUTCDate(d.getUTCDate() - 1);
+      dateInput.value = d.toISOString().slice(0, 10);
+      load();
+    });
+
+    el('nextDayBtn')?.addEventListener('click', () => {
+      if (!dateInput) return;
+      const d = new Date(dateInput.value + 'T12:00:00Z');
+      d.setUTCDate(d.getUTCDate() + 1);
+      dateInput.value = d.toISOString().slice(0, 10);
+      load();
+    });
+
     if (weekSelect) {
       const reg = document.createElement('optgroup');
       reg.label = 'Regular Season';
@@ -1406,6 +1566,40 @@
       weekSelect.addEventListener('change', () => load());
     }
 
+    // ---------- Sport Switcher ----------
+    const sportButtons = Array.from(document.querySelectorAll('[data-sport]'));
+    function syncSportUI() {
+      const c = cfg();
+      sportButtons.forEach((b) => {
+        b.classList.toggle('active', /** @type {HTMLElement} */ (b).dataset.sport === currentSport);
+      });
+
+      if (weekSelect) weekSelect.style.display = c.mode === 'week' ? '' : 'none';
+      if (dateNav) dateNav.style.display = c.mode === 'date' ? 'inline-flex' : 'none';
+
+      const shootoutBtn = el('shootoutBtn');
+      if (shootoutBtn) shootoutBtn.textContent = `O/U ${c.shootoutThreshold}+`;
+
+      const hubTitle = el('hubTitle');
+      if (hubTitle) hubTitle.textContent = `${c.name} Cairo Auto Hub`;
+    }
+
+    sportButtons.forEach((b) => {
+      b.addEventListener('click', () => {
+        const nextSport = /** @type {HTMLElement} */ (b).dataset.sport;
+        if (!nextSport || nextSport === currentSport || !SPORTS[nextSport]) return;
+        currentSport = nextSport;
+        localStorage.setItem('us-sports-cairo-sport', currentSport);
+
+        // Reset filter to 'all' on sport change so empty live filters don't hide slates
+        filter = 'all';
+        filterButtons.forEach((x) => x.classList.toggle('active', /** @type {HTMLElement} */ (x).dataset.filter === 'all'));
+
+        syncSportUI();
+        load();
+      });
+    });
+
     // ---------- Filter buttons ----------
     const filterButtons = Array.from(document.querySelectorAll('[data-filter]'));
     filterButtons.forEach((b) => {
@@ -1430,6 +1624,7 @@
       if (inFlight) return;
       inFlight = true;
 
+      const c = cfg();
       const statusEl = el('status');
       if (!silent && statusEl) {
         statusEl.textContent = 'REFRESHING…';
@@ -1437,15 +1632,34 @@
       }
 
       try {
-        const val = weekSelect?.value || `2-${currentWeek}`;
-        const [seasonType, week] = val.split('-').map(Number);
-        const url = `${END}?dates=${season}&seasontype=${seasonType}&week=${week}&limit=100`;
+        let url = '';
+        let label = '';
+
+        if (c.mode === 'week') {
+          const val = weekSelect?.value || `2-${currentWeek}`;
+          const [seasonType, week] = val.split('-').map(Number);
+          url = `${c.endpoint}?dates=${season}&seasontype=${seasonType}&week=${week}&limit=100`;
+          label = seasonType === 3 && weekSelect?.selectedOptions[0]
+            ? weekSelect.selectedOptions[0].textContent.toUpperCase()
+            : `W${week}`;
+        } else {
+          const isoDate = dateInput?.value || getUSDateString(0);
+          const yyyymmdd = isoDate.replace(/-/g, '');
+          url = `${c.endpoint}?dates=${yyyymmdd}&limit=100`;
+          label = isoDate;
+        }
+
         const r = await fetchWithTimeout(url);
         if (!r.ok) throw new Error(`HTTP ${r.status}`);
 
         const j = await r.json();
-        season = j.leagues?.[0]?.season?.year || season;
-        currentWeek = j.week?.number || week;
+        if (c.mode === 'week') {
+          season = j.leagues?.[0]?.season?.year || season;
+          currentWeek = j.week?.number || currentWeek;
+          if (j.week?.number && !weekSelect?.value?.startsWith('3-')) {
+            label = `W${currentWeek}`;
+          }
+        }
 
         all = (j.events || []).map((ev) => {
           const g = parse(ev);
@@ -1454,16 +1668,13 @@
         }).sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
 
         const liveCount = all.filter((g) => g.live).length;
-        const label = seasonType === 3 && weekSelect?.selectedOptions[0]
-          ? weekSelect.selectedOptions[0].textContent.toUpperCase()
-          : `W${currentWeek}`;
 
         if (statusEl) {
           if (liveCount > 0) {
-            statusEl.textContent = `🔴 ${liveCount} LIVE · ${label} · AUTO-60S`;
+            statusEl.textContent = `🔴 ${liveCount} LIVE · ${c.name} ${label} · AUTO-60S`;
             statusEl.className = 'status liveNow';
           } else {
-            statusEl.textContent = `LIVE · ${label} · ${all.length} GAMES`;
+            statusEl.textContent = `${c.name} · ${label} · ${all.length} GAMES`;
             statusEl.className = 'status';
           }
         }
@@ -1476,7 +1687,7 @@
           statusEl.className = 'status error';
           const listEl = el('list');
           if (listEl) {
-            listEl.innerHTML = `<div class="empty"><b>Could not load the live scoreboard.</b><br>${esc(err.message || String(err))}<br><br>Check your connection and tap Refresh.</div>`;
+            listEl.innerHTML = `<div class="empty"><b>Could not load the ${c.name} scoreboard.</b><br>${esc(err.message || String(err))}<br><br>Check your connection and tap Refresh.</div>`;
           }
         }
       } finally {
@@ -1484,10 +1695,9 @@
       }
     }
 
-    // Auto-select current-ish week on first load
+    // Auto-select saved NFL week on first load
     (function autoWeek() {
       if (!weekSelect) return;
-      // Let API decide — default to week 10 of regular season if no saved state
       const saved = localStorage.getItem('nfl-cairo-week');
       if (saved) { weekSelect.value = saved; }
       else { weekSelect.value = '2-10'; }
@@ -1502,6 +1712,7 @@
       if (el('keyDrawer')) /** @type {HTMLDetailsElement} */ (el('keyDrawer')).open = true;
     }
 
+    syncSportUI();
     load();
   </script>
 </body>
