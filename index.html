@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <title>US Sports Cairo Auto Hub</title>
-  <meta name="description" content="Live NFL, NBA, MLB & NHL scores, weekly Cairo schedule, team records, broadcasts, model consensus and watch rankings.">
+  <meta name="description" content="Live NFL, NBA, MLB & NHL scores, Cairo time schedule, team records, broadcasts, model consensus and watch rankings.">
   <meta name="theme-color" content="#090c11" id="themeMeta">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -248,6 +248,7 @@
     .controls::-webkit-scrollbar { display: none; }
 
     .controls select,
+    .controls input[type="date"],
     .controls button {
       flex-shrink: 0;
       height: 40px;
@@ -263,33 +264,20 @@
       transition: all 0.15s ease;
     }
 
-    .controls select {
+    .controls select,
+    .controls input[type="date"] {
       color: var(--txt);
       cursor: pointer;
     }
 
-    .weekRangeNav {
+    .dateNav {
       display: inline-flex;
       align-items: center;
-      gap: 6px;
+      gap: 4px;
       flex-shrink: 0;
     }
-    .weekRangeNav button {
-      padding: 0 11px;
-    }
-    .rangePill {
-      display: inline-flex;
-      align-items: center;
-      height: 40px;
-      padding: 0 14px;
-      border-radius: 10px;
-      border: 1px solid var(--line);
-      background: var(--card);
-      color: var(--txt);
-      font-size: 13px;
-      font-weight: 900;
-      white-space: nowrap;
-      box-shadow: var(--shadow);
+    .dateNav button {
+      padding: 0 10px;
     }
 
     .controls button { cursor: pointer; }
@@ -782,7 +770,7 @@
       <div class="brand">
         <div class="eyebrow">NO KEY · NO ACCOUNT · LIVE JSON · AUTO-POLL</div>
         <h1 id="hubTitle">US Sports Cairo Auto Hub</h1>
-        <p>Weekly NFL, NBA, MLB & NHL schedules in Cairo time, live scores, records, broadcasts, model consensus and watch rankings</p>
+        <p>Live NFL, NBA, MLB & NHL scores, Cairo time schedule, team records, broadcasts, model consensus and watch rankings</p>
       </div>
       <div class="topActions">
         <div id="status" class="status" aria-live="polite">CONNECTING…</div>
@@ -805,15 +793,14 @@
     </nav>
 
     <div class="controls">
-      <!-- Numbered Week Dropdown (NFL) -->
+      <!-- NFL Week Selector -->
       <select id="week" aria-label="Select NFL Week or Postseason Round"></select>
 
-      <!-- 7-Day Rolling Weekly Range Navigation (NBA / MLB / NHL) -->
-      <div class="weekRangeNav" id="weekRangeNav" style="display:none;">
-        <button type="button" id="prevWeekBtn" title="Previous 7 Days" aria-label="Previous 7 Days">◀ Prev 7d</button>
-        <span class="rangePill" id="weekRangeLabel">—</span>
-        <button type="button" id="nextWeekBtn" title="Next 7 Days" aria-label="Next 7 Days">Next 7d ▶</button>
-        <button type="button" id="thisWeekBtn" title="Jump to Current 7-Day Slate">This Week</button>
+      <!-- NBA / MLB / NHL Single Date Navigation -->
+      <div class="dateNav" id="dateNav" style="display:none;">
+        <button type="button" id="prevDayBtn" title="Previous Day" aria-label="Previous Day">◀</button>
+        <input type="date" id="gameDate" aria-label="Select Game Date">
+        <button type="button" id="nextDayBtn" title="Next Day" aria-label="Next Day">▶</button>
       </div>
 
       <button class="active" data-filter="all" type="button">All</button>
@@ -864,7 +851,7 @@
       </div>
     </details>
 
-    <div class="bestTitle" id="bestTitle">🔥 Best Games This Week</div>
+    <div class="bestTitle" id="bestTitle">🔥 Best Games</div>
     <section class="best best-scroll" id="best" aria-label="Top games"></section>
 
     <div class="colheads" id="colheads"></div>
@@ -895,7 +882,7 @@
         name: 'NFL',
         icon: '🏈',
         endpoint: 'https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard',
-        mode: 'numbered-week',
+        mode: 'week',
         closeWeight: 0.42,
         scoringWeight: 0.32,
         qualityWeight: 0.18,
@@ -917,7 +904,7 @@
         name: 'NBA',
         icon: '🏀',
         endpoint: 'https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard',
-        mode: 'weekly-range',
+        mode: 'date',
         closeWeight: 0.42,
         scoringWeight: 0.32,
         qualityWeight: 0.18,
@@ -939,7 +926,7 @@
         name: 'MLB',
         icon: '⚾',
         endpoint: 'https://site.api.espn.com/apis/site/v2/sports/baseball/mlb/scoreboard',
-        mode: 'weekly-range',
+        mode: 'date',
         closeWeight: 0.42,
         scoringWeight: 0.32,
         qualityWeight: 0.18,
@@ -961,7 +948,7 @@
         name: 'NHL',
         icon: '🏒',
         endpoint: 'https://site.api.espn.com/apis/site/v2/sports/hockey/nhl/scoreboard',
-        mode: 'weekly-range',
+        mode: 'date',
         closeWeight: 0.42,
         scoringWeight: 0.32,
         qualityWeight: 0.18,
@@ -988,7 +975,6 @@
     let filter = 'all';
     let season = new Date().getFullYear();
     let currentWeek = 1;
-    let rangeOffsetWeeks = 0; // 0 = current 7-day slate, -1 = prev 7d, +1 = next 7d
     let autoPollTimer = null;
     let inFlight = false;
 
@@ -1010,26 +996,10 @@
     const fmtTime = new Intl.DateTimeFormat('en-GB', {
       timeZone: 'Africa/Cairo', hour: '2-digit', minute: '2-digit', hour12: false
     });
-    const fmtShortRange = new Intl.DateTimeFormat('en-GB', {
-      timeZone: 'UTC', day: 'numeric', month: 'short'
-    });
 
     const cairo = (d) => { try { return fmtDate.format(new Date(d)); } catch { return d; } };
     const day = (d) => { try { return fmtDay.format(new Date(d)); } catch { return 'Schedule Date'; } };
     const cairoTime = (d) => { try { return fmtTime.format(new Date(d)); } catch { return '—'; } };
-
-    function getWeeklyRange(offsetWeeks = 0) {
-      // Anchor to US evening slate date (-6h from UTC/Cairo) so tonight's games are Day 1
-      const base = new Date(Date.now() - 6 * 3600 * 1000 + offsetWeeks * 7 * 86400 * 1000);
-      const start = new Date(Date.UTC(base.getUTCFullYear(), base.getUTCMonth(), base.getUTCDate()));
-      const end = new Date(start.getTime() + 6 * 86400 * 1000);
-
-      const toYYYYMMDD = (dt) => dt.toISOString().slice(0, 10).replace(/-/g, '');
-      return {
-        apiParam: `${toYYYYMMDD(start)}-${toYYYYMMDD(end)}`,
-        label: `${fmtShortRange.format(start)} – ${fmtShortRange.format(end)}`
-      };
-    }
 
     function winPct(r) {
       if (!r) return 50;
@@ -1359,7 +1329,7 @@
       const showBest = !allCompleted && upcoming.length > 3;
 
       if (bestTitleEl) {
-        bestTitleEl.textContent = allCompleted ? `🏁 ${c.name} Final Scores` : `🔥 Best ${c.name} Games This Week`;
+        bestTitleEl.textContent = allCompleted ? `🏁 ${c.name} Final Scores` : `🔥 Best ${c.name} Games`;
         bestTitleEl.style.display = (allCompleted || showBest) ? '' : 'none';
       }
       if (bestEl) bestEl.style.display = showBest ? '' : 'none';
@@ -1539,33 +1509,34 @@
       });
     }
 
-    // ---------- 7-Day Rolling Week & NFL Week Selectors ----------
+    // ---------- Date & Week Selectors ----------
     const weekSelect = el('week');
-    const weekRangeNav = el('weekRangeNav');
-    const weekRangeLabel = el('weekRangeLabel');
-    const thisWeekBtn = el('thisWeekBtn');
+    const dateNav = el('dateNav');
+    const dateInput = /** @type {HTMLInputElement} */ (el('gameDate'));
 
-    function updateRangeUI() {
-      const range = getWeeklyRange(rangeOffsetWeeks);
-      if (weekRangeLabel) weekRangeLabel.textContent = `📅 ${range.label}`;
-      if (thisWeekBtn) thisWeekBtn.style.display = rangeOffsetWeeks === 0 ? 'none' : '';
+    function getUSDateString(offsetDays = 0) {
+      const d = new Date(Date.now() - 6 * 3600 * 1000 + offsetDays * 86400 * 1000);
+      return d.toISOString().slice(0, 10);
     }
 
-    el('prevWeekBtn')?.addEventListener('click', () => {
-      rangeOffsetWeeks -= 1;
-      updateRangeUI();
+    if (dateInput) {
+      dateInput.value = getUSDateString(0);
+      dateInput.addEventListener('change', () => load());
+    }
+
+    el('prevDayBtn')?.addEventListener('click', () => {
+      if (!dateInput) return;
+      const d = new Date(dateInput.value + 'T12:00:00Z');
+      d.setUTCDate(d.getUTCDate() - 1);
+      dateInput.value = d.toISOString().slice(0, 10);
       load();
     });
 
-    el('nextWeekBtn')?.addEventListener('click', () => {
-      rangeOffsetWeeks += 1;
-      updateRangeUI();
-      load();
-    });
-
-    thisWeekBtn?.addEventListener('click', () => {
-      rangeOffsetWeeks = 0;
-      updateRangeUI();
+    el('nextDayBtn')?.addEventListener('click', () => {
+      if (!dateInput) return;
+      const d = new Date(dateInput.value + 'T12:00:00Z');
+      d.setUTCDate(d.getUTCDate() + 1);
+      dateInput.value = d.toISOString().slice(0, 10);
       load();
     });
 
@@ -1606,11 +1577,8 @@
         b.classList.toggle('active', /** @type {HTMLElement} */ (b).dataset.sport === currentSport);
       });
 
-      if (weekSelect) weekSelect.style.display = c.mode === 'numbered-week' ? '' : 'none';
-      if (weekRangeNav) {
-        weekRangeNav.style.display = c.mode === 'weekly-range' ? 'inline-flex' : 'none';
-        if (c.mode === 'weekly-range') updateRangeUI();
-      }
+      if (weekSelect) weekSelect.style.display = c.mode === 'week' ? '' : 'none';
+      if (dateNav) dateNav.style.display = c.mode === 'date' ? 'inline-flex' : 'none';
 
       const shootoutBtn = el('shootoutBtn');
       if (shootoutBtn) shootoutBtn.textContent = `O/U ${c.shootoutThreshold}+`;
@@ -1669,7 +1637,7 @@
         let url = '';
         let label = '';
 
-        if (c.mode === 'numbered-week') {
+        if (c.mode === 'week') {
           const val = weekSelect?.value || `2-${currentWeek}`;
           const [seasonType, week] = val.split('-').map(Number);
           url = `${c.endpoint}?dates=${season}&seasontype=${seasonType}&week=${week}&limit=100`;
@@ -1677,16 +1645,17 @@
             ? weekSelect.selectedOptions[0].textContent.toUpperCase()
             : `W${week}`;
         } else {
-          const range = getWeeklyRange(rangeOffsetWeeks);
-          url = `${c.endpoint}?dates=${range.apiParam}&limit=200`;
-          label = range.label.toUpperCase();
+          const isoDate = dateInput?.value || getUSDateString(0);
+          const yyyymmdd = isoDate.replace(/-/g, '');
+          url = `${c.endpoint}?dates=${yyyymmdd}&limit=100`;
+          label = isoDate;
         }
 
         const r = await fetchWithTimeout(url);
         if (!r.ok) throw new Error(`HTTP ${r.status}`);
 
         const j = await r.json();
-        if (c.mode === 'numbered-week') {
+        if (c.mode === 'week') {
           season = j.leagues?.[0]?.season?.year || season;
           currentWeek = j.week?.number || currentWeek;
           if (j.week?.number && !weekSelect?.value?.startsWith('3-')) {
