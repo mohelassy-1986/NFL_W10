@@ -113,7 +113,7 @@
       align-items: center;
       gap: 10px;
       flex-wrap: wrap;
-      margin-bottom: 10px;
+      margin-bottom: 12px;
     }
 
     .brand { flex: 1; min-width: 210px; }
@@ -176,6 +176,13 @@
       box-shadow: var(--shadow);
     }
 
+    .iconBtn svg {
+      width: 14px;
+      height: 14px;
+      fill: currentColor;
+      flex-shrink: 0;
+    }
+
     .iconBtn:active { transform: scale(0.96); }
     .iconBtn.install {
       background: var(--blue-bg);
@@ -184,21 +191,23 @@
       display: none;
     }
 
-    /* Extra right-side padding to clear mobile floating accessibility widgets */
+    /* Clean Fade-Masked Horizontal Scroll Containers */
     .scrollFadeWrap {
       position: relative;
+      overflow: hidden;
       margin-right: -16px;
-      padding-right: 48px;
+      padding-right: 16px;
     }
     .scrollFadeWrap::after {
       content: "";
       position: absolute;
       top: 0;
-      right: 48px;
+      right: 0;
       bottom: 0;
-      width: 28px;
+      width: 36px;
       background: linear-gradient(to right, transparent, var(--bg));
       pointer-events: none;
+      z-index: 2;
     }
 
     /* Sport Switcher Bar */
@@ -208,6 +217,7 @@
       margin: 8px 0 10px;
       overflow-x: auto;
       scrollbar-width: none;
+      padding-right: 32px;
     }
     .sportBar::-webkit-scrollbar { display: none; }
 
@@ -260,7 +270,8 @@
       align-items: center;
       gap: 6px;
       overflow-x: auto;
-      padding-bottom: 2px;
+      padding-bottom: 4px;
+      padding-right: 36px;
       scrollbar-width: none;
     }
     .controlRow::-webkit-scrollbar { display: none; }
@@ -283,7 +294,7 @@
     }
 
     .controlRow select {
-      min-width: 120px; /* Generous width so "Weekly" / "Wild Card" never clips */
+      min-width: 125px;
     }
 
     .controlRow select,
@@ -322,9 +333,7 @@
       gap: 3px;
       flex-shrink: 0;
     }
-    .dateNav button {
-      padding: 0 7px;
-    }
+    .dateNav button { padding: 0 7px; }
 
     .rangePill {
       display: inline-flex;
@@ -355,7 +364,7 @@
       cursor: not-allowed;
     }
 
-    /* Horizontal Swipe Best Games Reel */
+    /* Horizontal Swipe Best Games Reel with Snap */
     .bestHeader {
       display: flex;
       justify-content: space-between;
@@ -375,6 +384,7 @@
       scroll-snap-type: x mandatory;
       scrollbar-width: none;
       padding-bottom: 6px;
+      padding-right: 36px;
     }
     .best-scroll::-webkit-scrollbar { display: none; }
 
@@ -547,9 +557,7 @@
       flex-shrink: 0;
     }
 
-    .nameInfo {
-      min-width: 0;
-    }
+    .nameInfo { min-width: 0; }
 
     .name {
       font-weight: 900;
@@ -592,15 +600,10 @@
     }
 
     .value { font-weight: 900; color: var(--blue); font-size: 12px; }
-    .total.high { color: var(--orange); }
     .reporters { font-weight: 900; color: var(--purple); font-size: 11.5px; }
     .reporters small { display: block; font-size: 8.5px; color: var(--mut); font-weight: 700; }
     .pick { font-weight: 800; color: var(--g); font-size: 11.5px; }
-    .winnerCallout {
-      font-weight: 900;
-      color: var(--g);
-      font-size: 12px;
-    }
+    .winnerCallout { font-weight: 900; color: var(--g); font-size: 12px; }
     .watch { font-size: 15.5px; font-weight: 950; color: var(--gold); line-height: 1.1; }
     .watchMax { font-size: 9.5px; color: var(--mut); font-weight: 700; }
 
@@ -799,8 +802,14 @@
       </div>
       <div class="topActions">
         <div id="status" class="status" aria-live="polite">CONNECTING…</div>
-        <button id="guideBtn" class="iconBtn" type="button" title="Guide & Key">ℹ️ Guide</button>
-        <a href="https://fmhy.net/videopiracyguide#live-sports" target="_blank" rel="noopener noreferrer" class="iconBtn" title="FMHY Live Sports">📺 Watch</a>
+        <button id="guideBtn" class="iconBtn" type="button" title="Guide & Key">
+          <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
+          Guide
+        </button>
+        <a href="https://fmhy.net/videopiracyguide#live-sports" target="_blank" rel="noopener noreferrer" class="iconBtn" title="FMHY Live Sports">
+          <svg viewBox="0 0 24 24"><path d="M21 3H3c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h5v2h8v-2h5c1.1 0-2-.9-2-2V5c0-1.1-.9-2-2-2zm0 14H3V5h18v12z"/></svg>
+          Watch
+        </a>
         <button id="installBtn" class="iconBtn install" title="Install App" type="button">📲 Install</button>
         <button id="themeToggle" class="iconBtn" type="button" aria-pressed="false" title="Theme">☀️</button>
       </div>
@@ -810,7 +819,7 @@
       📡 You are offline — showing cached schedule data if available.
     </div>
 
-    <!-- Sport Selector Toggle -->
+    <!-- Sport Selector Toggle with Fade Mask -->
     <div class="scrollFadeWrap">
       <nav class="sportBar" id="sportBar" aria-label="Select US Sport">
         <button class="sportBtn active" data-sport="nfl" type="button">🏈 NFL</button>
@@ -820,9 +829,8 @@
       </nav>
     </div>
 
-    <!-- Clean Two-Tier Controls Section -->
+    <!-- Clean Two-Tier Controls Section with Fade Masks -->
     <div class="controlsWrap">
-      <!-- Row 1: Span / Date / Week / Month Navigation & Sort Toggle -->
       <div class="scrollFadeWrap">
         <div class="controlRow">
           <select id="week" aria-label="Select NFL Week or Postseason Round"></select>
@@ -855,7 +863,6 @@
         </div>
       </div>
 
-      <!-- Row 2: View Filter Buttons -->
       <div class="scrollFadeWrap">
         <div class="controlRow">
           <button class="active" data-filter="all" type="button">All</button>
@@ -900,7 +907,7 @@
 
       <div class="modalSection">
         <b>👁️ Hype Meter (0–100)</b>
-        <span>An excitement rating measuring matchup potential based on spread closeness, combined O/U scoring pace, team records, and national spotlight bonuses. 70+ earns <b>BEST GAME</b>.</span>
+        <span>An excitement rating balancing spread competitiveness and combined O/U scoring pace. Note: Highly lopsided matchups with heavy win-probability favorites may feature lower hype scores despite heavy model confidence.</span>
       </div>
       <div class="modalSection">
         <b>📊 Model Pick (Pre-Game Projection)</b>
@@ -1022,7 +1029,7 @@
     let calendarSpan = localStorage.getItem('us-sports-cairo-span') || 'daily';
     let weekAnchorTime = Date.now();
     let filter = 'all';
-    let sortMode = 'date'; // 'date' | 'watch'
+    let sortMode = 'date';
     let season = new Date().getFullYear();
     let currentWeek = 1;
     let autoPollTimer = null;
@@ -1094,6 +1101,11 @@
       } catch {
         return false;
       }
+    }
+
+    function cleanSpread(details) {
+      if (!details) return '—';
+      return String(details).replace(/^[A-Z]+\s*/, '');
     }
 
     function watchScore(g) {
@@ -1202,11 +1214,13 @@
     }
 
     function parseTeam(t) {
+      const rawSummary = t.records?.[0]?.summary || '0-0';
+      const cleanRec = rawSummary.replace(/^0+/, '').replace(/-/g, '-');
       return {
         name: t.team?.shortDisplayName || t.team?.displayName || 'TBD',
         abbr: t.team?.abbreviation || '',
         logo: t.team?.logo || '',
-        record: t.records?.[0]?.summary || '0-0',
+        record: cleanRec,
         score: Number(t.score ?? 0),
         winner: !!t.winner
       };
@@ -1239,7 +1253,7 @@
         situation: c.situation?.downDistanceText || '',
         away,
         home,
-        details: od.details || '—',
+        details: cleanSpread(od.details || '—'),
         spread,
         overUnder: od.overUnder ?? '—',
         total: od.overUnder ?? null,
@@ -1270,28 +1284,26 @@
         const leader = g.away.score > g.home.score ? g.away.name
           : g.home.score > g.away.score ? g.home.name : 'Tied';
         const lines = [];
-        if (diff === 0) lines.push(`🔴 <b>Deadlocked:</b> Tied ${g.away.score}–${g.home.score} (${esc(g.status)}).`);
-        else lines.push(`🔴 <b>In progress:</b> ${esc(leader)} up ${Math.max(g.away.score, g.home.score)}–${Math.min(g.away.score, g.home.score)} (${esc(g.status)}).`);
-        if (g.situation) lines.push(`${c.icon} <b>Situation:</b> ${esc(g.situation)}`);
-        if (g.venue) lines.push(`<small>📍 ${esc(g.venue)}</small>`);
+        if (diff === 0) lines.push(`Deadlocked: Tied ${g.away.score}–${g.home.score} (${esc(g.status)}).`);
+        else lines.push(`In progress: ${esc(leader)} up ${Math.max(g.away.score, g.home.score)}–${Math.min(g.away.score, g.home.score)} (${esc(g.status)}).`);
+        if (g.situation) lines.push(`Situation: ${esc(g.situation)}`);
         return lines.join('<br>');
       }
 
       const insights = [];
       if (g.total !== null) {
-        if (g.total >= c.highTotalNote) insights.push(`🔥 <b>High-scoring alert:</b> Vegas O/U ${g.total} suggests offensive fireworks.`);
-        else if (g.total <= c.lowTotalNote) insights.push(`🛡️ <b>Defensive battle:</b> Low O/U ${g.total} signals a tight grind.`);
+        if (g.total >= c.highTotalNote) insights.push(`High-scoring projection (O/U ${g.total}) signals offensive pace.`);
+        else if (g.total <= c.lowTotalNote) insights.push(`Defensive battle expected with low O/U ${g.total}.`);
       }
       if (g.spread !== null && Math.abs(g.spread) <= c.closeSpreadNote) {
-        insights.push(`🎯 <b>Tight matchup:</b> ${esc(g.details)} line points to a close finish.`);
+        insights.push(`Tight spread (${esc(g.details)}) points to a down-to-the-wire finish.`);
       }
       if (g.prime) {
-        insights.push(`🌙 <b>National spotlight:</b> ${esc(g.broadcasts.join(', '))} broadcast.`);
+        insights.push(`National spotlight showcase on ${esc(g.broadcasts.join(', '))}.`);
       }
       const avg = (winPct(g.away.record) + winPct(g.home.record)) / 2;
-      if (avg >= 65) insights.push(`👑 <b>Heavyweight clash:</b> Two top-performing rosters facing off.`);
-      if (!insights.length) insights.push(`📊 Model pick: <b>${esc(g.lean.favoredTeam)}</b> (${esc(g.lean.favoredProb)}% win prob).`);
-      if (g.venue) insights.push(`<small>📍 ${esc(g.venue)}</small>`);
+      if (avg >= 65) insights.push(`Heavyweight clash between top-tier conference contenders.`);
+      if (!insights.length) insights.push(`Model favors ${esc(g.lean.favoredTeam)} (${esc(g.lean.favoredProb)}% win prob).`);
       return insights.join('<br>');
     }
 
@@ -1315,7 +1327,7 @@
       const c = cfg();
       const timeOrLive = g.live
         ? `<span class="livePill"><span class="liveDot"></span>LIVE</span><span class="liveClock">${esc(g.status)}</span>`
-        : `<span class="time">🕒 ${esc(cairoTime(g.date))}<span class="tzTag">EET</span></span>`;
+        : `<span class="time">${esc(cairoTime(g.date))}<span class="tzTag">EET</span></span>`;
 
       const awayStarred = starredTeams.has(g.away.name);
       const homeStarred = starredTeams.has(g.home.name);
@@ -1327,7 +1339,7 @@
           <div class="gameTop">
             <div>${timeOrLive}</div>
             <div class="gameWatchRow" title="Hype Meter: matchup excitement potential">
-              <span class="watch">👁️ ${g.watch}<span class="watchMax">/100</span></span>
+              <span class="watch">${g.watch}<span class="watchMax">/100 Hype</span></span>
               <div class="tags">${gameTagsHTML(g)}</div>
             </div>
           </div>
@@ -1338,7 +1350,7 @@
                 <img class="logo" src="${esc(g.away.logo)}" alt="" loading="lazy">
                 <div class="nameInfo">
                   <div class="name ${awayStarred ? 'starred' : ''}">${awayStarred ? '⭐ ' : ''}${esc(g.away.name)}</div>
-                  <div class="rec">Rec: ${esc(g.away.record)}</div>
+                  <div class="rec">${esc(g.away.record)}</div>
                 </div>
               </div>
               ${awayScore}
@@ -1349,7 +1361,7 @@
                 <img class="logo" src="${esc(g.home.logo)}" alt="" loading="lazy">
                 <div class="nameInfo">
                   <div class="name ${homeStarred ? 'starred' : ''}">${homeStarred ? '⭐ ' : ''}${esc(g.home.name)}</div>
-                  <div class="rec">Rec: ${esc(g.home.record)}</div>
+                  <div class="rec">${esc(g.home.record)}</div>
                 </div>
               </div>
               ${homeScore}
@@ -1387,7 +1399,7 @@
                   <img class="logo" src="${esc(g.away.logo)}" alt="" loading="lazy">
                   <div class="nameInfo">
                     <div class="name ${awayStarred ? 'starred' : ''} ${g.away.winner ? 'winner' : 'loser'}">${awayStarred ? '⭐ ' : ''}${esc(g.away.name)}</div>
-                    <div class="rec">Rec: ${esc(g.away.record)}</div>
+                    <div class="rec">${esc(g.away.record)}</div>
                   </div>
                 </div>
                 <span class="inlineScore ${g.away.winner ? 'winner' : 'loser'}">${g.away.score}</span>
@@ -1398,7 +1410,7 @@
                   <img class="logo" src="${esc(g.home.logo)}" alt="" loading="lazy">
                   <div class="nameInfo">
                     <div class="name ${homeStarred ? 'starred' : ''} ${g.home.winner ? 'winner' : 'loser'}">${homeStarred ? '⭐ ' : ''}${esc(g.home.name)}</div>
-                    <div class="rec">Rec: ${esc(g.home.record)}</div>
+                    <div class="rec">${esc(g.home.record)}</div>
                   </div>
                 </div>
                 <span class="inlineScore ${g.home.winner ? 'winner' : 'loser'}">${g.home.score}</span>
@@ -1410,7 +1422,7 @@
               <div class="statBox"><span class="label">Pre-Game Pick</span>${reportersCellHTML(g)}</div>
               <div class="statBox"><span class="label">Broadcast</span><span class="pick">${esc(g.broadcasts.join(', ') || '—')}</span></div>
             </div>
-            <div class="why"><span class="label">Final Result</span><b>Final:</b> ${esc(g.away.name)} ${g.away.score} – ${g.home.score} ${esc(g.home.name)}</div>
+            <div class="why"><span class="label">Final Result</span>Final score: ${esc(g.away.name)} ${g.away.score} – ${g.home.score} ${esc(g.home.name)}</div>
           </article>`;
       }
 
@@ -1426,7 +1438,7 @@
                 <img class="logo" src="${esc(g.away.logo)}" alt="" loading="lazy">
                 <div class="nameInfo">
                   <div class="name ${awayStarred ? 'starred' : ''} ${g.away.winner ? 'winner' : 'loser'}">${awayStarred ? '⭐ ' : ''}${esc(g.away.name)}</div>
-                  <div class="rec">Rec: ${esc(g.away.record)}</div>
+                  <div class="rec">${esc(g.away.record)}</div>
                 </div>
               </div>
               <span class="teamRole scoreFinal ${g.away.winner ? 'winner' : 'loser'}">${g.away.score}</span>
@@ -1437,7 +1449,7 @@
                 <img class="logo" src="${esc(g.home.logo)}" alt="" loading="lazy">
                 <div class="nameInfo">
                   <div class="name ${homeStarred ? 'starred' : ''} ${g.home.winner ? 'winner' : 'loser'}">${homeStarred ? '⭐ ' : ''}${esc(g.home.name)}</div>
-                  <div class="rec">Rec: ${esc(g.home.record)}</div>
+                  <div class="rec">${esc(g.home.record)}</div>
                 </div>
               </div>
               <span class="teamRole scoreFinal ${g.home.winner ? 'winner' : 'loser'}">${g.home.score}</span>
@@ -1516,7 +1528,7 @@
               <span class="bestRank">#${i + 1}</span>
               <span class="bestMatchTitle">${esc(g.away.name)} @ ${esc(g.home.name)}</span>
             </div>
-            <span class="bestCardMeta">${g.live ? `🔴 LIVE (${esc(g.status)})` : esc(cairo(g.date))} · 👁️ ${g.watch}/100 Hype</span>
+            <span class="bestCardMeta">${g.live ? `🔴 LIVE (${esc(g.status)})` : esc(cairoTime(g.date))} EET · ${g.watch}/100 Hype</span>
           </div>`).join('');
       }
 
