@@ -306,7 +306,7 @@
       font-weight: 800;
       font-family: inherit;
       box-shadow: var(--shadow);
-      transition: border-color 0.15s ease;
+      transition: border-color 0.15s ease, background-color 0.15s ease;
     }
 
     .controlRow select { min-width: 130px; }
@@ -319,6 +319,21 @@
       cursor: pointer;
     }
 
+    /* C: Single-Click Span Cycle Button */
+    .spanCycleBtn {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      background: var(--blue-bg) !important;
+      color: var(--blue) !important;
+      border-color: rgba(110, 176, 255, 0.35) !important;
+    }
+    .spanCycleBtn .cycleHint {
+      font-size: 9px;
+      opacity: 0.75;
+    }
+
+    /* B: Monthly Past/Upcoming Segmented Selector */
     .spanToggle {
       display: inline-flex;
       background: var(--card);
@@ -874,11 +889,10 @@
         <div class="controlRow">
           <select id="week" aria-label="Select NFL Week or Postseason Round"></select>
 
-          <div class="spanToggle" id="spanToggle" style="display:none;" role="group" aria-label="Schedule Span">
-            <button type="button" data-span="daily" class="active">Daily</button>
-            <button type="button" data-span="weekly">Weekly</button>
-            <button type="button" data-span="monthly">Monthly</button>
-          </div>
+          <!-- C: Single Click Cycle Button for Day -> Week -> Month -->
+          <button type="button" id="spanCycleBtn" class="spanCycleBtn" style="display:none;" title="Tap to switch between Daily, Weekly & Monthly">
+            <span id="spanCycleLabel">📆 Daily</span><span class="cycleHint">↻</span>
+          </button>
 
           <div class="dateNav" id="dateNav" style="display:none;">
             <button type="button" id="prevDayBtn" title="Previous Day">◀</button>
@@ -898,12 +912,20 @@
             <button type="button" id="nextMonthBtn" title="Next Month">▶</button>
           </div>
 
+          <!-- B: Monthly Past / Upcoming Selector -->
+          <div class="spanToggle" id="monthPhaseToggle" style="display:none;" role="group" aria-label="Monthly Game Status">
+            <button type="button" data-phase="all" class="active">All</button>
+            <button type="button" data-phase="upcoming">Upcoming</button>
+            <button type="button" data-phase="past">Past</button>
+          </div>
+
           <button id="sortToggle" type="button" title="Toggle Sort Order">📅 By Date</button>
         </div>
       </div>
 
+      <!-- A: Multi-Select Combinable Filters -->
       <div class="scrollFadeWrap">
-        <div class="controlRow">
+        <div class="controlRow" id="filterRow">
           <button class="active" data-filter="all" type="button">All</button>
           <button data-filter="live" id="liveFilterBtn" type="button">🔴 Live</button>
           <button data-filter="best" type="button">🔥 Best</button>
@@ -927,7 +949,7 @@
     <section id="list" aria-live="polite"></section>
 
     <div class="note">
-      <b>Data source:</b> live scoreboards from ESPN (all times shown in Cairo EET). Tap any team name to star/unstar it into <b>⭐ My Teams</b>.
+      <b>Data source:</b> live scoreboards from ESPN (all times shown in Cairo EET). Tap multiple filter pills at once to combine filters, or tap any team name to star it into <b>⭐ My Teams</b>.
     </div>
   </main>
 
@@ -944,6 +966,10 @@
       <div class="modalTitle" id="guideTitle">📊 Hub Guide & Data Key</div>
       <div class="modalSubtitle">How scores, watch rankings, and filters work in Cairo time</div>
 
+      <div class="modalSection">
+        <b>🎛️ Multi-Filter Combinations</b>
+        <span>Tap multiple filter buttons (e.g. <b>🔥 Best</b> + <b>☀️ Evening</b>) to combine them simultaneously. Tap <b>All</b> to clear active filters.</span>
+      </div>
       <div class="modalSection">
         <b>👁️ Hype Meter (0–100)</b>
         <span>An excitement rating balancing spread competitiveness and combined O/U scoring pace. Note: Highly lopsided matchups with heavy win-probability favorites may feature lower hype scores despite heavy model confidence.</span>
@@ -1061,13 +1087,23 @@
       }
     };
 
+    const SPANS = ['daily', 'weekly', 'monthly'];
+    const SPAN_LABELS = {
+      daily: '📆 Daily',
+      weekly: '🗓️ Weekly',
+      monthly: '📅 Monthly'
+    };
+
     /** @type {Array<any>} */
     let all = [];
     let currentSport = localStorage.getItem('us-sports-cairo-sport') || 'nfl';
     if (!SPORTS[currentSport]) currentSport = 'nfl';
     let calendarSpan = localStorage.getItem('us-sports-cairo-span') || 'daily';
+    if (!SPANS.includes(calendarSpan)) calendarSpan = 'daily';
+    let monthPhase = 'all'; // 'all' | 'upcoming' | 'past'
     let weekAnchorTime = Date.now();
-    let filter = 'all';
+    /** @type {Set<string>} */
+    let activeFilters = new Set();
     let sortMode = 'date';
     let season = null;
     let currentWeek = null;
@@ -1086,10 +1122,6 @@
       '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
     })[m]);
 
-    const fmtDate = new Intl.DateTimeFormat('en-GB', {
-      timeZone: 'Africa/Cairo', weekday: 'short', day: 'numeric', month: 'short',
-      hour: '2-digit', minute: '2-digit', hour12: false
-    });
     const fmtDay = new Intl.DateTimeFormat('en-GB', {
       timeZone: 'Africa/Cairo', weekday: 'long', day: 'numeric', month: 'long'
     });
@@ -1428,9 +1460,9 @@
       const awayStarred = starredTeams.has(g.away.name);
       const homeStarred = starredTeams.has(g.home.name);
       const finalBadge = `FINAL: ${g.away.score}–${g.home.score}`;
+      const dateSub = sortMode === 'watch' ? `<span class="subDate">${esc(cairoShortDate(g.date))}</span>` : '';
 
       if (compact) {
-        const dateSub = sortMode === 'watch' ? `<span class="subDate">${esc(cairoShortDate(g.date))}</span>` : '';
         return `
           <article class="game">
             <div class="gameTop">
@@ -1470,7 +1502,6 @@
           </article>`;
       }
 
-      const dateSub = sortMode === 'watch' ? `<span class="subDate">${esc(cairoShortDate(g.date))}</span>` : '';
       return `
         <article class="game">
           <div class="gameTop">
@@ -1510,15 +1541,30 @@
         </article>`;
     }
 
+    function syncFilterButtonsUI() {
+      filterButtons.forEach((btn) => {
+        const f = /** @type {HTMLElement} */ (btn).dataset.filter;
+        if (!f) return;
+        if (f === 'all') {
+          btn.classList.toggle('active', activeFilters.size === 0);
+        } else {
+          btn.classList.toggle('active', activeFilters.has(f));
+        }
+      });
+    }
+
     function render() {
       const c = cfg();
-      const allCompleted = all.length > 0 && all.every((g) => g.completed);
       const liveCount = all.filter((g) => g.live).length;
 
       const liveBtn = el('liveFilterBtn');
       if (liveBtn) {
         liveBtn.textContent = liveCount > 0 ? `🔴 Live (${liveCount})` : '🔴 Live';
         liveBtn.disabled = liveCount === 0;
+        if (liveCount === 0 && activeFilters.has('live')) {
+          activeFilters.delete('live');
+          syncFilterButtonsUI();
+        }
       }
 
       const sortBtn = el('sortToggle');
@@ -1527,12 +1573,33 @@
         sortBtn.classList.toggle('active', sortMode === 'watch');
       }
 
+      // Apply Monthly Past / Upcoming phase filter first
+      let poolGames = all;
+      if (c.mode === 'calendar' && calendarSpan === 'monthly') {
+        if (monthPhase === 'upcoming') {
+          poolGames = all.filter((g) => !g.completed);
+        } else if (monthPhase === 'past') {
+          poolGames = all.filter((g) => g.completed);
+        }
+      }
+
+      // Apply multi-select active filters (AND combination)
+      let games = poolGames.filter((g) => {
+        if (activeFilters.has('live') && !g.live) return false;
+        if (activeFilters.has('best') && g.watch < c.bestThreshold) return false;
+        if (activeFilters.has('evening') && !g.evening) return false;
+        if (activeFilters.has('prime') && !(g.prime || g.lateNight)) return false;
+        if (activeFilters.has('starred') && !(starredTeams.has(g.away.name) || starredTeams.has(g.home.name))) return false;
+        return true;
+      });
+
+      const allCompleted = games.length > 0 && games.every((g) => g.completed);
       const bestHeaderEl = el('bestHeader');
       const bestTitleEl = el('bestTitle');
       const bestWrapEl = el('bestWrap');
       const bestEl = el('best');
       const colheadsEl = el('colheads');
-      const upcoming = all.filter((g) => !g.completed);
+      const upcoming = poolGames.filter((g) => !g.completed);
       const showBest = !allCompleted && upcoming.length > 2;
 
       const scopeLabel = c.mode === 'calendar' && calendarSpan !== 'daily' ? 'This Period' : '';
@@ -1551,22 +1618,12 @@
           : '<div>Cairo (EET)</div><div>Matchup / Record</div><div>Spread</div><div>O/U</div><div>Model Pick</div><div>Broadcast</div><div>Hype Meter</div><div>Why watch</div>';
       }
 
-      let games = all.filter((g) => {
-        if (filter === 'live') return g.live;
-        if (filter === 'best') return g.watch >= c.bestThreshold;
-        if (filter === 'evening') return g.evening;
-        if (filter === 'prime') return g.prime || g.lateNight;
-        if (filter === 'starred') return starredTeams.has(g.away.name) || starredTeams.has(g.home.name);
-        return true;
-      });
-
       if (sortMode === 'watch') {
         games = [...games].sort((a, b) => b.watch - a.watch);
       }
 
       if (bestEl && showBest) {
-        const pool = upcoming.length ? upcoming : all;
-        const best = [...pool].sort((a, b) => b.watch - a.watch).slice(0, 5);
+        const best = [...upcoming].sort((a, b) => b.watch - a.watch).slice(0, 5);
         bestEl.innerHTML = best.map((g, i) => `
           <div class="bestCard">
             <div class="bestCardTop">
@@ -1595,9 +1652,9 @@
       const listEl = el('list');
       if (listEl) {
         listEl.innerHTML = chunks.join('') || `<div class="empty">${
-          filter === 'starred'
-            ? `⭐ <b>No starred teams in this view.</b><br>Tap any team name card to star/unstar them and track your favorites instantly!`
-            : `No ${c.name} games scheduled or matching this filter.`
+          activeFilters.has('starred')
+            ? `⭐ <b>No games match your starred teams + active filters.</b><br>Tap team names to star/unstar or tap <b>All</b> to clear filters.`
+            : `No ${c.name} games scheduled or matching the selected filters.`
         }</div>`;
       }
     }
@@ -1703,7 +1760,9 @@
     });
 
     const weekSelect = el('week');
-    const spanToggle = el('spanToggle');
+    const spanCycleBtn = el('spanCycleBtn');
+    const spanCycleLabel = el('spanCycleLabel');
+    const monthPhaseToggle = el('monthPhaseToggle');
     const dateNav = el('dateNav');
     const weekNav = el('weekNav');
     const monthNav = el('monthNav');
@@ -1766,15 +1825,24 @@
       load();
     });
 
-    const spanButtons = Array.from(document.querySelectorAll('[data-span]'));
-    spanButtons.forEach((b) => {
+    // C: Click Span Button to cycle Daily -> Weekly -> Monthly -> Daily
+    spanCycleBtn?.addEventListener('click', () => {
+      const idx = SPANS.indexOf(calendarSpan);
+      calendarSpan = SPANS[(idx + 1) % SPANS.length];
+      localStorage.setItem('us-sports-cairo-span', calendarSpan);
+      syncSportUI();
+      load();
+    });
+
+    // B: Monthly Past / Upcoming Phase Toggle
+    const phaseButtons = Array.from(document.querySelectorAll('[data-phase]'));
+    phaseButtons.forEach((b) => {
       b.addEventListener('click', () => {
-        const nextSpan = /** @type {HTMLElement} */ (b).dataset.span;
-        if (!nextSpan || nextSpan === calendarSpan) return;
-        calendarSpan = nextSpan;
-        localStorage.setItem('us-sports-cairo-span', calendarSpan);
-        syncSportUI();
-        load();
+        const nextPhase = /** @type {HTMLElement} */ (b).dataset.phase;
+        if (!nextPhase || nextPhase === monthPhase) return;
+        monthPhase = nextPhase;
+        phaseButtons.forEach((x) => x.classList.toggle('active', /** @type {HTMLElement} */ (x).dataset.phase === monthPhase));
+        render();
       });
     });
 
@@ -1818,14 +1886,13 @@
 
       const isCalendar = c.mode === 'calendar';
       if (weekSelect) weekSelect.style.display = !isCalendar ? '' : 'none';
-      if (spanToggle) spanToggle.style.display = isCalendar ? 'inline-flex' : 'none';
+      if (spanCycleBtn) spanCycleBtn.style.display = isCalendar ? 'inline-flex' : 'none';
+      if (spanCycleLabel) spanCycleLabel.textContent = SPAN_LABELS[calendarSpan] || '📆 Daily';
+
       if (dateNav) dateNav.style.display = isCalendar && calendarSpan === 'daily' ? 'inline-flex' : 'none';
       if (weekNav) weekNav.style.display = isCalendar && calendarSpan === 'weekly' ? 'inline-flex' : 'none';
       if (monthNav) monthNav.style.display = isCalendar && calendarSpan === 'monthly' ? 'inline-flex' : 'none';
-
-      spanButtons.forEach((b) => {
-        b.classList.toggle('active', /** @type {HTMLElement} */ (b).dataset.span === calendarSpan);
-      });
+      if (monthPhaseToggle) monthPhaseToggle.style.display = isCalendar && calendarSpan === 'monthly' ? 'inline-flex' : 'none';
 
       const hubTitle = el('hubTitle');
       if (hubTitle) hubTitle.textContent = `${c.name} Cairo Auto Hub`;
@@ -1837,22 +1904,35 @@
         if (!nextSport || nextSport === currentSport || !SPORTS[nextSport]) return;
         currentSport = nextSport;
         localStorage.setItem('us-sports-cairo-sport', currentSport);
-        filter = 'all';
+        activeFilters.clear();
         sortMode = 'date';
-        filterButtons.forEach((x) => x.classList.toggle('active', /** @type {HTMLElement} */ (x).dataset.filter === 'all'));
+        syncFilterButtonsUI();
         syncSportUI();
         load();
       });
     });
 
+    // A: Multiple Combinable Filters Handler
     const filterButtons = Array.from(document.querySelectorAll('[data-filter]'));
     filterButtons.forEach((b) => {
       b.addEventListener('click', () => {
-        filterButtons.forEach((x) => x.classList.remove('active'));
-        b.classList.add('active');
-        filter = /** @type {HTMLElement} */ (b).dataset.filter || 'all';
-        if (filter === 'best') sortMode = 'watch';
-        else if (filter === 'all') sortMode = 'date';
+        const f = /** @type {HTMLElement} */ (b).dataset.filter;
+        if (!f) return;
+
+        if (f === 'all') {
+          activeFilters.clear();
+          sortMode = 'date';
+        } else {
+          if (activeFilters.has(f)) {
+            activeFilters.delete(f);
+          } else {
+            activeFilters.add(f);
+          }
+          if (activeFilters.has('best')) sortMode = 'watch';
+          else if (activeFilters.size === 0) sortMode = 'date';
+        }
+
+        syncFilterButtonsUI();
         render();
       });
     });
