@@ -171,6 +171,7 @@
       color: var(--txt);
       font-size: 12px;
       font-weight: 800;
+      text-decoration: none;
       cursor: pointer;
       box-shadow: var(--shadow);
       transition: transform 0.1s ease, border-color 0.2s ease;
@@ -607,6 +608,7 @@
       </div>
       <div class="topActions">
         <div id="status" class="status">CONNECTING…</div>
+        <a href="https://fmhy.net/videopiracyguide#live-sports" target="_blank" rel="noopener noreferrer" class="iconBtn" title="FMHY Live Sports">📺 Watch Live</a>
         <button id="installBtn" class="iconBtn install" title="Install App">📲 Install</button>
         <button id="themeToggle" class="iconBtn" aria-label="Toggle color theme" title="Switch Light/Dark Theme">☀️ Light</button>
       </div>
@@ -617,7 +619,7 @@
     </div>
 
     <div class="controls">
-      <select id="week" aria-label="Select NFL Week"></select>
+      <select id="week" aria-label="Select NFL Week or Postseason Round"></select>
       <button class="active" data-filter="all">All</button>
       <button data-filter="best">🔥 Best games</button>
       <button data-filter="prime">🌙 Prime time</button>
@@ -823,11 +825,13 @@
 
     function render() {
       const historical = all.length && all.every(g => g.completed);
+      const showBest = !historical && all.length > 3;
       document.querySelector('.bestTitle').textContent = historical ? 'Final Scores' : '🔥 Best Games This Week';
+      document.querySelector('.bestTitle').style.display = (historical || showBest) ? '' : 'none';
       document.querySelector('.colheads').innerHTML = historical
         ? '<div>Status</div><div>Matchup / Record</div><div>Away</div><div>Home</div><div>Winner</div><div>Played</div><div>Result note</div>'
         : '<div>Cairo</div><div>Matchup / Record</div><div>Line</div><div>O/U</div><div>Broadcast</div><div>Watch</div><div>Why watch</div>';
-      el('best').style.display = historical ? 'none' : '';
+      el('best').style.display = showBest ? '' : 'none';
 
       const games = all.filter(g =>
         filter === 'all' ||
@@ -944,12 +948,41 @@
       el('list').innerHTML = h || '<div class="empty">No games match this filter.</div>';
     }
 
+    const weekSelect = el('week');
+
+    const regGroup = document.createElement('optgroup');
+    regGroup.label = 'Regular Season';
+    for (let i = 1; i <= 18; i++) {
+      let o = document.createElement('option');
+      o.value = `2-${i}`;
+      o.textContent = `Week ${i}`;
+      if (i === 10) o.selected = true;
+      regGroup.appendChild(o);
+    }
+    weekSelect.appendChild(regGroup);
+
+    const postGroup = document.createElement('optgroup');
+    postGroup.label = 'Postseason';
+    const postRounds = [
+      { week: 1, label: 'Wild Card Round' },
+      { week: 2, label: 'Divisional Round' },
+      { week: 3, label: 'Conference Championships' },
+      { week: 5, label: 'Super Bowl' }
+    ];
+    postRounds.forEach(r => {
+      let o = document.createElement('option');
+      o.value = `3-${r.week}`;
+      o.textContent = r.label;
+      postGroup.appendChild(o);
+    });
+    weekSelect.appendChild(postGroup);
+
     async function load() {
       el('status').textContent = 'REFRESHING…';
       el('status').className = 'status';
       try {
-        const week = +el('week').value || currentWeek;
-        const r = await fetch(`${END}?dates=${season}&seasontype=2&week=${week}&limit=100`, { cache: 'no-store' });
+        const [seasonType, week] = (el('week').value || `2-${currentWeek}`).split('-').map(Number);
+        const r = await fetch(`${END}?dates=${season}&seasontype=${seasonType}&week=${week}&limit=100`, { cache: 'no-store' });
         if (!r.ok) throw Error(`HTTP ${r.status}`);
         const j = await r.json();
         season = j.leagues?.[0]?.season?.year || season;
@@ -958,21 +991,17 @@
           .map(parse)
           .map(g => ({ ...g, watch: watchScore(g) }))
           .sort((a, b) => new Date(a.date) - new Date(b.date));
-        el('status').textContent = `LIVE · W${currentWeek} · ${all.length} GAMES`;
+
+        const badgeLabel = seasonType === 3
+          ? el('week').selectedOptions[0].textContent.toUpperCase()
+          : `W${currentWeek}`;
+        el('status').textContent = `LIVE · ${badgeLabel} · ${all.length} GAMES`;
         render();
       } catch (e) {
         el('status').textContent = 'OFFLINE / ERROR';
         el('status').className = 'status error';
         el('list').innerHTML = `<div class="empty"><b>Could not load the live scoreboard.</b><br>${e.message}<br><br>Check your connection and tap Refresh.</div>`;
       }
-    }
-
-    for (let i = 1; i <= 18; i++) {
-      let o = document.createElement('option');
-      o.value = i;
-      o.textContent = `Week ${i}`;
-      if (i === 10) o.selected = true;
-      el('week').appendChild(o);
     }
 
     el('week').onchange = load;
