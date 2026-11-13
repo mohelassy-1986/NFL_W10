@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <title>NFL Cairo Auto Hub</title>
-  <meta name="description" content="Live NFL scores & schedule in Cairo time, team records, broadcasts, SI & ESPN expert consensus, and Watch Scores.">
+  <meta name="description" content="Live NFL scores & schedule in Cairo time, team records, broadcasts, real ESPN analytics, and Watch Scores.">
   <meta name="theme-color" content="#090c11" id="themeMeta">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -718,7 +718,7 @@
       <div class="brand">
         <div class="eyebrow">NO KEY · NO ACCOUNT · LIVE JSON · AUTO-POLL</div>
         <h1>NFL Cairo Auto Hub</h1>
-        <p>Live scores, schedule in Cairo time, team records, broadcasts, SI & ESPN expert consensus and watch rankings</p>
+        <p>Live scores, schedule in Cairo time, team records, broadcasts, ESPN FPI analytics and watch rankings</p>
       </div>
       <div class="topActions">
         <div id="status" class="status">CONNECTING…</div>
@@ -739,12 +739,12 @@
       <button data-filter="best">🔥 Best games</button>
       <button data-filter="prime">🌙 Prime time</button>
       <button data-filter="shootout">O/U 50+</button>
-      <button data-filter="tossup">⚖️ Expert Toss-Ups</button>
+      <button data-filter="tossup">⚖️ Analytics Toss-Ups</button>
       <button onclick="load()">↻ Refresh</button>
     </div>
 
     <details class="drawer" id="guideDrawer">
-      <summary>📊 How Live Scores, SI/ESPN Expert Consensus & Watch Score Work</summary>
+      <summary>📊 How Live Scores, ESPN Analytics & Watch Score Work</summary>
       <div class="drawerBody">
         <section class="guide">
           <div class="guideItem">
@@ -756,8 +756,8 @@
             <span>Combines game closeness (42%), scoring potential from O/U (32%), team-record quality (18%) and an 8-point national-window bonus. 70+ earns BEST GAME.</span>
           </div>
           <div class="guideItem">
-            <b>🧠 SI & ESPN Expert Consensus</b>
-            <span>Aggregates expert panel picks (Sports Illustrated, ESPN, NFL.com) with FPI and market odds. Tap any consensus badge to open the full analyst breakdown modal.</span>
+            <b>🧠 ESPN Analytics & Market Odds</b>
+            <span>Pulled directly from ESPN's API feed (FPI win projections and market odds). Tap any analytics badge to view the full game breakdown modal.</span>
           </div>
           <div class="guideItem">
             <b>🔥 Shootout & 🌙 Prime Time</b>
@@ -776,10 +776,10 @@
           <span class="keychip"><b>Record</b> W-L-T = wins-losses-ties</span>
           <span class="keychip"><b>Line / Spread</b> e.g. NYG -3 means Giants favored by 3</span>
           <span class="keychip"><b>O/U</b> Over/Under combined points</span>
-          <span class="keychip"><b>Consensus</b> SI, ESPN & Market Expert win probability favorite</span>
+          <span class="keychip"><b>Analytics</b> Real ESPN FPI Win Probability & Market Odds</span>
           <span class="keychip"><b>Watch</b> 0–100 viewing score, not win probability</span>
           <span class="keychip"><b>BEST GAME</b> Watch Score ≥ 70</span>
-          <span class="keychip"><b>TOSS-UP</b> Expert projection within 48%–52%</span>
+          <span class="keychip"><b>TOSS-UP</b> Analytics win projection within 48%–52%</span>
         </div>
       </div>
     </details>
@@ -792,7 +792,7 @@
       <div>Matchup / Record</div>
       <div>Line</div>
       <div>O/U</div>
-      <div>Consensus</div>
+      <div>Analytics</div>
       <div>Broadcast</div>
       <div>Watch</div>
       <div>Why watch</div>
@@ -801,11 +801,11 @@
     <section id="list"></section>
 
     <div class="note">
-      <b>How it works:</b> this app calls the public JSON used by ESPN's scoreboard pages directly from the browser, combined with aggregated expert panel insights from Sports Illustrated and ESPN analysts.
+      <b>How it works:</b> this app calls the public JSON used by ESPN's scoreboard pages directly from the browser, pulling genuine pregame predictor projections and live odds data from ESPN's API.
     </div>
   </main>
 
-  <!-- Consensus / Analytics Modal -->
+  <!-- Analytics Modal -->
   <div id="consensusModal" class="modalOverlay" onclick="closeModal(event)">
     <div class="modalBox" onclick="event.stopPropagation()">
       <button class="modalClose" onclick="closeModal()">✕</button>
@@ -893,22 +893,27 @@
       return Math.round(close * 0.42 + scoring * 0.32 + quality * 0.18 + (g.prime ? 8 : 0));
     }
 
-    function computeConsensus(c, away, home, spread) {
+    // Compute genuine win probability from ESPN API predictor or Market Odds
+    function computeAnalytics(c, away, home, spread) {
       const pred = c.predictor;
       let homeProb = 50, awayProb = 50;
+      let source = 'Market Odds Implied';
 
       if (pred?.homeTeam?.gameProjection && pred?.awayTeam?.gameProjection) {
         homeProb = Math.round(Number(pred.homeTeam.gameProjection));
         awayProb = Math.round(Number(pred.awayTeam.gameProjection));
+        source = 'ESPN FPI Model';
       } else if (Number.isFinite(spread)) {
         homeProb = Math.max(5, Math.min(95, Math.round(50 + (-spread * 3.1))));
         awayProb = 100 - homeProb;
+        source = 'Market Spread Implied';
       } else {
         const homePct = winPct(home.record);
         const awayPct = winPct(away.record);
         const diff = homePct - awayPct;
         homeProb = Math.max(20, Math.min(80, Math.round(50 + diff * 0.6)));
         awayProb = 100 - homeProb;
+        source = 'Team Record Model';
       }
 
       const isHomeFav = homeProb >= awayProb;
@@ -918,9 +923,9 @@
       return {
         team: favoredTeam,
         prob: favoredProb,
-        siExpertRecord: favoredProb >= 65 ? "8-2" : (favoredProb >= 53 ? "6-4" : "5-5"),
-        espnExpertRecord: favoredProb >= 60 ? "7-3" : "4-6",
-        source: 'SI & ESPN Expert Panels',
+        homeProb,
+        awayProb,
+        source,
         tossup: Math.abs(homeProb - 50) <= 3
       };
     }
@@ -952,7 +957,7 @@
         winner: !!home.winner
       };
 
-      const consensus = computeConsensus(c, awayObj, homeObj, spread);
+      const consensus = computeAnalytics(c, awayObj, homeObj, spread);
 
       return {
         id: x.id,
@@ -968,7 +973,7 @@
         spread,
         overUnder: od.overUnder ?? '—',
         total: od.overUnder ?? null,
-        provider: od.provider?.name || 'SI & Market Odds',
+        provider: od.provider?.name || 'Sportsbook Market',
         consensus,
         broadcasts,
         prime: prime(broadcasts),
@@ -981,22 +986,22 @@
       const modal = el('consensusModal');
       const content = el('modalContent');
       content.innerHTML = `
-        <div class="modalTitle">🧠 National Expert Panel Breakdown</div>
+        <div class="modalTitle">🧠 Real ESPN Analytics & Odds</div>
         <div class="modalSubtitle">${awayName} @ ${homeName}</div>
         
         <div class="modalSection">
-          <b>Sports Illustrated (SI) Experts: ${consensus.siExpertRecord}</b>
-          <span>SI analyst panel lean: <b>${consensus.team}</b> (${consensus.prob}% win probability model).</span>
+          <b>Model Prediction: ${consensus.team} (${consensus.prob}%)</b>
+          <span>Data engine: <b>${consensus.source}</b>. ${consensus.tossup ? '⚠️ Flagged as a tight statistical Toss-Up.' : 'Clear analytical edge calculated from API feed.'}</span>
         </div>
 
         <div class="modalSection">
-          <b>ESPN Expert Panel: ${consensus.espnExpertRecord}</b>
-          <span>ESPN broadcaster & analyst consensus backing ${consensus.team}. ${consensus.tossup ? '⚠️ Flagged as a close Expert Toss-Up.' : ''}</span>
+          <b>Betting Line & Odds</b>
+          <span>Spread Line: <b>${details}</b> | Provider: ${provider}</span>
         </div>
 
         <div class="modalSection">
-          <b>Market Spread & Over/Under</b>
-          <span>Line: <b>${details}</b> | O/U Total: <b>${overUnder}</b> (Provider: ${provider})</span>
+          <b>Over/Under Combined Points (O/U)</b>
+          <span>Projected total points line: <b>${overUnder}</b></span>
         </div>
       `;
       modal.classList.add('open');
@@ -1034,11 +1039,11 @@
       }
 
       if (g.consensus.tossup) {
-        insights.push(`⚖️ <b>Split Expert Panel:</b> SI & ESPN analysts are deadlocked (${g.consensus.team} ${g.consensus.prob}%). Expect a razor-thin, 4th-quarter finish.`);
+        insights.push(`⚖️ <b>Statistical Toss-Up:</b> Projections are deadlocked (${g.consensus.team} ${g.consensus.prob}%). Expect a razor-thin finish.`);
       } else if (g.consensus.prob >= 76) {
-        insights.push(`🧠 <b>Heavy Expert Consensus:</b> ${g.consensus.team} commands ${g.consensus.prob}% panel projection backing — prime upset-watch alert if the underdog hangs around.`);
+        insights.push(`🧠 <b>Heavy Analytics Lean:</b> ${g.consensus.team} commands ${g.consensus.prob}% win projection — prime upset-watch alert if the underdog hangs around.`);
       } else if (g.spread !== null && Math.abs(g.spread) <= 3) {
-        insights.push(`🎯 <b>One-Score Margin:</b> A tight ${g.details} spread with ${g.consensus.team} (${g.consensus.prob}%) holding a slight edge.`);
+        insights.push(`🎯 <b>One-Score Margin:</b> A tight ${g.details} spread with ${g.consensus.team} (${g.consensus.prob}%) holding the edge.`);
       }
 
       if (g.prime) {
@@ -1051,7 +1056,7 @@
       }
 
       if (insights.length === 0) {
-        insights.push(`📊 <b>Expert Consensus Lean:</b> ${g.consensus.team} favored at ${g.consensus.prob}% (${g.consensus.source}). Watch for tactical adjustments.`);
+        insights.push(`📊 <b>Analytics Lean:</b> ${g.consensus.team} favored at ${g.consensus.prob}% (${g.consensus.source}). Watch for tactical shifts.`);
       }
 
       let html = insights.join('<br>');
@@ -1072,8 +1077,8 @@
       document.querySelector('.bestTitle').textContent = allCompleted ? 'Final Scores' : '🔥 Best Games Remaining';
       document.querySelector('.bestTitle').style.display = (allCompleted || showBest) ? '' : 'none';
       document.querySelector('.colheads').innerHTML = allCompleted
-        ? '<div>Status</div><div>Matchup / Record</div><div>Away</div><div>Home</div><div>Consensus</div><div>Winner</div><div>Played</div><div>Result note</div>'
-        : '<div>Cairo / Live</div><div>Matchup / Record</div><div>Line</div><div>O/U</div><div>Consensus</div><div>Broadcast</div><div>Watch</div><div>Why watch</div>';
+        ? '<div>Status</div><div>Matchup / Record</div><div>Away</div><div>Home</div><div>Analytics</div><div>Winner</div><div>Played</div><div>Result note</div>'
+        : '<div>Cairo / Live</div><div>Matchup / Record</div><div>Line</div><div>O/U</div><div>Analytics</div><div>Broadcast</div><div>Watch</div><div>Why watch</div>';
       el('best').style.display = showBest ? '' : 'none';
 
       const games = all.filter(g =>
@@ -1090,7 +1095,7 @@
       el('best').innerHTML = best.map((g, i) => `
         <div class="bestCard">
           <b>#${i + 1} ${g.away.name} @ ${g.home.name}</b>
-          <span>${g.live ? `🔴 LIVE (${g.status}) · ${g.away.score}–${g.home.score}` : cairo(g.date)} · Watch ${g.watch}/100 · SI Consensus: ${g.consensus.team} (${g.consensus.prob}%)</span>
+          <span>${g.live ? `🔴 LIVE (${g.status}) · ${g.away.score}–${g.home.score}` : cairo(g.date)} · Watch ${g.watch}/100 · Lean: ${g.consensus.team} (${g.consensus.prob}%)</span>
         </div>
       `).join('');
 
@@ -1141,7 +1146,7 @@
                 <div class="statsGrid">
                   <div class="statBox"><span class="label">Away</span><span class="scoreFinal ${g.away.winner ? 'winner' : 'loser'}">${g.away.score}</span></div>
                   <div class="statBox"><span class="label">Home</span><span class="scoreFinal ${g.home.winner ? 'winner' : 'loser'}">${g.home.score}</span></div>
-                  <div class="statBox"><span class="label">Consensus</span><span class="consensus clickableConsensus" onclick="openConsensusModal('${g.away.name.replace(/'/g, "\\'")}', '${g.home.name.replace(/'/g, "\\'")}', '${g.details}', '${g.overUnder}', '${g.provider}', ${JSON.stringify(g.consensus).replace(/"/g, '&quot;')})">${g.consensus.team} ${g.consensus.prob}%<small>SI: ${g.consensus.siExpertRecord} | ESPN: ${g.consensus.espnExpertRecord}</small></span></div>
+                  <div class="statBox"><span class="label">Analytics</span><span class="consensus clickableConsensus" onclick="openConsensusModal('${g.away.name.replace(/'/g, "\\'")}', '${g.home.name.replace(/'/g, "\\'")}', '${g.details}', '${g.overUnder}', '${g.provider}', ${JSON.stringify(g.consensus).replace(/"/g, '&quot;')})">${g.consensus.team} ${g.consensus.prob}%<small>${consensusRight ? '✓ Model Hit' : '✗ Model Miss'}</small></span></div>
                   <div class="statBox"><span class="label">Played</span><span class="value">${cairo(g.date).split(', ').pop()}</span></div>
                 </div>
                 <div class="statBox" style="display:none"><span class="pick">${winnerName}</span></div>
@@ -1182,7 +1187,7 @@
                 <div class="statsGrid">
                   <div class="statBox"><span class="label">Closing Line</span><span class="value">${g.details}</span></div>
                   <div class="statBox"><span class="label">O/U</span><span class="value">${g.total ?? '—'}</span></div>
-                  <div class="statBox"><span class="label">Consensus</span><span class="consensus clickableConsensus" onclick="openConsensusModal('${g.away.name.replace(/'/g, "\\'")}', '${g.home.name.replace(/'/g, "\\'")}', '${g.details}', '${g.overUnder}', '${g.provider}', ${JSON.stringify(g.consensus).replace(/"/g, '&quot;')})">${g.consensus.team} ${g.consensus.prob}%<small>SI: ${g.consensus.siExpertRecord} | ESPN: ${g.consensus.espnExpertRecord}</small></span></div>
+                  <div class="statBox"><span class="label">Analytics</span><span class="consensus clickableConsensus" onclick="openConsensusModal('${g.away.name.replace(/'/g, "\\'")}', '${g.home.name.replace(/'/g, "\\'")}', '${g.details}', '${g.overUnder}', '${g.provider}', ${JSON.stringify(g.consensus).replace(/"/g, '&quot;')})">${g.consensus.team} ${g.consensus.prob}%<small>${consensusRight ? '✓ Model Hit' : '✗ Model Miss'}</small></span></div>
                   <div class="statBox"><span class="label">Broadcast</span><span class="pick">${g.broadcasts.join(', ') || '—'}</span></div>
                 </div>
                 <div class="why">
@@ -1243,7 +1248,7 @@
             <div class="statsGrid">
               <div class="statBox"><span class="label">Line</span><span class="value">${g.details}</span></div>
               <div class="statBox"><span class="label">O/U</span><span class="value total ${g.total >= 50 ? 'high' : ''}">${g.total ?? '—'}</span></div>
-              <div class="statBox"><span class="label">Consensus</span><span class="consensus clickableConsensus" onclick="openConsensusModal('${g.away.name.replace(/'/g, "\\'")}', '${g.home.name.replace(/'/g, "\\'")}', '${g.details}', '${g.overUnder}', '${g.provider}', ${JSON.stringify(g.consensus).replace(/"/g, '&quot;')})">${g.consensus.team} ${g.consensus.prob}%<small>SI: ${g.consensus.siExpertRecord} | ESPN: ${g.consensus.espnExpertRecord}</small></span></div>
+              <div class="statBox"><span class="label">Analytics</span><span class="consensus clickableConsensus" onclick="openConsensusModal('${g.away.name.replace(/'/g, "\\'")}', '${g.home.name.replace(/'/g, "\\'")}', '${g.details}', '${g.overUnder}', '${g.provider}', ${JSON.stringify(g.consensus).replace(/"/g, '&quot;')})">${g.consensus.team} ${g.consensus.prob}%<small>${g.consensus.source}</small></span></div>
               <div class="statBox"><span class="label">Broadcast</span><span class="pick">${g.broadcasts.join(', ') || 'TBA'}</span></div>
             </div>
 
