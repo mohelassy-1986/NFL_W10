@@ -104,32 +104,32 @@
     .wrap {
       max-width: 1340px;
       margin: auto;
-      padding: calc(16px + env(safe-area-inset-top)) 14px calc(48px + env(safe-area-inset-bottom));
+      padding: calc(14px + env(safe-area-inset-top)) 12px calc(48px + env(safe-area-inset-bottom));
     }
 
     .top {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      gap: 12px;
+      gap: 10px;
       flex-wrap: wrap;
-      margin-bottom: 12px;
+      margin-bottom: 10px;
     }
 
-    .brand { flex: 1; min-width: 220px; }
+    .brand { flex: 1; min-width: 200px; }
 
     .eyebrow {
       color: var(--g);
-      font-size: 10px;
+      font-size: 9.5px;
       font-weight: 900;
       letter-spacing: 1.2px;
       text-transform: uppercase;
-      margin-bottom: 2px;
+      margin-bottom: 1px;
     }
 
     .top h1 {
       margin: 0;
-      font-size: clamp(22px, 3.5vw, 30px);
+      font-size: clamp(20px, 3.2vw, 28px);
       letter-spacing: -0.8px;
       line-height: 1.1;
     }
@@ -145,9 +145,9 @@
       border: 1px solid var(--g-border);
       background: var(--g-bg);
       color: var(--g);
-      border-radius: 9px;
-      padding: 6px 10px;
-      font-size: 10.5px;
+      border-radius: 8px;
+      padding: 5px 9px;
+      font-size: 10px;
       font-weight: 800;
       letter-spacing: 0.3px;
     }
@@ -163,13 +163,13 @@
       align-items: center;
       justify-content: center;
       gap: 5px;
-      height: 34px;
-      padding: 0 11px;
-      border-radius: 9px;
+      height: 32px;
+      padding: 0 10px;
+      border-radius: 8px;
       border: 1px solid var(--line);
       background: var(--btn-bg);
       color: var(--txt);
-      font-size: 11.5px;
+      font-size: 11px;
       font-weight: 800;
       text-decoration: none;
       cursor: pointer;
@@ -188,7 +188,7 @@
     .sportBar {
       display: flex;
       gap: 6px;
-      margin: 10px 0 12px;
+      margin: 8px 0 10px;
       overflow-x: auto;
       scrollbar-width: none;
     }
@@ -198,13 +198,13 @@
       display: inline-flex;
       align-items: center;
       gap: 6px;
-      height: 36px;
-      padding: 0 14px;
-      border-radius: 10px;
+      height: 34px;
+      padding: 0 12px;
+      border-radius: 9px;
       border: 1px solid var(--line);
       background: var(--card);
       color: var(--btn-txt);
-      font-size: 12.5px;
+      font-size: 12px;
       font-weight: 900;
       cursor: pointer;
       box-shadow: var(--shadow);
@@ -220,22 +220,22 @@
 
     .offlineBar {
       display: none;
-      margin-bottom: 12px;
-      padding: 8px 12px;
-      border-radius: 9px;
+      margin-bottom: 10px;
+      padding: 8px 10px;
+      border-radius: 8px;
       background: var(--orange-bg);
       color: var(--orange);
-      font-size: 11.5px;
+      font-size: 11px;
       font-weight: 700;
       border: 1px solid rgba(255, 147, 82, 0.3);
     }
 
-    /* Clean Two-Tier Control Section */
+    /* Controls Section */
     .controlsWrap {
       display: flex;
       flex-direction: column;
-      gap: 8px;
-      margin: 10px 0 16px;
+      gap: 6px;
+      margin: 8px 0 12px;
     }
 
     .controlRow {
@@ -253,13 +253,13 @@
     .controlRow input[type="month"],
     .controlRow button {
       flex-shrink: 0;
-      height: 36px;
+      height: 34px;
       border: 1px solid var(--line);
       background: var(--btn-bg);
       color: var(--btn-txt);
-      padding: 0 10px;
-      border-radius: 9px;
-      font-size: 12px;
+      padding: 0 9px;
+      border-radius: 8px;
+      font-size: 11.5px;
       font-weight: 800;
       font-family: inherit;
       box-shadow: var(--shadow);
@@ -276,19 +276,19 @@
       display: inline-flex;
       background: var(--card);
       border: 1px solid var(--line);
-      border-radius: 9px;
+      border-radius: 8px;
       padding: 2px;
       flex-shrink: 0;
       box-shadow: var(--shadow);
     }
     .spanToggle button {
-      height: 30px;
-      padding: 0 9px;
+      height: 28px;
+      padding: 0 8px;
       border: none;
       background: transparent;
       box-shadow: none;
-      border-radius: 7px;
-      font-size: 11px;
+      border-radius: 6px;
+      font-size: 10.5px;
     }
     .spanToggle button.active {
       background: var(--blue-bg);
@@ -302,19 +302,19 @@
       flex-shrink: 0;
     }
     .dateNav button {
-      padding: 0 8px;
+      padding: 0 7px;
     }
 
     .rangePill {
       display: inline-flex;
       align-items: center;
-      height: 36px;
-      padding: 0 10px;
-      border-radius: 9px;
+      height: 34px;
+      padding: 0 9px;
+      border-radius: 8px;
       border: 1px solid var(--line);
       background: var(--card);
       color: var(--txt);
-      font-size: 11.5px;
+      font-size: 11px;
       font-weight: 900;
       white-space: nowrap;
       box-shadow: var(--shadow);
@@ -334,127 +334,58 @@
       cursor: not-allowed;
     }
 
-    details.drawer {
-      margin: 8px 0;
-      background: var(--card);
-      border: 1px solid var(--line);
-      border-radius: 11px;
-      box-shadow: var(--shadow);
-      overflow: hidden;
-    }
-
-    details.drawer summary {
-      list-style: none;
-      padding: 10px 12px;
-      font-size: 12.5px;
-      font-weight: 800;
-      cursor: pointer;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      user-select: none;
-    }
-
-    details.drawer summary::-webkit-details-marker { display: none; }
-    details.drawer summary::after {
-      content: "▾";
-      font-size: 13px;
-      color: var(--mut);
-      transition: transform 0.2s ease;
-    }
-    details.drawer[open] summary::after { transform: rotate(180deg); }
-
-    .drawerBody {
-      padding: 10px 12px 12px;
-      border-top: 1px solid var(--line);
-    }
-
-    .guide {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 8px;
-    }
-
-    .guideItem {
-      background: var(--card-sub);
-      border: 1px solid var(--line);
-      border-radius: 9px;
-      padding: 9px;
-    }
-
-    .guideItem b {
-      display: block;
-      color: var(--txt);
-      font-size: 11.5px;
-      margin-bottom: 3px;
-    }
-
-    .guideItem span {
-      color: var(--mut);
-      font-size: 10.5px;
-      line-height: 1.4;
-      display: block;
-    }
-
-    .keychips {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 5px;
-    }
-
-    .keychip {
-      background: var(--chip-bg);
-      border: 1px solid var(--chip-border);
-      border-radius: 6px;
-      padding: 5px 8px;
-      color: var(--txt-soft);
-      font-size: 10.5px;
-    }
-
-    .keychip b { color: var(--txt); }
-
+    /* Horizontal Swipe Best Games Reel */
     .bestTitle {
-      font-size: 16px;
+      font-size: 15px;
       font-weight: 900;
-      margin: 18px 0 8px;
+      margin: 14px 0 6px;
       letter-spacing: -0.2px;
     }
 
-    .best {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
+    .best-scroll {
+      display: flex;
       gap: 8px;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      scrollbar-width: none;
+      padding-bottom: 4px;
     }
+    .best-scroll::-webkit-scrollbar { display: none; }
 
     .bestCard {
+      flex: 0 0 240px;
+      scroll-snap-align: start;
       background: var(--gold-grad);
       border: 1px solid var(--gold-border);
-      border-radius: 11px;
-      padding: 11px 12px;
+      border-radius: 10px;
+      padding: 10px 12px;
       box-shadow: var(--shadow);
     }
 
     .bestCard b {
       display: block;
       color: var(--gold);
-      font-size: 13px;
+      font-size: 12.5px;
       line-height: 1.25;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
     .bestCard span {
       display: block;
       color: var(--txt-soft);
-      font-size: 11px;
-      line-height: 1.4;
-      margin-top: 4px;
+      font-size: 10.5px;
+      line-height: 1.35;
+      margin-top: 3px;
     }
 
     .day {
       display: flex;
       align-items: center;
       gap: 8px;
-      margin: 20px 2px 8px;
-      font-size: 12px;
+      margin: 18px 2px 6px;
+      font-size: 11.5px;
       font-weight: 900;
       text-transform: uppercase;
       letter-spacing: 0.5px;
@@ -472,10 +403,10 @@
       display: grid;
       grid-template-columns: 95px minmax(260px, 1.4fr) 85px 60px 135px 115px 85px minmax(220px, 1.3fr);
       gap: 10px;
-      padding: 12px 14px 6px;
+      padding: 10px 12px 4px;
       color: var(--mut);
       text-transform: uppercase;
-      font-size: 10px;
+      font-size: 9.5px;
       font-weight: 900;
       letter-spacing: 0.6px;
     }
@@ -487,16 +418,16 @@
       align-items: center;
       background: var(--card);
       border: 1px solid var(--line);
-      border-radius: 12px;
-      padding: 12px 14px;
-      margin: 6px 0;
+      border-radius: 11px;
+      padding: 11px 13px;
+      margin: 5px 0;
       box-shadow: var(--shadow);
     }
 
     .game.hot { border-left: 4px solid var(--gold); }
     .game.liveCard { border-left: 4px solid var(--red); }
 
-    .time { font-weight: 900; font-size: 12.5px; }
+    .time { font-weight: 900; font-size: 12px; }
 
     @keyframes pulseDot {
       0%, 100% { opacity: 1; transform: scale(1); }
@@ -516,8 +447,8 @@
       border: 1px solid var(--red-border);
       color: var(--red);
       border-radius: 5px;
-      padding: 3px 6px;
-      font-size: 9.5px;
+      padding: 3px 5px;
+      font-size: 9px;
       font-weight: 900;
     }
     .liveDot {
@@ -529,7 +460,7 @@
     }
     .liveClock {
       display: block;
-      font-size: 10px;
+      font-size: 9.5px;
       font-weight: 800;
       color: var(--red);
       margin-top: 2px;
@@ -546,33 +477,39 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 8px;
+      gap: 6px;
       min-width: 0;
+      cursor: pointer;
+      padding: 2px 4px;
+      border-radius: 6px;
+      transition: background 0.15s ease;
     }
+    .team:hover { background: var(--card-sub); }
 
     .logo {
-      width: 30px;
-      height: 30px;
+      width: 28px;
+      height: 28px;
       object-fit: contain;
       flex-shrink: 0;
     }
 
     .name {
       font-weight: 900;
-      font-size: 13px;
+      font-size: 12.5px;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
     }
+    .name.starred { color: var(--gold); }
 
     .rec {
-      font-size: 10.5px;
+      font-size: 10px;
       color: var(--mut);
       font-weight: 600;
     }
 
     .inlineScore {
-      font-size: 17px;
+      font-size: 16px;
       font-weight: 950;
       padding-left: 4px;
       flex-shrink: 0;
@@ -581,7 +518,7 @@
     .at {
       text-align: center;
       color: var(--mut);
-      font-size: 11px;
+      font-size: 10.5px;
       font-weight: 900;
     }
 
@@ -590,41 +527,41 @@
       display: none;
       color: var(--mut);
       text-transform: uppercase;
-      font-size: 8.5px;
+      font-size: 8px;
       font-weight: 900;
       letter-spacing: 0.4px;
       margin-bottom: 2px;
     }
 
-    .value { font-weight: 900; color: var(--blue); font-size: 12.5px; }
+    .value { font-weight: 900; color: var(--blue); font-size: 12px; }
     .total.high { color: var(--orange); }
-    .reporters { font-weight: 900; color: var(--purple); font-size: 11.5px; }
-    .reporters small { display: block; font-size: 9px; color: var(--mut); font-weight: 700; }
-    .pick { font-weight: 800; color: var(--g); font-size: 12px; }
-    .watch { font-size: 18px; font-weight: 950; color: var(--gold); line-height: 1.1; }
-    .watchMax { font-size: 10px; color: var(--mut); font-weight: 700; }
+    .reporters { font-weight: 900; color: var(--purple); font-size: 11px; }
+    .reporters small { display: block; font-size: 8.5px; color: var(--mut); font-weight: 700; }
+    .pick { font-weight: 800; color: var(--g); font-size: 11.5px; }
+    .watch { font-size: 17px; font-weight: 950; color: var(--gold); line-height: 1.1; }
+    .watchMax { font-size: 9.5px; color: var(--mut); font-weight: 700; }
 
     .why {
-      font-size: 11.5px;
+      font-size: 11px;
       color: var(--txt-soft);
-      line-height: 1.4;
+      line-height: 1.35;
     }
     .why small { color: var(--mut); display: block; margin-top: 2px; }
 
     .tags { display: flex; flex-wrap: wrap; gap: 3px; margin-top: 3px; }
     .tag {
       display: inline-block;
-      padding: 2px 5px;
+      padding: 2px 4px;
       border-radius: 4px;
       background: var(--g-bg);
       color: var(--g);
-      font-size: 8.5px;
+      font-size: 8px;
       font-weight: 900;
     }
     .tag.prime { background: var(--blue-bg); color: var(--blue); }
     .tag.shootout { background: var(--orange-bg); color: var(--orange); }
 
-    .scoreFinal { font-size: 18px; font-weight: 950; }
+    .scoreFinal { font-size: 17px; font-weight: 950; }
     .winner { color: var(--g); }
     .loser { color: var(--mut); }
     .liveScoreTxt { color: var(--txt); }
@@ -635,31 +572,32 @@
       color: var(--txt-soft);
       border-radius: 5px;
       padding: 3px 6px;
-      font-size: 9.5px;
+      font-size: 9px;
       font-weight: 900;
     }
-    .resultNote { color: var(--txt-soft); font-size: 11.5px; line-height: 1.4; }
+    .resultNote { color: var(--txt-soft); font-size: 11px; line-height: 1.35; }
 
     .empty {
-      padding: 36px 16px;
+      padding: 32px 16px;
       border: 1px dashed var(--line);
       background: var(--card);
-      border-radius: 12px;
+      border-radius: 11px;
       text-align: center;
       color: var(--mut);
     }
 
     .note {
-      margin-top: 22px;
-      padding: 12px 14px;
+      margin-top: 18px;
+      padding: 10px 12px;
       border: 1px solid var(--line);
       background: var(--card);
-      border-radius: 11px;
+      border-radius: 10px;
       color: var(--mut);
-      font-size: 11px;
+      font-size: 10.5px;
       line-height: 1.5;
     }
 
+    /* Modal Overlays */
     .modalOverlay {
       position: fixed;
       inset: 0;
@@ -681,6 +619,8 @@
       padding: 20px;
       box-shadow: var(--shadow);
       position: relative;
+      max-height: 85vh;
+      overflow-y: auto;
     }
     .modalClose {
       position: absolute;
@@ -689,8 +629,8 @@
       background: var(--btn-bg);
       border: 1px solid var(--line);
       color: var(--txt);
-      width: 32px;
-      height: 32px;
+      width: 30px;
+      height: 30px;
       border-radius: 7px;
       font-weight: 900;
       cursor: pointer;
@@ -713,25 +653,20 @@
       padding: 10px 12px;
       margin-bottom: 8px;
     }
-    .modalSection b { display: block; color: var(--purple); font-size: 12.5px; margin-bottom: 2px; }
-    .modalSection span { font-size: 11.5px; color: var(--txt-soft); line-height: 1.4; }
+    .modalSection b { display: block; color: var(--purple); font-size: 12px; margin-bottom: 2px; }
+    .modalSection span { font-size: 11px; color: var(--txt-soft); line-height: 1.4; }
     .clickableReporters { cursor: pointer; transition: opacity 0.15s ease; }
     .clickableReporters:hover { opacity: 0.75; }
 
-    .best-scroll { overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; }
-    .best-scroll::-webkit-scrollbar { display: none; }
-
     @media (max-width: 1060px) {
-      .guide { grid-template-columns: 1fr 1fr; }
-      .best { grid-template-columns: 1fr 1fr; }
       .colheads { display: none; }
 
       .game {
         display: flex;
         flex-direction: column;
         align-items: stretch;
-        gap: 10px;
-        padding: 13px;
+        gap: 9px;
+        padding: 12px;
       }
 
       .gameTop {
@@ -739,7 +674,7 @@
         justify-content: space-between;
         align-items: center;
         border-bottom: 1px solid var(--line);
-        padding-bottom: 8px;
+        padding-bottom: 7px;
       }
 
       .gameWatchRow {
@@ -753,8 +688,8 @@
         padding: 2px 0;
       }
 
-      .logo { width: 34px; height: 34px; }
-      .name { font-size: 14px; }
+      .logo { width: 32px; height: 32px; }
+      .name { font-size: 13.5px; }
 
       .statsGrid {
         display: grid;
@@ -762,8 +697,8 @@
         gap: 6px;
         background: var(--card-sub);
         border: 1px solid var(--line);
-        border-radius: 9px;
-        padding: 9px;
+        border-radius: 8px;
+        padding: 8px;
         text-align: center;
       }
 
@@ -771,9 +706,7 @@
     }
 
     @media (max-width: 600px) {
-      .wrap { padding: calc(12px + env(safe-area-inset-top)) 10px calc(40px + env(safe-area-inset-bottom)); }
-      .guide { grid-template-columns: 1fr; }
-      .best { grid-template-columns: 1fr 1fr; }
+      .wrap { padding: calc(10px + env(safe-area-inset-top)) 10px calc(36px + env(safe-area-inset-bottom)); }
       .topActions { width: 100%; justify-content: space-between; }
       .match { grid-template-columns: 1fr; gap: 6px; }
       .at { display: none; }
@@ -781,13 +714,13 @@
       .team {
         justify-content: space-between;
         background: var(--card-sub);
-        padding: 7px 9px;
-        border-radius: 8px;
+        padding: 6px 8px;
+        border-radius: 7px;
         border: 1px solid var(--line);
       }
       .teamLeft { display: flex; align-items: center; gap: 8px; min-width: 0; }
       .teamRole {
-        font-size: 9.5px;
+        font-size: 9px;
         font-weight: 800;
         color: var(--mut);
         text-transform: uppercase;
@@ -811,9 +744,10 @@
       </div>
       <div class="topActions">
         <div id="status" class="status" aria-live="polite">CONNECTING…</div>
-        <a href="https://fmhy.net/videopiracyguide#live-sports" target="_blank" rel="noopener noreferrer" class="iconBtn" title="FMHY Live Sports">📺 Watch Live</a>
+        <button id="guideBtn" class="iconBtn" type="button" title="Guide & Key">ℹ️ Guide</button>
+        <a href="https://fmhy.net/videopiracyguide#live-sports" target="_blank" rel="noopener noreferrer" class="iconBtn" title="FMHY Live Sports">📺 Watch</a>
         <button id="installBtn" class="iconBtn install" title="Install App" type="button">📲 Install</button>
-        <button id="themeToggle" class="iconBtn" type="button" aria-pressed="false" aria-label="Toggle color theme" title="Switch Light/Dark Theme">☀️ Light</button>
+        <button id="themeToggle" class="iconBtn" type="button" aria-pressed="false" title="Theme">☀️</button>
       </div>
     </header>
 
@@ -842,74 +776,35 @@
         </div>
 
         <div class="dateNav" id="dateNav" style="display:none;">
-          <button type="button" id="prevDayBtn" title="Previous Day" aria-label="Previous Day">◀</button>
+          <button type="button" id="prevDayBtn" title="Previous Day">◀</button>
           <input type="date" id="gameDate" aria-label="Select Game Date">
-          <button type="button" id="nextDayBtn" title="Next Day" aria-label="Next Day">▶</button>
+          <button type="button" id="nextDayBtn" title="Next Day">▶</button>
         </div>
 
         <div class="dateNav" id="weekNav" style="display:none;">
-          <button type="button" id="prevWeekBtn" title="Previous Week" aria-label="Previous Week">◀</button>
+          <button type="button" id="prevWeekBtn" title="Previous Week">◀</button>
           <span class="rangePill" id="weekRangeLabel">—</span>
-          <button type="button" id="nextWeekBtn" title="Next Week" aria-label="Next Week">▶</button>
+          <button type="button" id="nextWeekBtn" title="Next Week">▶</button>
         </div>
 
         <div class="dateNav" id="monthNav" style="display:none;">
-          <button type="button" id="prevMonthBtn" title="Previous Month" aria-label="Previous Month">◀</button>
+          <button type="button" id="prevMonthBtn" title="Previous Month">◀</button>
           <input type="month" id="gameMonth" aria-label="Select Month">
-          <button type="button" id="nextMonthBtn" title="Next Month" aria-label="Next Month">▶</button>
+          <button type="button" id="nextMonthBtn" title="Next Month">▶</button>
         </div>
       </div>
 
       <!-- Row 2: View Filter Buttons -->
       <div class="controlRow">
         <button class="active" data-filter="all" type="button">All</button>
-        <button data-filter="live" id="liveFilterBtn" type="button">🔴 Live Now</button>
-        <button data-filter="best" type="button">🔥 Best games</button>
-        <button data-filter="prime" type="button">🌙 Prime time</button>
-        <button data-filter="shootout" id="shootoutBtn" type="button">O/U 50+</button>
+        <button data-filter="live" id="liveFilterBtn" type="button">🔴 Live</button>
+        <button data-filter="best" type="button">🔥 Best</button>
+        <button data-filter="evening" type="button">☀️ Evening</button>
+        <button data-filter="prime" type="button">🌙 Prime</button>
+        <button data-filter="starred" type="button">⭐ My Teams</button>
         <button id="refreshBtn" type="button">↻ Refresh</button>
       </div>
     </div>
-
-    <details class="drawer" id="guideDrawer">
-      <summary>📊 How Live Scores & Model Consensus Work</summary>
-      <div class="drawerBody">
-        <section class="guide">
-          <div class="guideItem">
-            <b>🔴 Live Auto-Polling</b>
-            <span>Games in progress show real-time scores, period/quarter and clock, auto-refreshing every 60 seconds while games are active.</span>
-          </div>
-          <div class="guideItem">
-            <b>Watch Score · 0–100</b>
-            <span>Combines closeness (42%), sport-calibrated O/U scoring potential (32%), team-record quality (18%) and an 8-point national-TV bonus. 70+ earns BEST GAME.</span>
-          </div>
-          <div class="guideItem">
-            <b>✍️ Model Consensus</b>
-            <span>A transparent probability model derived from ESPN projections and sportsbook lines — <em>not</em> scraped staff picks. Tap any lean for details.</span>
-          </div>
-          <div class="guideItem">
-            <b>📅 Daily, Weekly & Monthly Views</b>
-            <span>For NBA, MLB, and NHL, toggle between a single day, a 7-day weekly slate, or a full monthly overview with top game rankings.</span>
-          </div>
-        </section>
-      </div>
-    </details>
-
-    <details class="drawer" id="keyDrawer">
-      <summary>📖 Data & Abbreviation Key</summary>
-      <div class="drawerBody">
-        <div class="keychips">
-          <span class="keychip"><b>Cairo</b> kickoff/tipoff/first pitch in Africa/Cairo</span>
-          <span class="keychip"><b>🔴 LIVE</b> in progress (auto-updates every 60s)</span>
-          <span class="keychip"><b>Record</b> W-L (or W-L-OTL / W-L-T)</span>
-          <span class="keychip"><b>Line</b> e.g. BOS -5.5 = Celtics favored by 5.5</span>
-          <span class="keychip"><b>O/U</b> Over/Under combined points/runs/goals</span>
-          <span class="keychip"><b>Lean</b> model-based pick (ESPN proj + spread)</span>
-          <span class="keychip"><b>Watch</b> 0–100 viewing score</span>
-          <span class="keychip"><b>BEST GAME</b> Watch Score ≥ 70</span>
-        </div>
-      </div>
-    </details>
 
     <div class="bestTitle" id="bestTitle">🔥 Best Games</div>
     <section class="best best-scroll" id="best" aria-label="Top games"></section>
@@ -919,7 +814,7 @@
     <section id="list" aria-live="polite"></section>
 
     <div class="note">
-      <b>Data source:</b> live JSON scoreboards from ESPN. Model "leans" are a transparent probability calculation, not verbatim staff picks.
+      <b>Data source:</b> live JSON scoreboards from ESPN. Tap any team name to star/unstar it into <b>⭐ My Teams</b>.
     </div>
   </main>
 
@@ -927,6 +822,31 @@
     <div class="modalBox">
       <button class="modalClose" type="button" aria-label="Close dialog">✕</button>
       <div id="modalContent"></div>
+    </div>
+  </div>
+
+  <div id="guideModal" class="modalOverlay" role="dialog" aria-modal="true" aria-labelledby="guideTitle">
+    <div class="modalBox">
+      <button class="modalClose" type="button" aria-label="Close dialog">✕</button>
+      <div class="modalTitle" id="guideTitle">📊 Hub Guide & Data Key</div>
+      <div class="modalSubtitle">How scores, watch rankings, and filters work in Cairo time</div>
+
+      <div class="modalSection">
+        <b>🔴 Live Auto-Polling</b>
+        <span>Games in progress update automatically every 60 seconds with live scores and periods.</span>
+      </div>
+      <div class="modalSection">
+        <b>Watch Score (0–100)</b>
+        <span>Combines game closeness, O/U scoring potential, team records, and national TV bonuses. 70+ earns <b>BEST GAME</b>.</span>
+      </div>
+      <div class="modalSection">
+        <b>☀️ Evening Filter</b>
+        <span>Isolates games starting between 19:00 and 00:30 Cairo time for perfect bedtime viewing.</span>
+      </div>
+      <div class="modalSection">
+        <b>⭐ My Teams</b>
+        <span>Tap any team name to star it. Filter by starred teams to track your favorites instantly.</span>
+      </div>
     </div>
   </div>
 
@@ -1032,7 +952,7 @@
     let all = [];
     let currentSport = localStorage.getItem('us-sports-cairo-sport') || 'nfl';
     if (!SPORTS[currentSport]) currentSport = 'nfl';
-    let calendarSpan = localStorage.getItem('us-sports-cairo-span') || 'daily'; // 'daily' | 'weekly' | 'monthly'
+    let calendarSpan = localStorage.getItem('us-sports-cairo-span') || 'daily';
     let weekAnchorTime = Date.now();
     let filter = 'all';
     let season = new Date().getFullYear();
@@ -1041,10 +961,12 @@
     let inFlight = false;
     let loadGeneration = 0;
 
+    /** @type {Set<string>} */
+    let starredTeams = new Set(JSON.parse(localStorage.getItem('us-sports-starred-teams') || '[]'));
+
     const el = (id) => document.getElementById(id);
     const cfg = () => SPORTS[currentSport];
 
-    // ---------- Utilities ----------
     const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (m) => ({
       '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
     })[m]);
@@ -1084,6 +1006,17 @@
       return cfg().primeRegex.test(s);
     }
 
+    function isEvening(dateStr) {
+      try {
+        const d = new Date(dateStr);
+        const cairoHourStr = new Intl.DateTimeFormat('en-GB', { timeZone: 'Africa/Cairo', hour: 'numeric', hour12: false }).format(d);
+        const h = parseInt(cairoHourStr, 10);
+        return h >= 19 || h <= 0; // 19:00 to 00:30 Cairo
+      } catch {
+        return false;
+      }
+    }
+
     function watchScore(g) {
       const c = cfg();
       const spread = Number.isFinite(g.spread) ? g.spread : c.defaultSpread;
@@ -1113,9 +1046,7 @@
       for (let i = 0; i < total; i += batchSize) {
         if (genId !== loadGeneration) return null;
         const batch = dateStrings.slice(i, i + batchSize);
-        if (onProgress) {
-          onProgress(Math.min(total, i + batch.length), total);
-        }
+        if (onProgress) onProgress(Math.min(total, i + batch.length), total);
 
         const results = await Promise.allSettled(
           batch.map((dt) =>
@@ -1215,6 +1146,7 @@
       const away = parseTeam(awayRaw);
       const home = parseTeam(homeRaw);
       const prime = isPrime(broadcasts);
+      const evening = isEvening(event.date);
       const lean = computeLean(c, away, home, spread);
 
       return {
@@ -1235,10 +1167,19 @@
         lean,
         broadcasts,
         prime,
+        evening,
         venue: c.venue?.fullName || '',
         note: c.notes?.[0]?.headline || '',
         watch: 0
       };
+    }
+
+    function toggleStar(teamName, e) {
+      e.stopPropagation();
+      if (starredTeams.has(teamName)) starredTeams.delete(teamName);
+      else starredTeams.add(teamName);
+      localStorage.setItem('us-sports-starred-teams', JSON.stringify(Array.from(starredTeams)));
+      render();
     }
 
     function buildReason(g) {
@@ -1276,14 +1217,14 @@
     function gameTagsHTML(g) {
       const c = cfg();
       return [
+        g.evening ? '<span class="tag prime">☀️ EVENING</span>' : '',
         g.prime ? '<span class="tag prime">PRIME TIME</span>' : '',
-        g.total >= c.shootoutThreshold ? '<span class="tag shootout">SHOOTOUT</span>' : '',
         g.watch >= c.bestThreshold ? '<span class="tag">BEST GAME</span>' : ''
       ].join('');
     }
 
     function reportersCellHTML(g) {
-      return `<span class="reporters clickableReporters" data-game-id="${esc(g.id)}" role="button" tabindex="0" aria-label="Open lean details">
+      return `<span class="reporters clickableReporters" data-game-id="${esc(g.id)}" role="button" tabindex="0">
         ${esc(g.lean.favoredTeam)}<small>${esc(g.lean.confidence)} · ${esc(g.lean.favoredProb)}%</small>
       </span>`;
     }
@@ -1294,6 +1235,8 @@
         ? `<span class="livePill"><span class="liveDot"></span>LIVE</span><span class="liveClock">${esc(g.status)}</span>`
         : `<span class="time">🕒 ${esc(cairoTime(g.date))}</span>`;
 
+      const awayStarred = starredTeams.has(g.away.name);
+      const homeStarred = starredTeams.has(g.home.name);
       const awayScore = g.live ? `<span class="inlineScore liveScoreTxt">${g.away.score}</span>` : `<span class="teamRole">Away</span>`;
       const homeScore = g.live ? `<span class="inlineScore liveScoreTxt">${g.home.score}</span>` : `<span class="teamRole">Home</span>`;
 
@@ -1308,22 +1251,22 @@
           </div>
 
           <div class="match">
-            <div class="team">
+            <div class="team" title="Click to star/unstar" onclick="toggleStar('${esc(g.away.name)}', event)">
               <div class="teamLeft">
-                <img class="logo" src="${esc(g.away.logo)}" alt="${esc(g.away.name)}" loading="lazy">
+                <img class="logo" src="${esc(g.away.logo)}" alt="" loading="lazy">
                 <div>
-                  <div class="name">${esc(g.away.name)}</div>
+                  <div class="name ${awayStarred ? 'starred' : ''}">${awayStarred ? '⭐ ' : ''}${esc(g.away.name)}</div>
                   <div class="rec">${esc(g.away.record)}</div>
                 </div>
               </div>
               ${awayScore}
             </div>
             <div class="at">@</div>
-            <div class="team">
+            <div class="team" title="Click to star/unstar" onclick="toggleStar('${esc(g.home.name)}', event)">
               <div class="teamLeft">
-                <img class="logo" src="${esc(g.home.logo)}" alt="${esc(g.home.name)}" loading="lazy">
+                <img class="logo" src="${esc(g.home.logo)}" alt="" loading="lazy">
                 <div>
-                  <div class="name">${esc(g.home.name)}</div>
+                  <div class="name ${homeStarred ? 'starred' : ''}">${homeStarred ? '⭐ ' : ''}${esc(g.home.name)}</div>
                   <div class="rec">${esc(g.home.record)}</div>
                 </div>
               </div>
@@ -1333,7 +1276,7 @@
 
           <div class="statsGrid">
             <div class="statBox"><span class="label">Line</span><span class="value">${esc(g.details)}</span></div>
-            <div class="statBox"><span class="label">O/U</span><span class="value total ${g.total >= c.shootoutThreshold ? 'high' : ''}">${esc(g.total ?? '—')}</span></div>
+            <div class="statBox"><span class="label">O/U</span><span class="value">${esc(g.total ?? '—')}</span></div>
             <div class="statBox"><span class="label">Lean</span>${reportersCellHTML(g)}</div>
             <div class="statBox"><span class="label">Broadcast</span><span class="pick">${esc(g.broadcasts.join(', ') || 'TBA')}</span></div>
           </div>
@@ -1345,6 +1288,8 @@
     function renderFinalCard(g, compact) {
       const winnerName = g.away.winner ? g.away.name : g.home.winner ? g.home.name : 'Tied';
       const isTie = !g.away.winner && !g.home.winner;
+      const awayStarred = starredTeams.has(g.away.name);
+      const homeStarred = starredTeams.has(g.home.name);
 
       if (compact) {
         return `
@@ -1354,22 +1299,22 @@
               <div class="gameWatchRow"><span class="pick">${esc(winnerName)} ${isTie ? '' : 'won'}</span></div>
             </div>
             <div class="match">
-              <div class="team">
+              <div class="team" onclick="toggleStar('${esc(g.away.name)}', event)">
                 <div class="teamLeft">
-                  <img class="logo" src="${esc(g.away.logo)}" alt="${esc(g.away.name)}" loading="lazy">
+                  <img class="logo" src="${esc(g.away.logo)}" alt="" loading="lazy">
                   <div>
-                    <div class="name ${g.away.winner ? 'winner' : 'loser'}">${esc(g.away.name)}</div>
+                    <div class="name ${awayStarred ? 'starred' : ''} ${g.away.winner ? 'winner' : 'loser'}">${awayStarred ? '⭐ ' : ''}${esc(g.away.name)}</div>
                     <div class="rec">${esc(g.away.record)}</div>
                   </div>
                 </div>
                 <span class="inlineScore ${g.away.winner ? 'winner' : 'loser'}">${g.away.score}</span>
               </div>
               <div class="at">@</div>
-              <div class="team">
+              <div class="team" onclick="toggleStar('${esc(g.home.name)}', event)">
                 <div class="teamLeft">
-                  <img class="logo" src="${esc(g.home.logo)}" alt="${esc(g.home.name)}" loading="lazy">
+                  <img class="logo" src="${esc(g.home.logo)}" alt="" loading="lazy">
                   <div>
-                    <div class="name ${g.home.winner ? 'winner' : 'loser'}">${esc(g.home.name)}</div>
+                    <div class="name ${homeStarred ? 'starred' : ''} ${g.home.winner ? 'winner' : 'loser'}">${homeStarred ? '⭐ ' : ''}${esc(g.home.name)}</div>
                     <div class="rec">${esc(g.home.record)}</div>
                   </div>
                 </div>
@@ -1382,10 +1327,7 @@
               <div class="statBox"><span class="label">Lean</span>${reportersCellHTML(g)}</div>
               <div class="statBox"><span class="label">Broadcast</span><span class="pick">${esc(g.broadcasts.join(', ') || '—')}</span></div>
             </div>
-            <div class="why">
-              <span class="label">Final Result</span>
-              <b>Final:</b> ${esc(g.away.name)} ${g.away.score} – ${g.home.score} ${esc(g.home.name)}${g.note ? ` · ${esc(g.note)}` : ''}${g.venue ? `<small>📍 ${esc(g.venue)}</small>` : ''}
-            </div>
+            <div class="why"><span class="label">Final Result</span><b>Final:</b> ${esc(g.away.name)} ${g.away.score} – ${g.home.score} ${esc(g.home.name)}</div>
           </article>`;
       }
 
@@ -1396,22 +1338,22 @@
             <div class="gameWatchRow"><span class="pick">${esc(winnerName)} ${isTie ? '' : 'won'}</span></div>
           </div>
           <div class="match">
-            <div class="team">
+            <div class="team" onclick="toggleStar('${esc(g.away.name)}', event)">
               <div class="teamLeft">
-                <img class="logo" src="${esc(g.away.logo)}" alt="${esc(g.away.name)}" loading="lazy">
+                <img class="logo" src="${esc(g.away.logo)}" alt="" loading="lazy">
                 <div>
-                  <div class="name ${g.away.winner ? 'winner' : 'loser'}">${esc(g.away.name)}</div>
+                  <div class="name ${awayStarred ? 'starred' : ''} ${g.away.winner ? 'winner' : 'loser'}">${awayStarred ? '⭐ ' : ''}${esc(g.away.name)}</div>
                   <div class="rec">${esc(g.away.record)}</div>
                 </div>
               </div>
               <span class="teamRole scoreFinal ${g.away.winner ? 'winner' : 'loser'}">${g.away.score}</span>
             </div>
             <div class="at">@</div>
-            <div class="team">
+            <div class="team" onclick="toggleStar('${esc(g.home.name)}', event)">
               <div class="teamLeft">
-                <img class="logo" src="${esc(g.home.logo)}" alt="${esc(g.home.name)}" loading="lazy">
+                <img class="logo" src="${esc(g.home.logo)}" alt="" loading="lazy">
                 <div>
-                  <div class="name ${g.home.winner ? 'winner' : 'loser'}">${esc(g.home.name)}</div>
+                  <div class="name ${homeStarred ? 'starred' : ''} ${g.home.winner ? 'winner' : 'loser'}">${homeStarred ? '⭐ ' : ''}${esc(g.home.name)}</div>
                   <div class="rec">${esc(g.home.record)}</div>
                 </div>
               </div>
@@ -1435,7 +1377,7 @@
 
       const liveBtn = el('liveFilterBtn');
       if (liveBtn) {
-        liveBtn.textContent = liveCount > 0 ? `🔴 Live Now (${liveCount})` : '🔴 Live Now';
+        liveBtn.textContent = liveCount > 0 ? `🔴 Live (${liveCount})` : '🔴 Live';
         liveBtn.disabled = liveCount === 0;
       }
 
@@ -1443,7 +1385,7 @@
       const bestEl = el('best');
       const colheadsEl = el('colheads');
       const upcoming = all.filter((g) => !g.completed);
-      const showBest = !allCompleted && upcoming.length > 3;
+      const showBest = !allCompleted && upcoming.length > 2;
 
       const scopeLabel = c.mode === 'calendar' && calendarSpan !== 'daily' ? 'This Period' : '';
 
@@ -1461,23 +1403,22 @@
           : '<div>Cairo / Live</div><div>Matchup / Record</div><div>Line</div><div>O/U</div><div>Lean</div><div>Broadcast</div><div>Watch</div><div>Why watch</div>';
       }
 
-      const games = all.filter((g) =>
-        filter === 'all' ||
-        (filter === 'live' && g.live) ||
-        (filter === 'best' && g.watch >= c.bestThreshold) ||
-        (filter === 'prime' && g.prime) ||
-        (filter === 'shootout' && g.total >= c.shootoutThreshold)
-      );
+      const games = all.filter((g) => {
+        if (filter === 'live') return g.live;
+        if (filter === 'best') return g.watch >= c.bestThreshold;
+        if (filter === 'evening') return g.evening;
+        if (filter === 'prime') return g.prime;
+        if (filter === 'starred') return starredTeams.has(g.away.name) || starredTeams.has(g.home.name);
+        return true;
+      });
 
       if (bestEl && showBest) {
         const pool = upcoming.length ? upcoming : all;
-        const best = [...pool].sort((a, b) => b.watch - a.watch).slice(0, 4);
+        const best = [...pool].sort((a, b) => b.watch - a.watch).slice(0, 5);
         bestEl.innerHTML = best.map((g, i) => `
           <div class="bestCard">
             <b>#${i + 1} ${esc(g.away.name)} @ ${esc(g.home.name)}</b>
-            <span>${g.live
-              ? `🔴 LIVE (${esc(g.status)}) · ${g.away.score}–${g.home.score}`
-              : `${esc(cairo(g.date))}`} · Watch ${g.watch}/100 · Lean ${esc(g.lean.favoredTeam)} (${esc(g.lean.confidence)})</span>
+            <span>${g.live ? `🔴 LIVE (${esc(g.status)})` : esc(cairo(g.date))} · Watch ${g.watch}/100</span>
           </div>`).join('');
       }
 
@@ -1496,8 +1437,8 @@
       const listEl = el('list');
       if (listEl) {
         listEl.innerHTML = chunks.join('') || `<div class="empty">${
-          filter === 'live'
-            ? `No ${c.name} games are live right now.`
+          filter === 'starred'
+            ? `No games found for your starred teams in this view. Tap team names to star them!`
             : `No ${c.name} games scheduled or matching this filter.`
         }</div>`;
       }
@@ -1515,50 +1456,33 @@
       if (!modal || !content) return;
 
       content.innerHTML = `
-        <div class="modalTitle" id="modalTitle">📊 ${cfg().name} Model Lean Breakdown</div>
+        <div class="modalTitle">📊 ${cfg().name} Model Lean Breakdown</div>
         <div class="modalSubtitle">${esc(g.away.name)} @ ${esc(g.home.name)}</div>
-
         <div class="modalSection">
           <b>Model Lean</b>
           <span><b>${esc(g.lean.favoredTeam)}</b> · ${esc(g.lean.favoredProb)}% win probability · ${esc(g.lean.confidence)} confidence</span>
         </div>
-
         <div class="modalSection">
           <b>Probability Split</b>
           <span>${esc(g.away.abbr || g.away.name)}: ${g.lean.awayProb}% &nbsp;·&nbsp; ${esc(g.home.abbr || g.home.name)}: ${g.lean.homeProb}%</span>
         </div>
-
         <div class="modalSection">
           <b>Market Line</b>
-          <span>Spread/Line: <b>${esc(g.details)}</b>${Number.isFinite(g.spread) ? ` (${esc(g.provider)})` : ''} · O/U ${esc(g.total ?? '—')}</span>
+          <span>Spread: <b>${esc(g.details)}</b> · O/U ${esc(g.total ?? '—')}</span>
         </div>
-
-        <div class="modalSection">
-          <b>Venue</b>
-          <span>${esc(g.venue || 'To be announced')}</span>
-        </div>
-
-        <p style="font-size:11px;color:var(--mut);margin:12px 0 0;line-height:1.5;">
-          ⚠️ This is a transparent probability model derived from ESPN projections and sportsbook lines. It is <b>not</b> a scraped staff pick.
-        </p>
       `;
-
       lastFocused = document.activeElement;
       modal.classList.add('open');
       closeBtn?.focus();
     }
 
     function closeModal() {
-      const modal = el('reportersModal');
-      if (!modal) return;
-      modal.classList.remove('open');
+      el('reportersModal')?.classList.remove('open');
+      el('guideModal')?.classList.remove('open');
       if (lastFocused && typeof lastFocused.focus === 'function') lastFocused.focus();
     }
 
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape') closeModal();
-    });
-
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeModal(); });
     document.addEventListener('click', (e) => {
       const target = /** @type {HTMLElement} */ (e.target);
       if (!target) return;
@@ -1572,14 +1496,17 @@
       if (target.closest?.('.modalClose')) closeModal();
     });
 
+    el('guideBtn')?.addEventListener('click', () => {
+      lastFocused = document.activeElement;
+      el('guideModal')?.classList.add('open');
+      el('guideModal')?.querySelector('.modalClose')?.focus();
+    });
+
     const themeBtn = el('themeToggle');
     function applyTheme(theme) {
       document.documentElement.setAttribute('data-theme', theme);
       localStorage.setItem('nfl-cairo-theme', theme);
-      if (themeBtn) {
-        themeBtn.textContent = theme === 'light' ? '🌙 Dark' : '☀️ Light';
-        themeBtn.setAttribute('aria-pressed', String(theme === 'light'));
-      }
+      if (themeBtn) themeBtn.textContent = theme === 'light' ? '🌙' : '☀️';
       const meta = el('themeMeta');
       if (meta) meta.setAttribute('content', theme === 'light' ? '#f3f6fa' : '#090c11');
     }
@@ -1629,9 +1556,7 @@
     if (dateInput) {
       dateInput.value = getUSDateString(0);
       dateInput.addEventListener('change', () => {
-        if (monthInput && dateInput.value) {
-          monthInput.value = dateInput.value.slice(0, 7);
-        }
+        if (monthInput && dateInput.value) monthInput.value = dateInput.value.slice(0, 7);
         load();
       });
     }
@@ -1659,15 +1584,8 @@
       load();
     });
 
-    el('prevWeekBtn')?.addEventListener('click', () => {
-      weekAnchorTime -= 7 * 86400 * 1000;
-      load();
-    });
-
-    el('nextWeekBtn')?.addEventListener('click', () => {
-      weekAnchorTime += 7 * 86400 * 1000;
-      load();
-    });
+    el('prevWeekBtn')?.addEventListener('click', () => { weekAnchorTime -= 7 * 86400 * 1000; load(); });
+    el('nextWeekBtn')?.addEventListener('click', () => { weekAnchorTime += 7 * 86400 * 1000; load(); });
 
     el('prevMonthBtn')?.addEventListener('click', () => {
       if (!monthInput) return;
@@ -1722,7 +1640,6 @@
         post.appendChild(o);
       });
       weekSelect.appendChild(post);
-
       weekSelect.addEventListener('change', () => load());
     }
 
@@ -1744,9 +1661,6 @@
         b.classList.toggle('active', /** @type {HTMLElement} */ (b).dataset.span === calendarSpan);
       });
 
-      const shootoutBtn = el('shootoutBtn');
-      if (shootoutBtn) shootoutBtn.textContent = `O/U ${c.shootoutThreshold}+`;
-
       const hubTitle = el('hubTitle');
       if (hubTitle) hubTitle.textContent = `${c.name} Cairo Auto Hub`;
     }
@@ -1757,10 +1671,8 @@
         if (!nextSport || nextSport === currentSport || !SPORTS[nextSport]) return;
         currentSport = nextSport;
         localStorage.setItem('us-sports-cairo-sport', currentSport);
-
         filter = 'all';
         filterButtons.forEach((x) => x.classList.toggle('active', /** @type {HTMLElement} */ (x).dataset.filter === 'all'));
-
         syncSportUI();
         load();
       });
@@ -1813,9 +1725,7 @@
 
           season = j.leagues?.[0]?.season?.year || season;
           currentWeek = j.week?.number || currentWeek;
-          if (j.week?.number && !weekSelect?.value?.startsWith('3-')) {
-            label = `W${currentWeek}`;
-          }
+          if (j.week?.number && !weekSelect?.value?.startsWith('3-')) label = `W${currentWeek}`;
           events = j.events || [];
         } else if (calendarSpan === 'weekly') {
           const wk = getWeeklyDateStrings(weekAnchorTime);
@@ -1823,9 +1733,7 @@
           if (weekRangeLabel) weekRangeLabel.textContent = wk.label;
 
           const fetched = await fetchDatesEvents(c.endpoint, wk.dateStrings, genId, (done, total) => {
-            if (!silent && statusEl && genId === loadGeneration) {
-              statusEl.textContent = `LOADING WEEK (${done}/${total} DAYS)…`;
-            }
+            if (!silent && statusEl && genId === loadGeneration) statusEl.textContent = `LOADING (${done}/${total}D)…`;
           });
           if (fetched === null || genId !== loadGeneration) return;
           events = fetched;
@@ -1836,9 +1744,7 @@
           const dateStrings = getMonthlyDateStrings(yyyyMm);
 
           const fetched = await fetchDatesEvents(c.endpoint, dateStrings, genId, (done, total) => {
-            if (!silent && statusEl && genId === loadGeneration) {
-              statusEl.textContent = `LOADING ${label} (${done}/${total} DAYS)…`;
-            }
+            if (!silent && statusEl && genId === loadGeneration) statusEl.textContent = `LOADING (${done}/${total}D)…`;
           });
           if (fetched === null || genId !== loadGeneration) return;
           events = fetched;
@@ -1865,7 +1771,7 @@
 
         if (statusEl) {
           if (liveCount > 0) {
-            statusEl.textContent = `🔴 ${liveCount} LIVE · ${c.name} ${label} · AUTO-60S`;
+            statusEl.textContent = `🔴 ${liveCount} LIVE · ${c.name} ${label}`;
             statusEl.className = 'status liveNow';
           } else {
             statusEl.textContent = `${c.name} · ${label} · ${all.length} GAMES`;
@@ -1878,11 +1784,11 @@
       } catch (err) {
         if (genId !== loadGeneration) return;
         if (!silent && statusEl) {
-          statusEl.textContent = 'OFFLINE / ERROR';
+          statusEl.textContent = 'ERROR';
           statusEl.className = 'status error';
           const listEl = el('list');
           if (listEl) {
-            listEl.innerHTML = `<div class="empty"><b>Could not load the ${c.name} scoreboard.</b><br>${esc(err.message || String(err))}<br><br>Check your connection and tap Refresh.</div>`;
+            listEl.innerHTML = `<div class="empty"><b>Could not load ${c.name} scoreboard.</b><br>${esc(err.message || String(err))}</div>`;
           }
         }
       } finally {
@@ -1893,11 +1799,9 @@
     (function autoWeek() {
       if (!weekSelect) return;
       const saved = localStorage.getItem('nfl-cairo-week');
-      if (saved) { weekSelect.value = saved; }
-      else { weekSelect.value = '2-10'; }
-      weekSelect.addEventListener('change', () => {
-        localStorage.setItem('nfl-cairo-week', weekSelect.value);
-      });
+      if (saved) weekSelect.value = saved;
+      else weekSelect.value = '2-10';
+      weekSelect.addEventListener('change', () => localStorage.setItem('nfl-cairo-week', weekSelect.value));
     })();
 
     syncSportUI();
