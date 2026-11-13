@@ -1,50 +1,60 @@
-const CACHE_NAME = 'nfl-cairo-hub-v6';
-const APP_SHELL = [
+// NFL Cairo Auto Hub — service worker
+const CACHE = 'nfl-cairo-v2';
+const PRECACHE = [
   './',
   './index.html',
   './manifest.json',
-  './icon.svg'
+  './icon.svg',
+  './offline.html'
 ];
 
-// Install: Cache core app shell
-self.addEventListener('install', event => {
+self.addEventListener('install', (event) => {
   event.waitUntil(
-    caches.open(CACHE_NAME).then(cache => cache.addAll(APP_SHELL))
+    caches.open(CACHE).then((c) => c.addAll(PRECACHE)).then(() => self.skipWaiting())
   );
-  self.skipWaiting();
 });
 
-// Activate: Clean up old caches
-self.addEventListener('activate', event => {
+self.addEventListener('activate', (event) => {
   event.waitUntil(
-    caches.keys().then(keys =>
-      Promise.all(keys.filter(k => k !== CACHE_NAME).map(k => caches.delete(k)))
-    )
+    caches.keys().then((keys) =>
+      Promise.all(keys.filter((k) => k !== CACHE).map((k) => caches.delete(k)))
+    ).then(() => self.clients.claim())
   );
-  self.clients.claim();
 });
 
-// Fetch: Network-first for ESPN API (with offline cache fallback), Cache-first for static assets
-self.addEventListener('fetch', event => {
-  const url = new URL(event.request.url);
+self.addEventListener('fetch', (event) => {
+  const req = event.request;
 
-  if (url.hostname.includes('espn.com')) {
+  // Never cache ESPN API — always network, but fall back gracefully
+  if (req.url.includes('site.api.espn.com')) {
     event.respondWith(
-      fetch(event.request)
-        .then(response => {
-          const clone = response.clone();
-          caches.open(CACHE_NAME).then(cache => cache.put(event.request, clone));
-          return response;
-        })
-        .catch(() => caches.match(event.request))
+      fetch(req).catch(() => new Response(JSON.stringify({ events: [] }), {
+        headers: { 'Content-Type': 'application/json' }
+      }))
     );
     return;
   }
 
-  event.respondWith(
-    caches.match(event.request).then(cached => cached || fetch(event.request))
-  );
-});
-```eof
+  // Cache-first for shell assets
+  if (req.method === 'GET' && req.url.startsWith(self.location.origin)) {
+    event.respondWith(
+      caches.match(req).then((cached) => {
+        if (cached) return cached;
+        return fetch(req).then((res) => {
+          const copy = res.clone();
+          caches.open(CACHE).then((c) => c.put(req, copy)).catch(() => {});
+          return res;
+        }).catch(() => caches.match('./offline.html'));
+      })
+    );
+    return;
+  }
 
-I've generated the updated service worker file. Save this as `sw.js` alongside your `index.html` file to keep your offline caching fully synchronized with the new narrative insights!
+  // Default: network
+  event.respondWith(fetch(req).catch(() => caches.match('./offline.html')));
+});
+
+// Allow page to request SW update skip
+self.addEventListener('message', (e) => {
+  if (e.data === 'SKIP_WAITING') self.skipWaiting();
+});
