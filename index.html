@@ -469,7 +469,7 @@
 
     .colheads {
       display: grid;
-      grid-template-columns: 105px minmax(260px, 1.4fr) 85px 60px 135px 115px 95px minmax(220px, 1.3fr);
+      grid-template-columns: 120px minmax(260px, 1.4fr) 85px 60px 135px 115px 95px minmax(220px, 1.3fr);
       gap: 10px;
       padding: 10px 14px 4px;
       color: var(--mut);
@@ -481,7 +481,7 @@
 
     .game {
       display: grid;
-      grid-template-columns: 105px minmax(260px, 1.4fr) 85px 60px 135px 115px 95px minmax(220px, 1.3fr);
+      grid-template-columns: 120px minmax(260px, 1.4fr) 85px 60px 135px 115px 95px minmax(220px, 1.3fr);
       gap: 10px;
       align-items: center;
       background: var(--card);
@@ -497,12 +497,19 @@
     .game.hot { border-left: 4px solid var(--gold); }
     .game.liveCard { border-left: 4px solid var(--red); }
 
-    .time { font-weight: 900; font-size: 12px; }
-    .tzTag {
+    .time { font-weight: 900; font-size: 11.5px; display: block; }
+    .subDate {
       font-size: 9.5px;
       font-weight: 800;
       color: var(--mut);
-      margin-left: 3px;
+      display: block;
+      margin-top: 1px;
+    }
+    .tzTag {
+      font-size: 9px;
+      font-weight: 800;
+      color: var(--mut);
+      margin-left: 2px;
     }
 
     @keyframes pulseDot {
@@ -1089,6 +1096,9 @@
     const fmtTime = new Intl.DateTimeFormat('en-GB', {
       timeZone: 'Africa/Cairo', hour: '2-digit', minute: '2-digit', hour12: false
     });
+    const fmtShortDate = new Intl.DateTimeFormat('en-GB', {
+      timeZone: 'Africa/Cairo', weekday: 'short', day: 'numeric', month: 'short'
+    });
     const fmtMonthLabel = new Intl.DateTimeFormat('en-US', {
       timeZone: 'UTC', month: 'long', year: 'numeric'
     });
@@ -1096,9 +1106,9 @@
       timeZone: 'UTC', day: 'numeric', month: 'short'
     });
 
-    const cairo = (d) => { try { return `${fmtDate.format(new Date(d))} EET`; } catch { return d; } };
     const day = (d) => { try { return fmtDay.format(new Date(d)); } catch { return 'Schedule Date'; } };
     const cairoTime = (d) => { try { return fmtTime.format(new Date(d)); } catch { return '—'; } };
+    const cairoShortDate = (d) => { try { return fmtShortDate.format(new Date(d)); } catch { return ''; } };
 
     function winPct(r) {
       if (!r) return 50;
@@ -1357,9 +1367,10 @@
 
     function renderUpcomingCard(g) {
       const c = cfg();
+      const dateSub = sortMode === 'watch' ? `<span class="subDate">${esc(cairoShortDate(g.date))}</span>` : '';
       const timeOrLive = g.live
         ? `<span class="livePill"><span class="liveDot"></span>LIVE</span><span class="liveClock">${esc(g.status)}</span>`
-        : `<span class="time">${esc(cairoTime(g.date))}<span class="tzTag">EET</span></span>`;
+        : `<div><span class="time">${esc(cairoTime(g.date))}<span class="tzTag">EET</span></span>${dateSub}</div>`;
 
       const awayStarred = starredTeams.has(g.away.name);
       const homeStarred = starredTeams.has(g.home.name);
@@ -1419,10 +1430,11 @@
       const finalBadge = `FINAL: ${g.away.score}–${g.home.score}`;
 
       if (compact) {
+        const dateSub = sortMode === 'watch' ? `<span class="subDate">${esc(cairoShortDate(g.date))}</span>` : '';
         return `
           <article class="game">
             <div class="gameTop">
-              <div><span class="finalTag">${esc(finalBadge)}</span></div>
+              <div><span class="finalTag">${esc(finalBadge)}</span>${dateSub}</div>
               <div class="gameWatchRow"><span class="winnerCallout">${esc(winnerName)} ${isTie ? '' : 'won'}</span></div>
             </div>
             <div class="match">
@@ -1458,10 +1470,11 @@
           </article>`;
       }
 
+      const dateSub = sortMode === 'watch' ? `<span class="subDate">${esc(cairoShortDate(g.date))}</span>` : '';
       return `
         <article class="game">
           <div class="gameTop">
-            <div><span class="finalTag">${esc(finalBadge)}</span></div>
+            <div><span class="finalTag">${esc(finalBadge)}</span>${dateSub}</div>
             <div class="gameWatchRow"><span class="winnerCallout">${esc(winnerName)} ${isTie ? '' : 'won'}</span></div>
           </div>
           <div class="match">
