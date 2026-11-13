@@ -38,7 +38,7 @@
       --g-bg: #153225;
       --g-border: #32624b;
       --gold: #ffc857;
-      --gold-grad: linear-gradient(145deg, #2c2615, #141a23);
+      --gold-grad: linear-gradient(145deg, #252116, #141a23);
       --gold-border: #665526;
       --blue: #6eb0ff;
       --blue-bg: #172c48;
@@ -71,7 +71,7 @@
       --g-bg: #e6f7ef;
       --g-border: #9be0be;
       --gold: #b46900;
-      --gold-grad: linear-gradient(145deg, #fff8e6, #ffffff);
+      --gold-grad: linear-gradient(145deg, #fff9eb, #ffffff);
       --gold-border: #f2cf7e;
       --blue: #175cd3;
       --blue-bg: #e8f1ff;
@@ -104,7 +104,7 @@
     .wrap {
       max-width: 1340px;
       margin: auto;
-      padding: calc(14px + env(safe-area-inset-top)) 12px calc(48px + env(safe-area-inset-bottom));
+      padding: calc(14px + env(safe-area-inset-top)) 14px calc(48px + env(safe-area-inset-bottom));
     }
 
     .top {
@@ -116,15 +116,15 @@
       margin-bottom: 10px;
     }
 
-    .brand { flex: 1; min-width: 200px; }
+    .brand { flex: 1; min-width: 210px; }
 
     .eyebrow {
       color: var(--g);
       font-size: 9.5px;
       font-weight: 900;
-      letter-spacing: 1.2px;
+      letter-spacing: 1px;
       text-transform: uppercase;
-      margin-bottom: 1px;
+      margin-bottom: 2px;
     }
 
     .top h1 {
@@ -184,11 +184,28 @@
       display: none;
     }
 
+    /* Scroll Fade Wrapper to signal horizontal scroll & avoid floating edge overlays */
+    .scrollFadeWrap {
+      position: relative;
+      margin-right: -4px;
+    }
+    .scrollFadeWrap::after {
+      content: "";
+      position: absolute;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      width: 28px;
+      background: linear-gradient(to right, transparent, var(--bg));
+      pointer-events: none;
+    }
+
     /* Sport Switcher Bar */
     .sportBar {
       display: flex;
       gap: 6px;
       margin: 8px 0 10px;
+      padding-right: 28px;
       overflow-x: auto;
       scrollbar-width: none;
     }
@@ -235,7 +252,7 @@
       display: flex;
       flex-direction: column;
       gap: 6px;
-      margin: 8px 0 12px;
+      margin: 8px 0 14px;
     }
 
     .controlRow {
@@ -243,7 +260,7 @@
       align-items: center;
       gap: 6px;
       overflow-x: auto;
-      padding-bottom: 2px;
+      padding: 0 28px 2px 0;
       scrollbar-width: none;
     }
     .controlRow::-webkit-scrollbar { display: none; }
@@ -330,15 +347,20 @@
     }
 
     .controlRow button:disabled {
-      opacity: 0.5;
+      opacity: 0.45;
       cursor: not-allowed;
     }
 
-    /* Horizontal Swipe Best Games Reel */
+    /* Horizontal Swipe Best Games Reel - High Contrast Fix */
+    .bestHeader {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin: 14px 0 8px;
+    }
     .bestTitle {
       font-size: 15px;
       font-weight: 900;
-      margin: 14px 0 6px;
       letter-spacing: -0.2px;
     }
 
@@ -348,47 +370,62 @@
       overflow-x: auto;
       scroll-snap-type: x mandatory;
       scrollbar-width: none;
-      padding-bottom: 4px;
+      padding: 0 28px 4px 0;
     }
     .best-scroll::-webkit-scrollbar { display: none; }
 
     .bestCard {
-      flex: 0 0 240px;
+      flex: 0 0 250px;
       scroll-snap-align: start;
       background: var(--gold-grad);
       border: 1px solid var(--gold-border);
       border-radius: 10px;
-      padding: 10px 12px;
+      padding: 11px 12px;
       box-shadow: var(--shadow);
     }
 
-    .bestCard b {
-      display: block;
-      color: var(--gold);
-      font-size: 12.5px;
-      line-height: 1.25;
+    .bestCardTop {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 3px;
+    }
+    .bestRank {
+      background: var(--gold);
+      color: #10141a;
+      font-size: 10px;
+      font-weight: 950;
+      padding: 1px 6px;
+      border-radius: 4px;
+      flex-shrink: 0;
+    }
+    .bestMatchTitle {
+      color: var(--txt);
+      font-size: 13px;
+      font-weight: 900;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
     }
 
-    .bestCard span {
+    .bestCardMeta {
       display: block;
       color: var(--txt-soft);
-      font-size: 10.5px;
+      font-size: 11px;
       line-height: 1.35;
       margin-top: 3px;
     }
 
+    /* Generous Day Header Spacing */
     .day {
       display: flex;
       align-items: center;
-      gap: 8px;
-      margin: 18px 2px 6px;
+      gap: 10px;
+      margin: 26px 2px 10px;
       font-size: 11.5px;
       font-weight: 900;
       text-transform: uppercase;
-      letter-spacing: 0.5px;
+      letter-spacing: 0.6px;
       color: var(--txt-soft);
     }
 
@@ -401,7 +438,7 @@
 
     .colheads {
       display: grid;
-      grid-template-columns: 95px minmax(260px, 1.4fr) 85px 60px 135px 115px 85px minmax(220px, 1.3fr);
+      grid-template-columns: 105px minmax(260px, 1.4fr) 85px 60px 135px 115px 95px minmax(220px, 1.3fr);
       gap: 10px;
       padding: 10px 12px 4px;
       color: var(--mut);
@@ -413,14 +450,14 @@
 
     .game {
       display: grid;
-      grid-template-columns: 95px minmax(260px, 1.4fr) 85px 60px 135px 115px 85px minmax(220px, 1.3fr);
+      grid-template-columns: 105px minmax(260px, 1.4fr) 85px 60px 135px 115px 95px minmax(220px, 1.3fr);
       gap: 10px;
       align-items: center;
       background: var(--card);
       border: 1px solid var(--line);
       border-radius: 11px;
-      padding: 11px 13px;
-      margin: 5px 0;
+      padding: 12px 13px;
+      margin: 7px 0;
       box-shadow: var(--shadow);
     }
 
@@ -428,6 +465,12 @@
     .game.liveCard { border-left: 4px solid var(--red); }
 
     .time { font-weight: 900; font-size: 12px; }
+    .tzTag {
+      font-size: 9.5px;
+      font-weight: 800;
+      color: var(--mut);
+      margin-left: 3px;
+    }
 
     @keyframes pulseDot {
       0%, 100% { opacity: 1; transform: scale(1); }
@@ -447,20 +490,20 @@
       border: 1px solid var(--red-border);
       color: var(--red);
       border-radius: 5px;
-      padding: 3px 5px;
-      font-size: 9px;
+      padding: 3px 6px;
+      font-size: 9.5px;
       font-weight: 900;
     }
     .liveDot {
-      width: 5px;
-      height: 5px;
+      width: 6px;
+      height: 6px;
       border-radius: 50%;
       background: var(--red);
       animation: pulseDot 1.3s infinite ease-in-out;
     }
     .liveClock {
       display: block;
-      font-size: 9.5px;
+      font-size: 10px;
       font-weight: 800;
       color: var(--red);
       margin-top: 2px;
@@ -480,7 +523,7 @@
       gap: 6px;
       min-width: 0;
       cursor: pointer;
-      padding: 2px 4px;
+      padding: 3px 5px;
       border-radius: 6px;
       transition: background 0.15s ease;
     }
@@ -495,7 +538,7 @@
 
     .name {
       font-weight: 900;
-      font-size: 12.5px;
+      font-size: 13px;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
@@ -509,9 +552,9 @@
     }
 
     .inlineScore {
-      font-size: 16px;
+      font-size: 17px;
       font-weight: 950;
-      padding-left: 4px;
+      padding-left: 6px;
       flex-shrink: 0;
     }
 
@@ -535,10 +578,15 @@
 
     .value { font-weight: 900; color: var(--blue); font-size: 12px; }
     .total.high { color: var(--orange); }
-    .reporters { font-weight: 900; color: var(--purple); font-size: 11px; }
+    .reporters { font-weight: 900; color: var(--purple); font-size: 11.5px; }
     .reporters small { display: block; font-size: 8.5px; color: var(--mut); font-weight: 700; }
     .pick { font-weight: 800; color: var(--g); font-size: 11.5px; }
-    .watch { font-size: 17px; font-weight: 950; color: var(--gold); line-height: 1.1; }
+    .winnerCallout {
+      font-weight: 900;
+      color: var(--g);
+      font-size: 12px;
+    }
+    .watch { font-size: 15.5px; font-weight: 950; color: var(--gold); line-height: 1.1; }
     .watchMax { font-size: 9.5px; color: var(--mut); font-weight: 700; }
 
     .why {
@@ -551,7 +599,7 @@
     .tags { display: flex; flex-wrap: wrap; gap: 3px; margin-top: 3px; }
     .tag {
       display: inline-block;
-      padding: 2px 4px;
+      padding: 2px 5px;
       border-radius: 4px;
       background: var(--g-bg);
       color: var(--g);
@@ -569,11 +617,12 @@
       display: inline-block;
       background: var(--chip-bg);
       border: 1px solid var(--chip-border);
-      color: var(--txt-soft);
+      color: var(--txt);
       border-radius: 5px;
-      padding: 3px 6px;
-      font-size: 9px;
+      padding: 3px 7px;
+      font-size: 9.5px;
       font-weight: 900;
+      letter-spacing: 0.4px;
     }
     .resultNote { color: var(--txt-soft); font-size: 11px; line-height: 1.35; }
 
@@ -714,7 +763,7 @@
       .team {
         justify-content: space-between;
         background: var(--card-sub);
-        padding: 6px 8px;
+        padding: 7px 9px;
         border-radius: 7px;
         border: 1px solid var(--line);
       }
@@ -739,7 +788,7 @@
   <main class="wrap">
     <header class="top">
       <div class="brand">
-        <div class="eyebrow">NO KEY · NO ACCOUNT · LIVE JSON · AUTO-POLL</div>
+        <div class="eyebrow">LIVE SCORES · CAIRO TIME · NO LOGIN REQUIRED</div>
         <h1 id="hubTitle">US Sports Cairo Auto Hub</h1>
       </div>
       <div class="topActions">
@@ -756,65 +805,77 @@
     </div>
 
     <!-- Sport Selector Toggle -->
-    <nav class="sportBar" id="sportBar" aria-label="Select US Sport">
-      <button class="sportBtn active" data-sport="nfl" type="button">🏈 NFL</button>
-      <button class="sportBtn" data-sport="nba" type="button">🏀 NBA</button>
-      <button class="sportBtn" data-sport="mlb" type="button">⚾ MLB</button>
-      <button class="sportBtn" data-sport="nhl" type="button">🏒 NHL</button>
-    </nav>
+    <div class="scrollFadeWrap">
+      <nav class="sportBar" id="sportBar" aria-label="Select US Sport">
+        <button class="sportBtn active" data-sport="nfl" type="button">🏈 NFL</button>
+        <button class="sportBtn" data-sport="nba" type="button">🏀 NBA</button>
+        <button class="sportBtn" data-sport="mlb" type="button">⚾ MLB</button>
+        <button class="sportBtn" data-sport="nhl" type="button">🏒 NHL</button>
+      </nav>
+    </div>
 
     <!-- Clean Two-Tier Controls Section -->
     <div class="controlsWrap">
-      <!-- Row 1: Span / Date / Week / Month Navigation -->
-      <div class="controlRow">
-        <select id="week" aria-label="Select NFL Week or Postseason Round"></select>
+      <!-- Row 1: Span / Date / Week / Month Navigation & Sort Toggle -->
+      <div class="scrollFadeWrap">
+        <div class="controlRow">
+          <select id="week" aria-label="Select NFL Week or Postseason Round"></select>
 
-        <div class="spanToggle" id="spanToggle" style="display:none;" role="group" aria-label="Schedule Span">
-          <button type="button" data-span="daily" class="active">Daily</button>
-          <button type="button" data-span="weekly">Weekly</button>
-          <button type="button" data-span="monthly">Monthly</button>
-        </div>
+          <div class="spanToggle" id="spanToggle" style="display:none;" role="group" aria-label="Schedule Span">
+            <button type="button" data-span="daily" class="active">Daily</button>
+            <button type="button" data-span="weekly">Weekly</button>
+            <button type="button" data-span="monthly">Monthly</button>
+          </div>
 
-        <div class="dateNav" id="dateNav" style="display:none;">
-          <button type="button" id="prevDayBtn" title="Previous Day">◀</button>
-          <input type="date" id="gameDate" aria-label="Select Game Date">
-          <button type="button" id="nextDayBtn" title="Next Day">▶</button>
-        </div>
+          <div class="dateNav" id="dateNav" style="display:none;">
+            <button type="button" id="prevDayBtn" title="Previous Day">◀</button>
+            <input type="date" id="gameDate" aria-label="Select Game Date">
+            <button type="button" id="nextDayBtn" title="Next Day">▶</button>
+          </div>
 
-        <div class="dateNav" id="weekNav" style="display:none;">
-          <button type="button" id="prevWeekBtn" title="Previous Week">◀</button>
-          <span class="rangePill" id="weekRangeLabel">—</span>
-          <button type="button" id="nextWeekBtn" title="Next Week">▶</button>
-        </div>
+          <div class="dateNav" id="weekNav" style="display:none;">
+            <button type="button" id="prevWeekBtn" title="Previous Week">◀</button>
+            <span class="rangePill" id="weekRangeLabel">—</span>
+            <button type="button" id="nextWeekBtn" title="Next Week">▶</button>
+          </div>
 
-        <div class="dateNav" id="monthNav" style="display:none;">
-          <button type="button" id="prevMonthBtn" title="Previous Month">◀</button>
-          <input type="month" id="gameMonth" aria-label="Select Month">
-          <button type="button" id="nextMonthBtn" title="Next Month">▶</button>
+          <div class="dateNav" id="monthNav" style="display:none;">
+            <button type="button" id="prevMonthBtn" title="Previous Month">◀</button>
+            <input type="month" id="gameMonth" aria-label="Select Month">
+            <button type="button" id="nextMonthBtn" title="Next Month">▶</button>
+          </div>
+
+          <button id="sortToggle" type="button" title="Toggle Sort Order">📅 By Date</button>
         </div>
       </div>
 
       <!-- Row 2: View Filter Buttons -->
-      <div class="controlRow">
-        <button class="active" data-filter="all" type="button">All</button>
-        <button data-filter="live" id="liveFilterBtn" type="button">🔴 Live</button>
-        <button data-filter="best" type="button">🔥 Best</button>
-        <button data-filter="evening" type="button">☀️ Evening</button>
-        <button data-filter="prime" type="button">🌙 Prime</button>
-        <button data-filter="starred" type="button">⭐ My Teams</button>
-        <button id="refreshBtn" type="button">↻ Refresh</button>
+      <div class="scrollFadeWrap">
+        <div class="controlRow">
+          <button class="active" data-filter="all" type="button">All</button>
+          <button data-filter="live" id="liveFilterBtn" type="button">🔴 Live</button>
+          <button data-filter="best" type="button">🔥 Best</button>
+          <button data-filter="evening" type="button">☀️ Evening</button>
+          <button data-filter="prime" type="button">🌙 Prime</button>
+          <button data-filter="starred" type="button">⭐ My Teams</button>
+          <button id="refreshBtn" type="button">↻ Refresh</button>
+        </div>
       </div>
     </div>
 
-    <div class="bestTitle" id="bestTitle">🔥 Best Games</div>
-    <section class="best best-scroll" id="best" aria-label="Top games"></section>
+    <div class="bestHeader" id="bestHeader">
+      <div class="bestTitle" id="bestTitle">🔥 Best Games</div>
+    </div>
+    <div class="scrollFadeWrap" id="bestWrap">
+      <section class="best best-scroll" id="best" aria-label="Top games"></section>
+    </div>
 
     <div class="colheads" id="colheads"></div>
 
     <section id="list" aria-live="polite"></section>
 
     <div class="note">
-      <b>Data source:</b> live JSON scoreboards from ESPN. Tap any team name to star/unstar it into <b>⭐ My Teams</b>.
+      <b>Data source:</b> live scoreboards from ESPN (all times shown in Cairo EET). Tap any team name to star/unstar it into <b>⭐ My Teams</b>.
     </div>
   </main>
 
@@ -832,16 +893,16 @@
       <div class="modalSubtitle">How scores, watch rankings, and filters work in Cairo time</div>
 
       <div class="modalSection">
-        <b>🔴 Live Auto-Polling</b>
-        <span>Games in progress update automatically every 60 seconds with live scores and periods.</span>
+        <b>👁️ Watch Score (0–100)</b>
+        <span>An excitement rating (not a TV rating) combining game closeness, O/U scoring potential, team records, and national TV bonuses. 70+ earns <b>BEST GAME</b>.</span>
       </div>
       <div class="modalSection">
-        <b>Watch Score (0–100)</b>
-        <span>Combines game closeness, O/U scoring potential, team records, and national TV bonuses. 70+ earns <b>BEST GAME</b>.</span>
+        <b>📊 Model Pick (Pre-Game Projection)</b>
+        <span>Calculated before kickoff/tipoff from ESPN projections and betting lines. On finished games, it shows the pre-game favorite alongside the final score.</span>
       </div>
       <div class="modalSection">
         <b>☀️ Evening Filter</b>
-        <span>Isolates games starting between 19:00 and 00:30 Cairo time for perfect bedtime viewing.</span>
+        <span>Isolates games starting between 19:00 and 00:30 Cairo time (EET) for easy bedtime viewing.</span>
       </div>
       <div class="modalSection">
         <b>⭐ My Teams</b>
@@ -955,6 +1016,7 @@
     let calendarSpan = localStorage.getItem('us-sports-cairo-span') || 'daily';
     let weekAnchorTime = Date.now();
     let filter = 'all';
+    let sortMode = 'date'; // 'date' | 'watch'
     let season = new Date().getFullYear();
     let currentWeek = 1;
     let autoPollTimer = null;
@@ -988,7 +1050,7 @@
       timeZone: 'UTC', day: 'numeric', month: 'short'
     });
 
-    const cairo = (d) => { try { return fmtDate.format(new Date(d)); } catch { return d; } };
+    const cairo = (d) => { try { return `${fmtDate.format(new Date(d))} EET`; } catch { return d; } };
     const day = (d) => { try { return fmtDay.format(new Date(d)); } catch { return 'Schedule Date'; } };
     const cairoTime = (d) => { try { return fmtTime.format(new Date(d)); } catch { return '—'; } };
 
@@ -1011,7 +1073,7 @@
         const d = new Date(dateStr);
         const cairoHourStr = new Intl.DateTimeFormat('en-GB', { timeZone: 'Africa/Cairo', hour: 'numeric', hour12: false }).format(d);
         const h = parseInt(cairoHourStr, 10);
-        return h >= 19 || h <= 0; // 19:00 to 00:30 Cairo
+        return h >= 19 || h <= 0;
       } catch {
         return false;
       }
@@ -1209,7 +1271,7 @@
       }
       const avg = (winPct(g.away.record) + winPct(g.home.record)) / 2;
       if (avg >= 65) insights.push(`👑 <b>Heavyweight clash:</b> Two top-performing rosters facing off.`);
-      if (!insights.length) insights.push(`📊 Model lean: <b>${esc(g.lean.favoredTeam)}</b> (${esc(g.lean.confidence)} confidence).`);
+      if (!insights.length) insights.push(`📊 Model pick: <b>${esc(g.lean.favoredTeam)}</b> (${esc(g.lean.favoredProb)}% win prob).`);
       if (g.venue) insights.push(`<small>📍 ${esc(g.venue)}</small>`);
       return insights.join('<br>');
     }
@@ -1225,7 +1287,7 @@
 
     function reportersCellHTML(g) {
       return `<span class="reporters clickableReporters" data-game-id="${esc(g.id)}" role="button" tabindex="0">
-        ${esc(g.lean.favoredTeam)}<small>${esc(g.lean.confidence)} · ${esc(g.lean.favoredProb)}%</small>
+        ${esc(g.lean.favoredTeam)}<small>${esc(g.lean.favoredProb)}% win prob</small>
       </span>`;
     }
 
@@ -1233,7 +1295,7 @@
       const c = cfg();
       const timeOrLive = g.live
         ? `<span class="livePill"><span class="liveDot"></span>LIVE</span><span class="liveClock">${esc(g.status)}</span>`
-        : `<span class="time">🕒 ${esc(cairoTime(g.date))}</span>`;
+        : `<span class="time">🕒 ${esc(cairoTime(g.date))}<span class="tzTag">EET</span></span>`;
 
       const awayStarred = starredTeams.has(g.away.name);
       const homeStarred = starredTeams.has(g.home.name);
@@ -1244,8 +1306,8 @@
         <article class="game ${g.live ? 'liveCard' : g.watch >= c.bestThreshold ? 'hot' : ''}">
           <div class="gameTop">
             <div>${timeOrLive}</div>
-            <div class="gameWatchRow">
-              <span class="watch">${g.watch}<span class="watchMax">/100</span></span>
+            <div class="gameWatchRow" title="Excitement & Closeness Rating">
+              <span class="watch">👁️ ${g.watch}<span class="watchMax">/100</span></span>
               <div class="tags">${gameTagsHTML(g)}</div>
             </div>
           </div>
@@ -1256,7 +1318,7 @@
                 <img class="logo" src="${esc(g.away.logo)}" alt="" loading="lazy">
                 <div>
                   <div class="name ${awayStarred ? 'starred' : ''}">${awayStarred ? '⭐ ' : ''}${esc(g.away.name)}</div>
-                  <div class="rec">${esc(g.away.record)}</div>
+                  <div class="rec">Rec: ${esc(g.away.record)}</div>
                 </div>
               </div>
               ${awayScore}
@@ -1267,7 +1329,7 @@
                 <img class="logo" src="${esc(g.home.logo)}" alt="" loading="lazy">
                 <div>
                   <div class="name ${homeStarred ? 'starred' : ''}">${homeStarred ? '⭐ ' : ''}${esc(g.home.name)}</div>
-                  <div class="rec">${esc(g.home.record)}</div>
+                  <div class="rec">Rec: ${esc(g.home.record)}</div>
                 </div>
               </div>
               ${homeScore}
@@ -1275,9 +1337,9 @@
           </div>
 
           <div class="statsGrid">
-            <div class="statBox"><span class="label">Line</span><span class="value">${esc(g.details)}</span></div>
+            <div class="statBox"><span class="label">Spread</span><span class="value">${esc(g.details)}</span></div>
             <div class="statBox"><span class="label">O/U</span><span class="value">${esc(g.total ?? '—')}</span></div>
-            <div class="statBox"><span class="label">Lean</span>${reportersCellHTML(g)}</div>
+            <div class="statBox"><span class="label">Model Pick</span>${reportersCellHTML(g)}</div>
             <div class="statBox"><span class="label">Broadcast</span><span class="pick">${esc(g.broadcasts.join(', ') || 'TBA')}</span></div>
           </div>
 
@@ -1290,13 +1352,14 @@
       const isTie = !g.away.winner && !g.home.winner;
       const awayStarred = starredTeams.has(g.away.name);
       const homeStarred = starredTeams.has(g.home.name);
+      const finalBadge = `FINAL: ${g.away.score}–${g.home.score}`;
 
       if (compact) {
         return `
           <article class="game">
             <div class="gameTop">
-              <div><span class="finalTag">${esc(g.status || 'FINAL')}</span></div>
-              <div class="gameWatchRow"><span class="pick">${esc(winnerName)} ${isTie ? '' : 'won'}</span></div>
+              <div><span class="finalTag">${esc(finalBadge)}</span></div>
+              <div class="gameWatchRow"><span class="winnerCallout">${esc(winnerName)} ${isTie ? '' : 'won'}</span></div>
             </div>
             <div class="match">
               <div class="team" onclick="toggleStar('${esc(g.away.name)}', event)">
@@ -1304,7 +1367,7 @@
                   <img class="logo" src="${esc(g.away.logo)}" alt="" loading="lazy">
                   <div>
                     <div class="name ${awayStarred ? 'starred' : ''} ${g.away.winner ? 'winner' : 'loser'}">${awayStarred ? '⭐ ' : ''}${esc(g.away.name)}</div>
-                    <div class="rec">${esc(g.away.record)}</div>
+                    <div class="rec">Rec: ${esc(g.away.record)}</div>
                   </div>
                 </div>
                 <span class="inlineScore ${g.away.winner ? 'winner' : 'loser'}">${g.away.score}</span>
@@ -1315,16 +1378,16 @@
                   <img class="logo" src="${esc(g.home.logo)}" alt="" loading="lazy">
                   <div>
                     <div class="name ${homeStarred ? 'starred' : ''} ${g.home.winner ? 'winner' : 'loser'}">${homeStarred ? '⭐ ' : ''}${esc(g.home.name)}</div>
-                    <div class="rec">${esc(g.home.record)}</div>
+                    <div class="rec">Rec: ${esc(g.home.record)}</div>
                   </div>
                 </div>
                 <span class="inlineScore ${g.home.winner ? 'winner' : 'loser'}">${g.home.score}</span>
               </div>
             </div>
             <div class="statsGrid">
-              <div class="statBox"><span class="label">Closing Line</span><span class="value">${esc(g.details)}</span></div>
+              <div class="statBox"><span class="label">Closing Spread</span><span class="value">${esc(g.details)}</span></div>
               <div class="statBox"><span class="label">O/U</span><span class="value">${esc(g.total ?? '—')}</span></div>
-              <div class="statBox"><span class="label">Lean</span>${reportersCellHTML(g)}</div>
+              <div class="statBox"><span class="label">Pre-Game Pick</span>${reportersCellHTML(g)}</div>
               <div class="statBox"><span class="label">Broadcast</span><span class="pick">${esc(g.broadcasts.join(', ') || '—')}</span></div>
             </div>
             <div class="why"><span class="label">Final Result</span><b>Final:</b> ${esc(g.away.name)} ${g.away.score} – ${g.home.score} ${esc(g.home.name)}</div>
@@ -1334,8 +1397,8 @@
       return `
         <article class="game">
           <div class="gameTop">
-            <div><span class="finalTag">${esc(g.status || 'FINAL')}</span></div>
-            <div class="gameWatchRow"><span class="pick">${esc(winnerName)} ${isTie ? '' : 'won'}</span></div>
+            <div><span class="finalTag">${esc(finalBadge)}</span></div>
+            <div class="gameWatchRow"><span class="winnerCallout">${esc(winnerName)} ${isTie ? '' : 'won'}</span></div>
           </div>
           <div class="match">
             <div class="team" onclick="toggleStar('${esc(g.away.name)}', event)">
@@ -1343,7 +1406,7 @@
                 <img class="logo" src="${esc(g.away.logo)}" alt="" loading="lazy">
                 <div>
                   <div class="name ${awayStarred ? 'starred' : ''} ${g.away.winner ? 'winner' : 'loser'}">${awayStarred ? '⭐ ' : ''}${esc(g.away.name)}</div>
-                  <div class="rec">${esc(g.away.record)}</div>
+                  <div class="rec">Rec: ${esc(g.away.record)}</div>
                 </div>
               </div>
               <span class="teamRole scoreFinal ${g.away.winner ? 'winner' : 'loser'}">${g.away.score}</span>
@@ -1354,7 +1417,7 @@
                 <img class="logo" src="${esc(g.home.logo)}" alt="" loading="lazy">
                 <div>
                   <div class="name ${homeStarred ? 'starred' : ''} ${g.home.winner ? 'winner' : 'loser'}">${homeStarred ? '⭐ ' : ''}${esc(g.home.name)}</div>
-                  <div class="rec">${esc(g.home.record)}</div>
+                  <div class="rec">Rec: ${esc(g.home.record)}</div>
                 </div>
               </div>
               <span class="teamRole scoreFinal ${g.home.winner ? 'winner' : 'loser'}">${g.home.score}</span>
@@ -1363,8 +1426,8 @@
           <div class="statsGrid">
             <div class="statBox"><span class="label">Away</span><span class="scoreFinal ${g.away.winner ? 'winner' : 'loser'}">${g.away.score}</span></div>
             <div class="statBox"><span class="label">Home</span><span class="scoreFinal ${g.home.winner ? 'winner' : 'loser'}">${g.home.score}</span></div>
-            <div class="statBox"><span class="label">Lean</span>${reportersCellHTML(g)}</div>
-            <div class="statBox"><span class="label">Played</span><span class="value">${esc(cairoTime(g.date))}</span></div>
+            <div class="statBox"><span class="label">Pre-Game Pick</span>${reportersCellHTML(g)}</div>
+            <div class="statBox"><span class="label">Played</span><span class="value">${esc(cairoTime(g.date))} EET</span></div>
           </div>
           <div class="resultNote">${esc(g.note || `${g.away.name} ${g.away.score} – ${g.home.score} ${g.home.name}`)}</div>
         </article>`;
@@ -1381,7 +1444,15 @@
         liveBtn.disabled = liveCount === 0;
       }
 
+      const sortBtn = el('sortToggle');
+      if (sortBtn) {
+        sortBtn.textContent = sortMode === 'watch' ? '🔥 By Watch Score' : '📅 By Date';
+        sortBtn.classList.toggle('active', sortMode === 'watch');
+      }
+
+      const bestHeaderEl = el('bestHeader');
       const bestTitleEl = el('bestTitle');
+      const bestWrapEl = el('bestWrap');
       const bestEl = el('best');
       const colheadsEl = el('colheads');
       const upcoming = all.filter((g) => !g.completed);
@@ -1393,17 +1464,17 @@
         bestTitleEl.textContent = allCompleted
           ? `🏁 ${c.name} Final Scores`
           : `🔥 Best ${c.name} Games ${scopeLabel}`.trim();
-        bestTitleEl.style.display = (allCompleted || showBest) ? '' : 'none';
       }
-      if (bestEl) bestEl.style.display = showBest ? '' : 'none';
+      if (bestHeaderEl) bestHeaderEl.style.display = (allCompleted || showBest) ? 'flex' : 'none';
+      if (bestWrapEl) bestWrapEl.style.display = showBest ? 'block' : 'none';
 
       if (colheadsEl) {
         colheadsEl.innerHTML = allCompleted
-          ? '<div>Status</div><div>Matchup / Record</div><div>Away</div><div>Home</div><div>Lean</div><div>Winner</div><div>Played</div><div>Result note</div>'
-          : '<div>Cairo / Live</div><div>Matchup / Record</div><div>Line</div><div>O/U</div><div>Lean</div><div>Broadcast</div><div>Watch</div><div>Why watch</div>';
+          ? '<div>Status</div><div>Matchup / Record</div><div>Away</div><div>Home</div><div>Pre-Game Pick</div><div>Winner</div><div>Played</div><div>Result note</div>'
+          : '<div>Cairo (EET)</div><div>Matchup / Record</div><div>Spread</div><div>O/U</div><div>Model Pick</div><div>Broadcast</div><div>Watch Rating</div><div>Why watch</div>';
       }
 
-      const games = all.filter((g) => {
+      let games = all.filter((g) => {
         if (filter === 'live') return g.live;
         if (filter === 'best') return g.watch >= c.bestThreshold;
         if (filter === 'evening') return g.evening;
@@ -1412,23 +1483,32 @@
         return true;
       });
 
+      if (sortMode === 'watch') {
+        games = [...games].sort((a, b) => b.watch - a.watch);
+      }
+
       if (bestEl && showBest) {
         const pool = upcoming.length ? upcoming : all;
         const best = [...pool].sort((a, b) => b.watch - a.watch).slice(0, 5);
         bestEl.innerHTML = best.map((g, i) => `
           <div class="bestCard">
-            <b>#${i + 1} ${esc(g.away.name)} @ ${esc(g.home.name)}</b>
-            <span>${g.live ? `🔴 LIVE (${esc(g.status)})` : esc(cairo(g.date))} · Watch ${g.watch}/100</span>
+            <div class="bestCardTop">
+              <span class="bestRank">#${i + 1}</span>
+              <span class="bestMatchTitle">${esc(g.away.name)} @ ${esc(g.home.name)}</span>
+            </div>
+            <span class="bestCardMeta">${g.live ? `🔴 LIVE (${esc(g.status)})` : esc(cairo(g.date))} · 👁️ ${g.watch}/100</span>
           </div>`).join('');
       }
 
       const chunks = [];
       let lastDay = '';
       for (const g of games) {
-        const d = day(g.date);
-        if (d !== lastDay) {
-          chunks.push(`<div class="day">${esc(d)}</div>`);
-          lastDay = d;
+        if (sortMode === 'date') {
+          const d = day(g.date);
+          if (d !== lastDay) {
+            chunks.push(`<div class="day">${esc(d)}</div>`);
+            lastDay = d;
+          }
         }
         if (g.completed) chunks.push(renderFinalCard(g, allCompleted));
         else chunks.push(renderUpcomingCard(g));
@@ -1456,19 +1536,19 @@
       if (!modal || !content) return;
 
       content.innerHTML = `
-        <div class="modalTitle">📊 ${cfg().name} Model Lean Breakdown</div>
+        <div class="modalTitle">📊 ${cfg().name} Pre-Game Model Breakdown</div>
         <div class="modalSubtitle">${esc(g.away.name)} @ ${esc(g.home.name)}</div>
         <div class="modalSection">
-          <b>Model Lean</b>
+          <b>Model Favorite</b>
           <span><b>${esc(g.lean.favoredTeam)}</b> · ${esc(g.lean.favoredProb)}% win probability · ${esc(g.lean.confidence)} confidence</span>
         </div>
         <div class="modalSection">
-          <b>Probability Split</b>
+          <b>Win Probability Split</b>
           <span>${esc(g.away.abbr || g.away.name)}: ${g.lean.awayProb}% &nbsp;·&nbsp; ${esc(g.home.abbr || g.home.name)}: ${g.lean.homeProb}%</span>
         </div>
         <div class="modalSection">
-          <b>Market Line</b>
-          <span>Spread: <b>${esc(g.details)}</b> · O/U ${esc(g.total ?? '—')}</span>
+          <b>Betting Line</b>
+          <span>Spread: <b>${esc(g.details)}</b> · Over/Under ${esc(g.total ?? '—')}</span>
         </div>
       `;
       lastFocused = document.activeElement;
@@ -1500,6 +1580,11 @@
       lastFocused = document.activeElement;
       el('guideModal')?.classList.add('open');
       el('guideModal')?.querySelector('.modalClose')?.focus();
+    });
+
+    el('sortToggle')?.addEventListener('click', () => {
+      sortMode = sortMode === 'date' ? 'watch' : 'date';
+      render();
     });
 
     const themeBtn = el('themeToggle');
@@ -1672,6 +1757,7 @@
         currentSport = nextSport;
         localStorage.setItem('us-sports-cairo-sport', currentSport);
         filter = 'all';
+        sortMode = 'date';
         filterButtons.forEach((x) => x.classList.toggle('active', /** @type {HTMLElement} */ (x).dataset.filter === 'all'));
         syncSportUI();
         load();
@@ -1684,6 +1770,8 @@
         filterButtons.forEach((x) => x.classList.remove('active'));
         b.classList.add('active');
         filter = /** @type {HTMLElement} */ (b).dataset.filter || 'all';
+        if (filter === 'best') sortMode = 'watch';
+        else if (filter === 'all') sortMode = 'date';
         render();
       });
     });
