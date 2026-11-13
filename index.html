@@ -110,13 +110,13 @@
     .top {
       display: flex;
       justify-content: space-between;
-      align-items: center;
+      align-items: flex-start;
       gap: 10px;
       flex-wrap: wrap;
       margin-bottom: 12px;
     }
 
-    .brand { flex: 1; min-width: 210px; }
+    .brand { flex: 1 1 220px; min-width: 0; }
 
     .eyebrow {
       color: var(--g);
@@ -131,7 +131,7 @@
       margin: 0;
       font-size: clamp(20px, 3.2vw, 28px);
       letter-spacing: -0.8px;
-      line-height: 1.1;
+      line-height: 1.15;
     }
 
     .topActions {
@@ -141,15 +141,26 @@
       flex-wrap: wrap;
     }
 
+    .headerBtns {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      flex-shrink: 0;
+    }
+
     .status {
       border: 1px solid var(--g-border);
       background: var(--g-bg);
       color: var(--g);
       border-radius: 8px;
-      padding: 5px 9px;
+      padding: 6px 9px;
       font-size: 10px;
       font-weight: 800;
       letter-spacing: 0.3px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 100%;
     }
 
     .status.liveNow, .status.error {
@@ -174,6 +185,7 @@
       text-decoration: none;
       cursor: pointer;
       box-shadow: var(--shadow);
+      white-space: nowrap;
     }
 
     .iconBtn svg {
@@ -204,7 +216,7 @@
       top: 0;
       right: 0;
       bottom: 0;
-      width: 36px;
+      width: 28px;
       background: linear-gradient(to right, transparent, var(--bg));
       pointer-events: none;
       z-index: 2;
@@ -217,7 +229,7 @@
       margin: 8px 0 10px;
       overflow-x: auto;
       scrollbar-width: none;
-      padding-right: 32px;
+      padding-right: 28px;
     }
     .sportBar::-webkit-scrollbar { display: none; }
 
@@ -271,7 +283,7 @@
       gap: 6px;
       overflow-x: auto;
       padding-bottom: 4px;
-      padding-right: 36px;
+      padding-right: 28px;
       scrollbar-width: none;
     }
     .controlRow::-webkit-scrollbar { display: none; }
@@ -315,7 +327,7 @@
     }
     .spanToggle button {
       height: 28px;
-      padding: 0 8px;
+      padding: 0 7px;
       border: none;
       background: transparent;
       box-shadow: none;
@@ -339,12 +351,12 @@
       display: inline-flex;
       align-items: center;
       height: 34px;
-      padding: 0 9px;
+      padding: 0 8px;
       border-radius: 8px;
       border: 1px solid var(--line);
       background: var(--card);
       color: var(--txt);
-      font-size: 11px;
+      font-size: 10.5px;
       font-weight: 900;
       white-space: nowrap;
       box-shadow: var(--shadow);
@@ -364,7 +376,7 @@
       cursor: not-allowed;
     }
 
-    /* Horizontal Swipe Best Games Reel with Snap */
+    /* Horizontal Swipe Best Games Reel */
     .bestHeader {
       display: flex;
       justify-content: space-between;
@@ -381,15 +393,15 @@
       display: flex;
       gap: 8px;
       overflow-x: auto;
-      scroll-snap-type: x mandatory;
+      scroll-snap-type: x proximity;
       scrollbar-width: none;
       padding-bottom: 6px;
-      padding-right: 36px;
+      padding-right: 28px;
     }
     .best-scroll::-webkit-scrollbar { display: none; }
 
     .bestCard {
-      flex: 0 0 250px;
+      flex: 0 0 245px;
       scroll-snap-align: start;
       background: var(--gold-grad);
       border: 1px solid var(--gold-border);
@@ -775,7 +787,15 @@
 
     @media (max-width: 600px) {
       .wrap { padding: calc(10px + env(safe-area-inset-top)) 12px calc(36px + env(safe-area-inset-bottom)) 12px; }
-      .topActions { width: 100%; justify-content: space-between; }
+      .topActions {
+        width: 100%;
+        justify-content: space-between;
+        gap: 6px;
+      }
+      .status {
+        flex: 1 1 auto;
+        min-width: 0;
+      }
       .match { grid-template-columns: 1fr; gap: 6px; }
       .at { display: none; }
       .statsGrid { grid-template-columns: repeat(2, 1fr); }
@@ -802,16 +822,18 @@
       </div>
       <div class="topActions">
         <div id="status" class="status" aria-live="polite">CONNECTING…</div>
-        <button id="guideBtn" class="iconBtn" type="button" title="Guide & Key">
-          <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
-          Guide
-        </button>
-        <a href="https://fmhy.net/videopiracyguide#live-sports" target="_blank" rel="noopener noreferrer" class="iconBtn" title="FMHY Live Sports">
-          <svg viewBox="0 0 24 24"><path d="M21 3H3c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h5v2h8v-2h5c1.1 0-2-.9-2-2V5c0-1.1-.9-2-2-2zm0 14H3V5h18v12z"/></svg>
-          Watch
-        </a>
-        <button id="installBtn" class="iconBtn install" title="Install App" type="button">📲 Install</button>
-        <button id="themeToggle" class="iconBtn" type="button" aria-pressed="false" title="Theme">☀️</button>
+        <div class="headerBtns">
+          <button id="guideBtn" class="iconBtn" type="button" title="Guide & Key">
+            <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
+            Guide
+          </button>
+          <a href="https://fmhy.net/videopiracyguide#live-sports" target="_blank" rel="noopener noreferrer" class="iconBtn" title="FMHY Live Sports">
+            <svg viewBox="0 0 24 24"><path d="M21 3H3c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h5v2h8v-2h5c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 14H3V5h18v12z"/></svg>
+            Watch
+          </a>
+          <button id="installBtn" class="iconBtn install" title="Install App" type="button">📲 Install</button>
+          <button id="themeToggle" class="iconBtn" type="button" aria-pressed="false" title="Theme">☀️</button>
+        </div>
       </div>
     </header>
 
@@ -1030,8 +1052,9 @@
     let weekAnchorTime = Date.now();
     let filter = 'all';
     let sortMode = 'date';
-    let season = new Date().getFullYear();
-    let currentWeek = 1;
+    let season = null;
+    let currentWeek = null;
+    let userPickedWeek = false;
     let autoPollTimer = null;
     let inFlight = false;
     let loadGeneration = 0;
@@ -1214,8 +1237,7 @@
     }
 
     function parseTeam(t) {
-      const rawSummary = t.records?.[0]?.summary || '0-0';
-      const cleanRec = rawSummary.replace(/^0+/, '').replace(/-/g, '-');
+      const cleanRec = t.records?.[0]?.summary || '0-0';
       return {
         name: t.team?.shortDisplayName || t.team?.displayName || 'TBD',
         abbr: t.team?.abbreviation || '',
@@ -1530,6 +1552,7 @@
             </div>
             <span class="bestCardMeta">${g.live ? `🔴 LIVE (${esc(g.status)})` : esc(cairoTime(g.date))} EET · ${g.watch}/100 Hype</span>
           </div>`).join('');
+        bestEl.scrollLeft = 0;
       }
 
       const chunks = [];
@@ -1757,7 +1780,10 @@
         post.appendChild(o);
       });
       weekSelect.appendChild(post);
-      weekSelect.addEventListener('change', () => load());
+      weekSelect.addEventListener('change', () => {
+        userPickedWeek = true;
+        load();
+      });
     }
 
     const sportButtons = Array.from(document.querySelectorAll('[data-sport]'));
@@ -1831,12 +1857,12 @@
         let label = '';
 
         if (c.mode === 'week') {
-          const val = weekSelect?.value || `2-${currentWeek}`;
-          const [seasonType, week] = val.split('-').map(Number);
-          const url = `${c.endpoint}?dates=${season}&seasontype=${seasonType}&week=${week}&limit=100`;
-          label = seasonType === 3 && weekSelect?.selectedOptions[0]
-            ? weekSelect.selectedOptions[0].textContent.toUpperCase()
-            : `W${week}`;
+          let url = `${c.endpoint}?limit=100`;
+          if (userPickedWeek && weekSelect?.value) {
+            const [seasonType, week] = weekSelect.value.split('-').map(Number);
+            const yrParam = season ? `dates=${season}&` : '';
+            url = `${c.endpoint}?${yrParam}seasontype=${seasonType}&week=${week}&limit=100`;
+          }
 
           const r = await fetchWithTimeout(url);
           if (!r.ok) throw new Error(`HTTP ${r.status}`);
@@ -1844,8 +1870,20 @@
           if (genId !== loadGeneration) return;
 
           season = j.leagues?.[0]?.season?.year || season;
-          currentWeek = j.week?.number || currentWeek;
-          if (j.week?.number && !weekSelect?.value?.startsWith('3-')) label = `W${currentWeek}`;
+          const activeType = j.season?.type || 2;
+          const activeWeek = j.week?.number || 1;
+          currentWeek = activeWeek;
+
+          if (!userPickedWeek && weekSelect) {
+            const targetVal = `${activeType}-${activeWeek}`;
+            if (Array.from(weekSelect.options).some((opt) => opt.value === targetVal)) {
+              weekSelect.value = targetVal;
+            }
+          }
+
+          label = activeType === 3 && weekSelect?.selectedOptions[0]
+            ? weekSelect.selectedOptions[0].textContent.toUpperCase()
+            : `W${activeWeek}`;
           events = j.events || [];
         } else if (calendarSpan === 'weekly') {
           const wk = getWeeklyDateStrings(weekAnchorTime);
@@ -1915,14 +1953,6 @@
         if (genId === loadGeneration) inFlight = false;
       }
     }
-
-    (function autoWeek() {
-      if (!weekSelect) return;
-      const saved = localStorage.getItem('nfl-cairo-week');
-      if (saved) weekSelect.value = saved;
-      else weekSelect.value = '2-10';
-      weekSelect.addEventListener('change', () => localStorage.setItem('nfl-cairo-week', weekSelect.value));
-    })();
 
     syncSportUI();
     load();
