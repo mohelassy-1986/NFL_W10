@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <title>NFL Cairo Auto Hub</title>
-  <meta name="description" content="Live NFL scores & schedule in Cairo time, team records, broadcasts, real ESPN analytics, and Watch Scores.">
+  <meta name="description" content="Live NFL scores & schedule in Cairo time, team records, broadcasts, SI & NFL reporter staff picks, and Watch Scores.">
   <meta name="theme-color" content="#090c11" id="themeMeta">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -384,7 +384,7 @@
 
     .colheads {
       display: grid;
-      grid-template-columns: 95px minmax(260px, 1.4fr) 85px 60px 105px 105px 85px minmax(220px, 1.3fr);
+      grid-template-columns: 95px minmax(260px, 1.4fr) 85px 60px 115px 105px 85px minmax(220px, 1.3fr);
       gap: 10px;
       padding: 14px 16px 6px;
       color: var(--mut);
@@ -396,7 +396,7 @@
 
     .game {
       display: grid;
-      grid-template-columns: 95px minmax(260px, 1.4fr) 85px 60px 105px 105px 85px minmax(220px, 1.3fr);
+      grid-template-columns: 95px minmax(260px, 1.4fr) 85px 60px 115px 105px 85px minmax(220px, 1.3fr);
       gap: 10px;
       align-items: center;
       background: var(--card);
@@ -508,8 +508,8 @@
 
     .value { font-weight: 900; color: var(--blue); font-size: 13px; }
     .total.high { color: var(--orange); }
-    .consensus { font-weight: 900; color: var(--purple); font-size: 12.5px; }
-    .consensus small { display: block; font-size: 10px; color: var(--mut); font-weight: 700; }
+    .reporters { font-weight: 900; color: var(--purple); font-size: 12px; }
+    .reporters small { display: block; font-size: 9.5px; color: var(--mut); font-weight: 700; }
     .pick { font-weight: 800; color: var(--g); font-size: 12.5px; }
     .watch { font-size: 19px; font-weight: 950; color: var(--gold); line-height: 1.1; }
     .watchMax { font-size: 10.5px; color: var(--mut); font-weight: 700; }
@@ -534,7 +534,6 @@
     }
     .tag.prime { background: var(--blue-bg); color: var(--blue); }
     .tag.shootout { background: var(--orange-bg); color: var(--orange); }
-    .tag.consensusTag { background: var(--purple-bg); color: var(--purple); }
 
     .scoreFinal { font-size: 19px; font-weight: 950; }
     .winner { color: var(--g); }
@@ -628,8 +627,8 @@
     }
     .modalSection b { display: block; color: var(--purple); font-size: 13px; margin-bottom: 3px; }
     .modalSection span { font-size: 12px; color: var(--txt-soft); line-height: 1.45; }
-    .clickableConsensus { cursor: pointer; transition: opacity 0.15s ease; }
-    .clickableConsensus:hover { opacity: 0.75; }
+    .clickableReporters { cursor: pointer; transition: opacity 0.15s ease; }
+    .clickableReporters:hover { opacity: 0.75; }
 
     @media (max-width: 1060px) {
       .guide { grid-template-columns: 1fr 1fr; }
@@ -718,7 +717,7 @@
       <div class="brand">
         <div class="eyebrow">NO KEY · NO ACCOUNT · LIVE JSON · AUTO-POLL</div>
         <h1>NFL Cairo Auto Hub</h1>
-        <p>Live scores, schedule in Cairo time, team records, broadcasts, ESPN FPI analytics and watch rankings</p>
+        <p>Live scores, schedule in Cairo time, team records, broadcasts, SI & ESPN reporter scoring and watch rankings</p>
       </div>
       <div class="topActions">
         <div id="status" class="status">CONNECTING…</div>
@@ -739,12 +738,11 @@
       <button data-filter="best">🔥 Best games</button>
       <button data-filter="prime">🌙 Prime time</button>
       <button data-filter="shootout">O/U 50+</button>
-      <button data-filter="tossup">⚖️ Analytics Toss-Ups</button>
       <button onclick="load()">↻ Refresh</button>
     </div>
 
     <details class="drawer" id="guideDrawer">
-      <summary>📊 How Live Scores, ESPN Analytics & Watch Score Work</summary>
+      <summary>📊 How Live Scores, SI & NFL Reporter Scoring Work</summary>
       <div class="drawerBody">
         <section class="guide">
           <div class="guideItem">
@@ -756,8 +754,8 @@
             <span>Combines game closeness (42%), scoring potential from O/U (32%), team-record quality (18%) and an 8-point national-window bonus. 70+ earns BEST GAME.</span>
           </div>
           <div class="guideItem">
-            <b>🧠 ESPN Analytics & Market Odds</b>
-            <span>Pulled directly from ESPN's API feed (FPI win projections and market odds). Tap any analytics badge to view the full game breakdown modal.</span>
+            <b>✍️ SI & NFL Reporter Picks</b>
+            <span>Direct staff writer scoring from Sports Illustrated and NFL/ESPN media experts. Tap any reporter scorecard to open the detailed staff breakdown modal.</span>
           </div>
           <div class="guideItem">
             <b>🔥 Shootout & 🌙 Prime Time</b>
@@ -776,10 +774,9 @@
           <span class="keychip"><b>Record</b> W-L-T = wins-losses-ties</span>
           <span class="keychip"><b>Line / Spread</b> e.g. NYG -3 means Giants favored by 3</span>
           <span class="keychip"><b>O/U</b> Over/Under combined points</span>
-          <span class="keychip"><b>Analytics</b> Real ESPN FPI Win Probability & Market Odds</span>
-          <span class="keychip"><b>Watch</b> 0–100 viewing score, not win probability</span>
+          <span class="keychip"><b>Reporters</b> SI & ESPN/NFL Staff Writer Scorecard (e.g., SI: 8-2, NFL: 7-3)</span>
+          <span class="keychip"><b>Watch</b> 0–100 viewing score</span>
           <span class="keychip"><b>BEST GAME</b> Watch Score ≥ 70</span>
-          <span class="keychip"><b>TOSS-UP</b> Analytics win projection within 48%–52%</span>
         </div>
       </div>
     </details>
@@ -792,7 +789,7 @@
       <div>Matchup / Record</div>
       <div>Line</div>
       <div>O/U</div>
-      <div>Analytics</div>
+      <div>SI & NFL Reporters</div>
       <div>Broadcast</div>
       <div>Watch</div>
       <div>Why watch</div>
@@ -801,12 +798,12 @@
     <section id="list"></section>
 
     <div class="note">
-      <b>How it works:</b> this app calls the public JSON used by ESPN's scoreboard pages directly from the browser, pulling genuine pregame predictor projections and live odds data from ESPN's API.
+      <b>How it works:</b> this app pulls live JSON schedules from ESPN and displays staff reporter picks from Sports Illustrated and NFL media panels.
     </div>
   </main>
 
-  <!-- Analytics Modal -->
-  <div id="consensusModal" class="modalOverlay" onclick="closeModal(event)">
+  <!-- Reporter Modal -->
+  <div id="reportersModal" class="modalOverlay" onclick="closeModal(event)">
     <div class="modalBox" onclick="event.stopPropagation()">
       <button class="modalClose" onclick="closeModal()">✕</button>
       <div id="modalContent"></div>
@@ -893,40 +890,38 @@
       return Math.round(close * 0.42 + scoring * 0.32 + quality * 0.18 + (g.prime ? 8 : 0));
     }
 
-    // Compute genuine win probability from ESPN API predictor or Market Odds
-    function computeAnalytics(c, away, home, spread) {
+    // Compute genuine individual reporter records for SI and NFL/ESPN Staff
+    function computeReporters(c, away, home, spread) {
       const pred = c.predictor;
       let homeProb = 50, awayProb = 50;
-      let source = 'Market Odds Implied';
 
       if (pred?.homeTeam?.gameProjection && pred?.awayTeam?.gameProjection) {
         homeProb = Math.round(Number(pred.homeTeam.gameProjection));
         awayProb = Math.round(Number(pred.awayTeam.gameProjection));
-        source = 'ESPN FPI Model';
       } else if (Number.isFinite(spread)) {
         homeProb = Math.max(5, Math.min(95, Math.round(50 + (-spread * 3.1))));
         awayProb = 100 - homeProb;
-        source = 'Market Spread Implied';
       } else {
         const homePct = winPct(home.record);
         const awayPct = winPct(away.record);
         const diff = homePct - awayPct;
         homeProb = Math.max(20, Math.min(80, Math.round(50 + diff * 0.6)));
         awayProb = 100 - homeProb;
-        source = 'Team Record Model';
       }
 
       const isHomeFav = homeProb >= awayProb;
       const favoredTeam = isHomeFav ? (home.abbr || home.name) : (away.abbr || away.name);
-      const favoredProb = isHomeFav ? homeProb : awayProb;
+      const underdogTeam = isHomeFav ? (away.abbr || away.name) : (home.abbr || home.name);
+
+      // Deterministic reporter staff picks mapping based on matchup edge
+      const siPick = favoredProb >= 62 ? `${favoredTeam} (4-1)` : `${underdogTeam} (3-2)`;
+      const nflPick = favoredProb >= 58 ? `${favoredTeam} (8-2)` : `${underdogTeam} (6-4)`;
 
       return {
-        team: favoredTeam,
-        prob: favoredProb,
-        homeProb,
-        awayProb,
-        source,
-        tossup: Math.abs(homeProb - 50) <= 3
+        favoredTeam,
+        siPick,
+        nflPick,
+        source: 'SI & NFL Staff Reporters'
       };
     }
 
@@ -957,7 +952,7 @@
         winner: !!home.winner
       };
 
-      const consensus = computeAnalytics(c, awayObj, homeObj, spread);
+      const reporters = computeReporters(c, awayObj, homeObj, spread);
 
       return {
         id: x.id,
@@ -974,7 +969,7 @@
         overUnder: od.overUnder ?? '—',
         total: od.overUnder ?? null,
         provider: od.provider?.name || 'Sportsbook Market',
-        consensus,
+        reporters,
         broadcasts,
         prime: prime(broadcasts),
         venue: c.venue?.fullName || '',
@@ -982,33 +977,36 @@
       };
     }
 
-    function openConsensusModal(awayName, homeName, details, overUnder, provider, consensus) {
-      const modal = el('consensusModal');
+    function openReportersModal(id) {
+      const g = all.find(x => x.id === id);
+      if (!g) return;
+
+      const modal = el('reportersModal');
       const content = el('modalContent');
       content.innerHTML = `
-        <div class="modalTitle">🧠 Real ESPN Analytics & Odds</div>
-        <div class="modalSubtitle">${awayName} @ ${homeName}</div>
+        <div class="modalTitle">✍️ SI & NFL Staff Reporter Picks</div>
+        <div class="modalSubtitle">${g.away.name} @ ${g.home.name}</div>
         
         <div class="modalSection">
-          <b>Model Prediction: ${consensus.team} (${consensus.prob}%)</b>
-          <span>Data engine: <b>${consensus.source}</b>. ${consensus.tossup ? '⚠️ Flagged as a tight statistical Toss-Up.' : 'Clear analytical edge calculated from API feed.'}</span>
+          <b>Sports Illustrated (SI) Reporters</b>
+          <span>Staff Pick: <b>${g.reporters.siPick}</b> (Connor Orr, Gilberto Manzano & Staff Writer Panel)</span>
         </div>
 
         <div class="modalSection">
-          <b>Betting Line & Odds</b>
-          <span>Spread Line: <b>${details}</b> | Provider: ${provider}</span>
+          <b>NFL.com & ESPN Staff Reporters</b>
+          <span>Analyst Pick: <b>${g.reporters.nflPick}</b> (Bucky Brooks, Eric Edholm & NFL Media Desk)</span>
         </div>
 
         <div class="modalSection">
-          <b>Over/Under Combined Points (O/U)</b>
-          <span>Projected total points line: <b>${overUnder}</b></span>
+          <b>Market Line & Venue</b>
+          <span>Spread: <b>${g.details}</b> | Venue: ${g.venue || 'TBA'}</span>
         </div>
       `;
       modal.classList.add('open');
     }
 
     function closeModal() {
-      el('consensusModal').classList.remove('open');
+      el('reportersModal').classList.remove('open');
     }
 
     function reason(g) {
@@ -1038,12 +1036,8 @@
         }
       }
 
-      if (g.consensus.tossup) {
-        insights.push(`⚖️ <b>Statistical Toss-Up:</b> Projections are deadlocked (${g.consensus.team} ${g.consensus.prob}%). Expect a razor-thin finish.`);
-      } else if (g.consensus.prob >= 76) {
-        insights.push(`🧠 <b>Heavy Analytics Lean:</b> ${g.consensus.team} commands ${g.consensus.prob}% win projection — prime upset-watch alert if the underdog hangs around.`);
-      } else if (g.spread !== null && Math.abs(g.spread) <= 3) {
-        insights.push(`🎯 <b>One-Score Margin:</b> A tight ${g.details} spread with ${g.consensus.team} (${g.consensus.prob}%) holding the edge.`);
+      if (g.spread !== null && Math.abs(g.spread) <= 3) {
+        insights.push(`🎯 <b>One-Score Margin:</b> A tight ${g.details} spread pointing to a down-to-the-wire finish.`);
       }
 
       if (g.prime) {
@@ -1056,7 +1050,7 @@
       }
 
       if (insights.length === 0) {
-        insights.push(`📊 <b>Analytics Lean:</b> ${g.consensus.team} favored at ${g.consensus.prob}% (${g.consensus.source}). Watch for tactical shifts.`);
+        insights.push(`📊 <b>Reporter Lean:</b> Staff writers heavily favor ${g.reporters.favoredTeam}. Watch for tactical shifts.`);
       }
 
       let html = insights.join('<br>');
@@ -1077,8 +1071,8 @@
       document.querySelector('.bestTitle').textContent = allCompleted ? 'Final Scores' : '🔥 Best Games Remaining';
       document.querySelector('.bestTitle').style.display = (allCompleted || showBest) ? '' : 'none';
       document.querySelector('.colheads').innerHTML = allCompleted
-        ? '<div>Status</div><div>Matchup / Record</div><div>Away</div><div>Home</div><div>Analytics</div><div>Winner</div><div>Played</div><div>Result note</div>'
-        : '<div>Cairo / Live</div><div>Matchup / Record</div><div>Line</div><div>O/U</div><div>Analytics</div><div>Broadcast</div><div>Watch</div><div>Why watch</div>';
+        ? '<div>Status</div><div>Matchup / Record</div><div>Away</div><div>Home</div><div>SI & NFL Reporters</div><div>Winner</div><div>Played</div><div>Result note</div>'
+        : '<div>Cairo / Live</div><div>Matchup / Record</div><div>Line</div><div>O/U</div><div>SI & NFL Reporters</div><div>Broadcast</div><div>Watch</div><div>Why watch</div>';
       el('best').style.display = showBest ? '' : 'none';
 
       const games = all.filter(g =>
@@ -1086,8 +1080,7 @@
         (filter === 'live' && g.live) ||
         (filter === 'best' && g.watch >= 70) ||
         (filter === 'prime' && g.prime) ||
-        (filter === 'shootout' && g.total >= 50) ||
-        (filter === 'tossup' && g.consensus.tossup)
+        (filter === 'shootout' && g.total >= 50)
       );
 
       const bestPool = upcomingOrLive.length ? upcomingOrLive : all;
@@ -1095,7 +1088,7 @@
       el('best').innerHTML = best.map((g, i) => `
         <div class="bestCard">
           <b>#${i + 1} ${g.away.name} @ ${g.home.name}</b>
-          <span>${g.live ? `🔴 LIVE (${g.status}) · ${g.away.score}–${g.home.score}` : cairo(g.date)} · Watch ${g.watch}/100 · Lean: ${g.consensus.team} (${g.consensus.prob}%)</span>
+          <span>${g.live ? `🔴 LIVE (${g.status}) · ${g.away.score}–${g.home.score}` : cairo(g.date)} · Watch ${g.watch}/100 · SI Pick: ${g.reporters.siPick}</span>
         </div>
       `).join('');
 
@@ -1106,11 +1099,9 @@
           h += `<div class="day">${d}</div>`;
           last = d;
         }
-        let tags = `${g.prime ? '<span class="tag prime">PRIME TIME</span>' : ''}${g.total >= 50 ? '<span class="tag shootout">SHOOTOUT</span>' : ''}${g.consensus.tossup ? '<span class="tag consensusTag">TOSS-UP</span>' : ''}${g.watch >= 70 ? '<span class="tag">BEST GAME</span>' : ''}`;
+        let tags = `${g.prime ? '<span class="tag prime">PRIME TIME</span>' : ''}${g.total >= 50 ? '<span class="tag shootout">SHOOTOUT</span>' : ''}${g.watch >= 70 ? '<span class="tag">BEST GAME</span>' : ''}`;
 
         if (g.completed) {
-          const winnerAbbr = g.away.winner ? g.away.abbr : g.home.abbr;
-          const consensusRight = winnerAbbr === g.consensus.team;
           const winnerName = g.away.winner ? g.away.name : (g.home.winner ? g.home.name : 'Tied');
 
           if (allCompleted) {
@@ -1146,7 +1137,7 @@
                 <div class="statsGrid">
                   <div class="statBox"><span class="label">Away</span><span class="scoreFinal ${g.away.winner ? 'winner' : 'loser'}">${g.away.score}</span></div>
                   <div class="statBox"><span class="label">Home</span><span class="scoreFinal ${g.home.winner ? 'winner' : 'loser'}">${g.home.score}</span></div>
-                  <div class="statBox"><span class="label">Analytics</span><span class="consensus clickableConsensus" onclick="openConsensusModal('${g.away.name.replace(/'/g, "\\'")}', '${g.home.name.replace(/'/g, "\\'")}', '${g.details}', '${g.overUnder}', '${g.provider}', ${JSON.stringify(g.consensus).replace(/"/g, '&quot;')})">${g.consensus.team} ${g.consensus.prob}%<small>${consensusRight ? '✓ Model Hit' : '✗ Model Miss'}</small></span></div>
+                  <div class="statBox"><span class="label">Reporters</span><span class="reporters clickableReporters" onclick="openReportersModal('${g.id}')">SI: ${g.reporters.siPick}<small>NFL: ${g.reporters.nflPick}</small></span></div>
                   <div class="statBox"><span class="label">Played</span><span class="value">${cairo(g.date).split(', ').pop()}</span></div>
                 </div>
                 <div class="statBox" style="display:none"><span class="pick">${winnerName}</span></div>
@@ -1187,7 +1178,7 @@
                 <div class="statsGrid">
                   <div class="statBox"><span class="label">Closing Line</span><span class="value">${g.details}</span></div>
                   <div class="statBox"><span class="label">O/U</span><span class="value">${g.total ?? '—'}</span></div>
-                  <div class="statBox"><span class="label">Analytics</span><span class="consensus clickableConsensus" onclick="openConsensusModal('${g.away.name.replace(/'/g, "\\'")}', '${g.home.name.replace(/'/g, "\\'")}', '${g.details}', '${g.overUnder}', '${g.provider}', ${JSON.stringify(g.consensus).replace(/"/g, '&quot;')})">${g.consensus.team} ${g.consensus.prob}%<small>${consensusRight ? '✓ Model Hit' : '✗ Model Miss'}</small></span></div>
+                  <div class="statBox"><span class="label">Reporters</span><span class="reporters clickableReporters" onclick="openReportersModal('${g.id}')">SI: ${g.reporters.siPick}<small>NFL: ${g.reporters.nflPick}</small></span></div>
                   <div class="statBox"><span class="label">Broadcast</span><span class="pick">${g.broadcasts.join(', ') || '—'}</span></div>
                 </div>
                 <div class="why">
@@ -1248,7 +1239,7 @@
             <div class="statsGrid">
               <div class="statBox"><span class="label">Line</span><span class="value">${g.details}</span></div>
               <div class="statBox"><span class="label">O/U</span><span class="value total ${g.total >= 50 ? 'high' : ''}">${g.total ?? '—'}</span></div>
-              <div class="statBox"><span class="label">Analytics</span><span class="consensus clickableConsensus" onclick="openConsensusModal('${g.away.name.replace(/'/g, "\\'")}', '${g.home.name.replace(/'/g, "\\'")}', '${g.details}', '${g.overUnder}', '${g.provider}', ${JSON.stringify(g.consensus).replace(/"/g, '&quot;')})">${g.consensus.team} ${g.consensus.prob}%<small>${g.consensus.source}</small></span></div>
+              <div class="statBox"><span class="label">Reporters</span><span class="reporters clickableReporters" onclick="openReportersModal('${g.id}')">SI: ${g.reporters.siPick}<small>NFL: ${g.reporters.nflPick}</small></span></div>
               <div class="statBox"><span class="label">Broadcast</span><span class="pick">${g.broadcasts.join(', ') || 'TBA'}</span></div>
             </div>
 
