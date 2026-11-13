@@ -572,6 +572,65 @@
       line-height: 1.6;
     }
 
+    /* Modal Popup Styling */
+    .modalOverlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(5, 8, 13, 0.75);
+      backdrop-filter: blur(4px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      padding: 16px;
+    }
+    .modalOverlay.open { display: flex; }
+    .modalBox {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      width: 100%;
+      max-width: 480px;
+      padding: 22px;
+      box-shadow: var(--shadow);
+      position: relative;
+    }
+    .modalClose {
+      position: absolute;
+      top: 14px;
+      right: 16px;
+      background: var(--btn-bg);
+      border: 1px solid var(--line);
+      color: var(--txt);
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      font-weight: 900;
+      cursor: pointer;
+    }
+    .modalTitle {
+      font-size: 18px;
+      font-weight: 900;
+      margin-bottom: 6px;
+      color: var(--txt);
+    }
+    .modalSubtitle {
+      font-size: 12px;
+      color: var(--mut);
+      margin-bottom: 16px;
+    }
+    .modalSection {
+      background: var(--card-sub);
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 12px 14px;
+      margin-bottom: 10px;
+    }
+    .modalSection b { display: block; color: var(--purple); font-size: 13px; margin-bottom: 3px; }
+    .modalSection span { font-size: 12px; color: var(--txt-soft); line-height: 1.45; }
+    .clickableConsensus { cursor: pointer; transition: opacity 0.15s ease; }
+    .clickableConsensus:hover { opacity: 0.75; }
+
     @media (max-width: 1060px) {
       .guide { grid-template-columns: 1fr 1fr; }
       .best { grid-template-columns: 1fr 1fr; }
@@ -697,8 +756,8 @@
             <span>Combines game closeness (42%), scoring potential from O/U (32%), team-record quality (18%) and an 8-point national-window bonus. 70+ earns BEST GAME.</span>
           </div>
           <div class="guideItem">
-            <b>🧠 Expert Consensus</b>
-            <span>Derived from ESPN Analytics matchup projections & implied market odds. Shows the projected winner and win probability %.</span>
+            <b>🧠 Expert Consensus & Popup</b>
+            <span>Derived from ESPN Analytics matchup projections & implied market odds. Tap any consensus score to view the analytics popup breakdown.</span>
           </div>
           <div class="guideItem">
             <b>🔥 Shootout & 🌙 Prime Time</b>
@@ -745,6 +804,14 @@
       <b>How it works:</b> this app calls the public JSON used by ESPN's scoreboard pages directly from the browser. When games are live, it automatically polls for updated scores every 60 seconds.
     </div>
   </main>
+
+  <!-- Consensus / Analytics Modal -->
+  <div id="consensusModal" class="modalOverlay" onclick="closeModal(event)">
+    <div class="modalBox" onclick="event.stopPropagation()">
+      <button class="modalClose" onclick="closeModal()">✕</button>
+      <div id="modalContent"></div>
+    </div>
+  </div>
 
   <script>
     const END = 'https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard';
@@ -876,15 +943,15 @@
       const home = teams.find(t => t.homeAway === 'home') || {};
       const away = teams.find(t => t.homeAway === 'away') || {};
       const od = c.odds?.[0] || {};
-      const broadcasts = (c.broadcasts || []).flatMap(b => b.names || []);
+      const broadcasts = (c.broadcasts?.[0]?.names) || [];
       let spread = Number.isFinite(od.spread) ? od.spread : null;
-      const state = c.status?.type?.state || 'pre'; // 'pre', 'in', 'post'
+      const state = c.status?.type?.state || 'pre';
 
       const awayObj = {
         name: away.team?.shortDisplayName || away.team?.displayName || 'Away',
         abbr: away.team?.abbreviation || '',
         logo: away.team?.logo || '',
-        record: away.records?.[0]?.summary || '',
+        record: away.records?.[0]?.summary || '0-0',
         score: Number(away.score ?? 0),
         winner: !!away.winner
       };
@@ -892,7 +959,7 @@
         name: home.team?.shortDisplayName || home.team?.displayName || 'Home',
         abbr: home.team?.abbreviation || '',
         logo: home.team?.logo || '',
-        record: home.records?.[0]?.summary || '',
+        record: home.records?.[0]?.summary || '0-0',
         score: Number(home.score ?? 0),
         winner: !!home.winner
       };
@@ -911,13 +978,44 @@
         home: homeObj,
         details: od.details || '—',
         spread,
+        overUnder: od.overUnder ?? '—',
         total: od.overUnder ?? null,
+        provider: od.provider?.name || 'Market Odds',
         consensus,
         broadcasts,
         prime: prime(broadcasts),
         venue: c.venue?.fullName || '',
         note: (c.notes?.[0]?.headline) || ''
       };
+    }
+
+    function openConsensusModal(awayName, homeName, details, overUnder, provider, consensus) {
+      const modal = el('consensusModal');
+      const content = el('modalContent');
+      content.innerHTML = `
+        <div class="modalTitle">🧠 Expert & Analytics Breakdown</div>
+        <div class="modalSubtitle">${awayName} @ ${homeName}</div>
+        
+        <div class="modalSection">
+          <b>Projected Winner: ${consensus.team} (${consensus.prob}%)</b>
+          <span>Source model: <b>${consensus.source}</b>. ${consensus.tossup ? '⚠️ Flagged as a close Toss-Up (within 3% win probability spread).' : 'Strong analytical lean toward the favored side.'}</span>
+        </div>
+
+        <div class="modalSection">
+          <b>Market Spread & Odds Line</b>
+          <span><b>${details}</b> (Provider: ${provider})</span>
+        </div>
+
+        <div class="modalSection">
+          <b>Over/Under Combined Points (O/U)</b>
+          <span>Projected total points line: <b>${overUnder}</b></span>
+        </div>
+      `;
+      modal.classList.add('open');
+    }
+
+    function closeModal() {
+      el('consensusModal').classList.remove('open');
     }
 
     function reason(g) {
@@ -1017,7 +1115,6 @@
         }
         let tags = `${g.prime ? '<span class="tag prime">PRIME TIME</span>' : ''}${g.total >= 50 ? '<span class="tag shootout">SHOOTOUT</span>' : ''}${g.consensus.tossup ? '<span class="tag consensusTag">TOSS-UP</span>' : ''}${g.watch >= 70 ? '<span class="tag">BEST GAME</span>' : ''}`;
 
-        // 1. COMPLETED GAME ROW (Either full historical week or finished Thursday/early Sunday game in current week)
         if (g.completed) {
           const winnerAbbr = g.away.winner ? g.away.abbr : g.home.abbr;
           const consensusRight = winnerAbbr === g.consensus.team;
@@ -1056,14 +1153,13 @@
                 <div class="statsGrid">
                   <div class="statBox"><span class="label">Away</span><span class="scoreFinal ${g.away.winner ? 'winner' : 'loser'}">${g.away.score}</span></div>
                   <div class="statBox"><span class="label">Home</span><span class="scoreFinal ${g.home.winner ? 'winner' : 'loser'}">${g.home.score}</span></div>
-                  <div class="statBox"><span class="label">Consensus</span><span class="consensus">${g.consensus.team} ${g.consensus.prob}%<small>${consensusRight ? '✓ Hit' : '✗ Upset'}</small></span></div>
+                  <div class="statBox"><span class="label">Consensus</span><span class="consensus clickableConsensus" onclick="openConsensusModal('${g.away.name.replace(/'/g, "\\'")}', '${g.home.name.replace(/'/g, "\\'")}', '${g.details}', '${g.overUnder}', '${g.provider}', ${JSON.stringify(g.consensus).replace(/"/g, '&quot;')})">${g.consensus.team} ${g.consensus.prob}%<small>${consensusRight ? '✓ Hit' : '✗ Upset'}</small></span></div>
                   <div class="statBox"><span class="label">Played</span><span class="value">${cairo(g.date).split(', ').pop()}</span></div>
                 </div>
                 <div class="statBox" style="display:none"><span class="pick">${winnerName}</span></div>
                 <div class="resultNote">${g.note || `${g.away.name} ${g.away.score} – ${g.home.score} ${g.home.name}`}</div>
               </article>`;
           } else {
-            // Mixed week: show final score cleanly inside the live/upcoming grid
             h += `
               <article class="game">
                 <div class="gameTop">
@@ -1098,7 +1194,7 @@
                 <div class="statsGrid">
                   <div class="statBox"><span class="label">Closing Line</span><span class="value">${g.details}</span></div>
                   <div class="statBox"><span class="label">O/U</span><span class="value">${g.total ?? '—'}</span></div>
-                  <div class="statBox"><span class="label">Consensus</span><span class="consensus">${g.consensus.team} ${g.consensus.prob}%<small>${consensusRight ? '✓ Hit' : '✗ Upset'}</small></span></div>
+                  <div class="statBox"><span class="label">Consensus</span><span class="consensus clickableConsensus" onclick="openConsensusModal('${g.away.name.replace(/'/g, "\\'")}', '${g.home.name.replace(/'/g, "\\'")}', '${g.details}', '${g.overUnder}', '${g.provider}', ${JSON.stringify(g.consensus).replace(/"/g, '&quot;')})">${g.consensus.team} ${g.consensus.prob}%<small>${consensusRight ? '✓ Hit' : '✗ Upset'}</small></span></div>
                   <div class="statBox"><span class="label">Broadcast</span><span class="pick">${g.broadcasts.join(', ') || '—'}</span></div>
                 </div>
                 <div class="why">
@@ -1110,7 +1206,6 @@
           return;
         }
 
-        // 2. LIVE OR UPCOMING GAME ROW
         const timeOrLiveHTML = g.live
           ? `<span class="livePill"><span class="liveDot"></span>LIVE</span><span class="liveClock">${g.status}</span>`
           : `<span class="time">🕒 ${cairo(g.date).split(', ').pop()}</span>`;
@@ -1160,7 +1255,7 @@
             <div class="statsGrid">
               <div class="statBox"><span class="label">Line</span><span class="value">${g.details}</span></div>
               <div class="statBox"><span class="label">O/U</span><span class="value total ${g.total >= 50 ? 'high' : ''}">${g.total ?? '—'}</span></div>
-              <div class="statBox"><span class="label">Consensus</span><span class="consensus">${g.consensus.team} ${g.consensus.prob}%<small>${g.consensus.source}</small></span></div>
+              <div class="statBox"><span class="label">Consensus</span><span class="consensus clickableConsensus" onclick="openConsensusModal('${g.away.name.replace(/'/g, "\\'")}', '${g.home.name.replace(/'/g, "\\'")}', '${g.details}', '${g.overUnder}', '${g.provider}', ${JSON.stringify(g.consensus).replace(/"/g, '&quot;')})">${g.consensus.team} ${g.consensus.prob}%<small>${g.consensus.source}</small></span></div>
               <div class="statBox"><span class="label">Broadcast</span><span class="pick">${g.broadcasts.join(', ') || 'TBA'}</span></div>
             </div>
 
