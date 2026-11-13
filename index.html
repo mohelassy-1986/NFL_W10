@@ -236,38 +236,45 @@
       border: 1px solid rgba(255, 147, 82, 0.3);
     }
 
-    .controls {
+    /* Clean Two-Tier Control Section */
+    .controlsWrap {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin: 14px 0;
+    }
+
+    .controlRow {
       display: flex;
       align-items: center;
       gap: 8px;
-      margin: 12px 0 14px;
       overflow-x: auto;
-      padding-bottom: 4px;
+      padding-bottom: 2px;
       scrollbar-width: none;
     }
-    .controls::-webkit-scrollbar { display: none; }
+    .controlRow::-webkit-scrollbar { display: none; }
 
-    .controls select,
-    .controls input[type="date"],
-    .controls input[type="month"],
-    .controls button {
+    .controlRow select,
+    .controlRow input[type="date"],
+    .controlRow input[type="month"],
+    .controlRow button {
       flex-shrink: 0;
-      height: 40px;
+      height: 38px;
       border: 1px solid var(--line);
       background: var(--btn-bg);
       color: var(--btn-txt);
-      padding: 0 14px;
+      padding: 0 12px;
       border-radius: 10px;
-      font-size: 13px;
+      font-size: 12.5px;
       font-weight: 800;
       font-family: inherit;
       box-shadow: var(--shadow);
       transition: all 0.15s ease;
     }
 
-    .controls select,
-    .controls input[type="date"],
-    .controls input[type="month"] {
+    .controlRow select,
+    .controlRow input[type="date"],
+    .controlRow input[type="month"] {
       color: var(--txt);
       cursor: pointer;
     }
@@ -282,13 +289,13 @@
       box-shadow: var(--shadow);
     }
     .spanToggle button {
-      height: 32px;
+      height: 30px;
       padding: 0 10px;
       border: none;
       background: transparent;
       box-shadow: none;
       border-radius: 7px;
-      font-size: 12px;
+      font-size: 11.5px;
     }
     .spanToggle button.active {
       background: var(--blue-bg);
@@ -308,28 +315,28 @@
     .rangePill {
       display: inline-flex;
       align-items: center;
-      height: 40px;
+      height: 38px;
       padding: 0 12px;
       border-radius: 10px;
       border: 1px solid var(--line);
       background: var(--card);
       color: var(--txt);
-      font-size: 12.5px;
+      font-size: 12px;
       font-weight: 900;
       white-space: nowrap;
       box-shadow: var(--shadow);
     }
 
-    .controls button { cursor: pointer; }
-    .controls button:active { transform: scale(0.96); }
+    .controlRow button { cursor: pointer; }
+    .controlRow button:active { transform: scale(0.96); }
 
-    .controls button.active {
+    .controlRow button.active {
       background: var(--btn-active-bg);
       color: var(--btn-active-txt);
       border-color: var(--btn-active-bg);
     }
 
-    .controls button:disabled {
+    .controlRow button:disabled {
       opacity: 0.5;
       cursor: not-allowed;
     }
@@ -832,44 +839,46 @@
       <button class="sportBtn" data-sport="nhl" type="button">🏒 NHL</button>
     </nav>
 
-    <div class="controls">
-      <!-- NFL Week Selector -->
-      <select id="week" aria-label="Select NFL Week or Postseason Round"></select>
+    <!-- Clean Two-Tier Controls Section -->
+    <div class="controlsWrap">
+      <!-- Row 1: Span / Date / Week / Month Navigation -->
+      <div class="controlRow">
+        <select id="week" aria-label="Select NFL Week or Postseason Round"></select>
 
-      <!-- NBA / MLB / NHL Daily vs Weekly vs Monthly Toggle -->
-      <div class="spanToggle" id="spanToggle" style="display:none;" role="group" aria-label="Schedule Span">
-        <button type="button" data-span="daily" class="active">Daily</button>
-        <button type="button" data-span="weekly">Weekly</button>
-        <button type="button" data-span="monthly">Monthly</button>
+        <div class="spanToggle" id="spanToggle" style="display:none;" role="group" aria-label="Schedule Span">
+          <button type="button" data-span="daily" class="active">Daily</button>
+          <button type="button" data-span="weekly">Weekly</button>
+          <button type="button" data-span="monthly">Monthly</button>
+        </div>
+
+        <div class="dateNav" id="dateNav" style="display:none;">
+          <button type="button" id="prevDayBtn" title="Previous Day" aria-label="Previous Day">◀</button>
+          <input type="date" id="gameDate" aria-label="Select Game Date">
+          <button type="button" id="nextDayBtn" title="Next Day" aria-label="Next Day">▶</button>
+        </div>
+
+        <div class="dateNav" id="weekNav" style="display:none;">
+          <button type="button" id="prevWeekBtn" title="Previous Week" aria-label="Previous Week">◀</button>
+          <span class="rangePill" id="weekRangeLabel">—</span>
+          <button type="button" id="nextWeekBtn" title="Next Week" aria-label="Next Week">▶</button>
+        </div>
+
+        <div class="dateNav" id="monthNav" style="display:none;">
+          <button type="button" id="prevMonthBtn" title="Previous Month" aria-label="Previous Month">◀</button>
+          <input type="month" id="gameMonth" aria-label="Select Month">
+          <button type="button" id="nextMonthBtn" title="Next Month" aria-label="Next Month">▶</button>
+        </div>
       </div>
 
-      <!-- Daily Date Navigation -->
-      <div class="dateNav" id="dateNav" style="display:none;">
-        <button type="button" id="prevDayBtn" title="Previous Day" aria-label="Previous Day">◀</button>
-        <input type="date" id="gameDate" aria-label="Select Game Date">
-        <button type="button" id="nextDayBtn" title="Next Day" aria-label="Next Day">▶</button>
+      <!-- Row 2: View Filter Buttons -->
+      <div class="controlRow">
+        <button class="active" data-filter="all" type="button">All</button>
+        <button data-filter="live" id="liveFilterBtn" type="button">🔴 Live Now</button>
+        <button data-filter="best" type="button">🔥 Best games</button>
+        <button data-filter="prime" type="button">🌙 Prime time</button>
+        <button data-filter="shootout" id="shootoutBtn" type="button">O/U 50+</button>
+        <button id="refreshBtn" type="button">↻ Refresh</button>
       </div>
-
-      <!-- Weekly Range Navigation -->
-      <div class="dateNav" id="weekNav" style="display:none;">
-        <button type="button" id="prevWeekBtn" title="Previous Week" aria-label="Previous Week">◀</button>
-        <span class="rangePill" id="weekRangeLabel">—</span>
-        <button type="button" id="nextWeekBtn" title="Next Week" aria-label="Next Week">▶</button>
-      </div>
-
-      <!-- Monthly Overview Navigation -->
-      <div class="dateNav" id="monthNav" style="display:none;">
-        <button type="button" id="prevMonthBtn" title="Previous Month" aria-label="Previous Month">◀</button>
-        <input type="month" id="gameMonth" aria-label="Select Month">
-        <button type="button" id="nextMonthBtn" title="Next Month" aria-label="Next Month">▶</button>
-      </div>
-
-      <button class="active" data-filter="all" type="button">All</button>
-      <button data-filter="live" id="liveFilterBtn" type="button">🔴 Live Now</button>
-      <button data-filter="best" type="button">🔥 Best games</button>
-      <button data-filter="prime" type="button">🌙 Prime time</button>
-      <button data-filter="shootout" id="shootoutBtn" type="button">O/U 50+</button>
-      <button id="refreshBtn" type="button">↻ Refresh</button>
     </div>
 
     <details class="drawer" id="guideDrawer">
@@ -1034,7 +1043,7 @@
     let currentSport = localStorage.getItem('us-sports-cairo-sport') || 'nfl';
     if (!SPORTS[currentSport]) currentSport = 'nfl';
     let calendarSpan = localStorage.getItem('us-sports-cairo-span') || 'daily'; // 'daily' | 'weekly' | 'monthly'
-    let weekAnchorTime = Date.now(); // milliseconds timestamp for weekly view anchor
+    let weekAnchorTime = Date.now();
     let filter = 'all';
     let season = new Date().getFullYear();
     let currentWeek = 1;
@@ -1107,9 +1116,6 @@
       }
     }
 
-    /**
-     * Fetches a list of YYYYMMDD date strings in parallel batches.
-     */
     async function fetchDatesEvents(endpoint, dateStrings, genId, onProgress, batchSize = 7) {
       const eventMap = new Map();
       const total = dateStrings.length;
@@ -1143,7 +1149,7 @@
     }
 
     function getWeeklyDateStrings(anchorMs) {
-      const base = new Date(anchorMs - 6 * 3600 * 1000); // US evening alignment
+      const base = new Date(anchorMs - 6 * 3600 * 1000);
       const start = new Date(Date.UTC(base.getUTCFullYear(), base.getUTCMonth(), base.getUTCDate()));
       const dates = [];
       for (let i = 0; i < 7; i++) {
@@ -1169,7 +1175,6 @@
       return dates;
     }
 
-    // ---------- Parsing ----------
     function computeLean(competition, awayObj, homeObj, spread) {
       const c = cfg();
       const pred = competition.predictor;
@@ -1191,18 +1196,9 @@
       const homeFavored = homeProb >= awayProb;
       const favoredTeam = homeFavored ? homeObj.abbr || homeObj.name : awayObj.abbr || awayObj.name;
       const favoredProb = homeFavored ? homeProb : awayProb;
-
       const confidence = favoredProb >= 65 ? 'High' : favoredProb >= 55 ? 'Medium' : 'Low';
-      const leanLabel = `${favoredTeam} · ${confidence}`;
 
-      return {
-        homeProb,
-        awayProb,
-        favoredTeam,
-        favoredProb,
-        confidence,
-        leanLabel
-      };
+      return { homeProb, awayProb, favoredTeam, favoredProb, confidence };
     }
 
     function parseTeam(t) {
@@ -1255,7 +1251,6 @@
       };
     }
 
-    // ---------- Rendering ----------
     function buildReason(g) {
       const c = cfg();
       if (g.live) {
@@ -1518,7 +1513,6 @@
       }
     }
 
-    // ---------- Modal ----------
     let lastFocused = null;
 
     function openReportersModal(id) {
@@ -1588,16 +1582,6 @@
       if (target.closest?.('.modalClose')) closeModal();
     });
 
-    document.addEventListener('keydown', (e) => {
-      const target = /** @type {HTMLElement} */ (e.target);
-      if ((e.key === 'Enter' || e.key === ' ') && target?.classList?.contains('clickableReporters')) {
-        e.preventDefault();
-        const id = target.getAttribute('data-game-id');
-        if (id) openReportersModal(id);
-      }
-    });
-
-    // ---------- Theme ----------
     const themeBtn = el('themeToggle');
     function applyTheme(theme) {
       document.documentElement.setAttribute('data-theme', theme);
@@ -1615,7 +1599,6 @@
       applyTheme(cur === 'light' ? 'dark' : 'light');
     });
 
-    // ---------- Online / Install / SW ----------
     function updateOnlineStatus() {
       const bar = el('offlineBar');
       if (bar) bar.style.display = navigator.onLine ? 'none' : 'block';
@@ -1639,13 +1622,6 @@
       installBtn.style.display = 'none';
     });
 
-    if ('serviceWorker' in navigator) {
-      window.addEventListener('load', () => {
-        navigator.serviceWorker.register('./sw.js').catch(() => {});
-      });
-    }
-
-    // ---------- Date, Week & Month Selectors ----------
     const weekSelect = el('week');
     const spanToggle = el('spanToggle');
     const dateNav = el('dateNav');
@@ -1760,7 +1736,6 @@
       weekSelect.addEventListener('change', () => load());
     }
 
-    // ---------- Sport Switcher ----------
     const sportButtons = Array.from(document.querySelectorAll('[data-sport]'));
     function syncSportUI() {
       const c = cfg();
@@ -1801,7 +1776,6 @@
       });
     });
 
-    // ---------- Filter buttons ----------
     const filterButtons = Array.from(document.querySelectorAll('[data-filter]'));
     filterButtons.forEach((b) => {
       b.addEventListener('click', () => {
@@ -1814,13 +1788,11 @@
 
     el('refreshBtn')?.addEventListener('click', () => load());
 
-    // ---------- Auto poll ----------
     function scheduleAutoPoll(hasLive) {
       if (autoPollTimer) clearInterval(autoPollTimer);
       if (hasLive) autoPollTimer = setInterval(() => load(true), POLL_MS);
     }
 
-    // ---------- Load ----------
     async function load(silent = false) {
       const genId = ++loadGeneration;
       inFlight = true;
@@ -1928,7 +1900,6 @@
       }
     }
 
-    // Auto-select saved NFL week on first load
     (function autoWeek() {
       if (!weekSelect) return;
       const saved = localStorage.getItem('nfl-cairo-week');
@@ -1939,7 +1910,6 @@
       });
     })();
 
-    // Open drawers on desktop
     if (window.matchMedia('(min-width: 1061px)').matches) {
       if (el('guideDrawer')) /** @type {HTMLDetailsElement} */ (el('guideDrawer')).open = true;
       if (el('keyDrawer')) /** @type {HTMLDetailsElement} */ (el('keyDrawer')).open = true;
