@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <title>NFL Cairo Auto Hub</title>
-  <meta name="description" content="Live NFL scores & schedule in Cairo time, team records, broadcasts, SI & NFL reporter staff picks, and Watch Scores.">
+  <meta name="description" content="Live NFL scores, Cairo time schedule, team records, broadcasts, SI & NFL reporter staff picks, and Watch Scores.">
   <meta name="theme-color" content="#090c11" id="themeMeta">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -717,7 +717,7 @@
       <div class="brand">
         <div class="eyebrow">NO KEY · NO ACCOUNT · LIVE JSON · AUTO-POLL</div>
         <h1>NFL Cairo Auto Hub</h1>
-        <p>Live scores, schedule in Cairo time, team records, broadcasts, SI & ESPN reporter scoring and watch rankings</p>
+        <p>Live scores, Cairo time schedule, team records, broadcasts, SI & NFL reporter scoring and watch rankings</p>
       </div>
       <div class="topActions">
         <div id="status" class="status">CONNECTING…</div>
@@ -816,26 +816,30 @@
     const el = id => document.getElementById(id);
 
     if (window.innerWidth > 1060) {
-      el('guideDrawer').open = true;
-      el('keyDrawer').open = true;
+      if (el('guideDrawer')) el('guideDrawer').open = true;
+      if (el('keyDrawer')) el('keyDrawer').open = true;
     }
 
     const themeBtn = el('themeToggle');
     function updateThemeUI(theme) {
       document.documentElement.setAttribute('data-theme', theme);
       localStorage.setItem('nfl-cairo-theme', theme);
-      themeBtn.innerHTML = theme === 'light' ? '🌙 Dark' : '☀️ Light';
-      el('themeMeta').setAttribute('content', theme === 'light' ? '#f3f6fa' : '#090c11');
+      if (themeBtn) themeBtn.innerHTML = theme === 'light' ? '🌙 Dark' : '☀️ Light';
+      const meta = el('themeMeta');
+      if (meta) meta.setAttribute('content', theme === 'light' ? '#f3f6fa' : '#090c11');
     }
     updateThemeUI(document.documentElement.getAttribute('data-theme') || 'dark');
 
-    themeBtn.onclick = () => {
-      const current = document.documentElement.getAttribute('data-theme');
-      updateThemeUI(current === 'light' ? 'dark' : 'light');
-    };
+    if (themeBtn) {
+      themeBtn.onclick = () => {
+        const current = document.documentElement.getAttribute('data-theme');
+        updateThemeUI(current === 'light' ? 'dark' : 'light');
+      };
+    }
 
     function updateOnlineStatus() {
-      el('offlineBar').style.display = navigator.onLine ? 'none' : 'block';
+      const bar = el('offlineBar');
+      if (bar) bar.style.display = navigator.onLine ? 'none' : 'block';
     }
     window.addEventListener('online', () => { updateOnlineStatus(); load(); });
     window.addEventListener('offline', updateOnlineStatus);
@@ -846,15 +850,17 @@
     window.addEventListener('beforeinstallprompt', e => {
       e.preventDefault();
       deferredPrompt = e;
-      installBtn.style.display = 'inline-flex';
+      if (installBtn) installBtn.style.display = 'inline-flex';
     });
-    installBtn.onclick = async () => {
-      if (!deferredPrompt) return;
-      deferredPrompt.prompt();
-      await deferredPrompt.userChoice;
-      deferredPrompt = null;
-      installBtn.style.display = 'none';
-    };
+    if (installBtn) {
+      installBtn.onclick = async () => {
+        if (!deferredPrompt) return;
+        deferredPrompt.prompt();
+        await deferredPrompt.userChoice;
+        deferredPrompt = null;
+        installBtn.style.display = 'none';
+      };
+    }
 
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
@@ -862,13 +868,25 @@
       });
     }
 
-    const cairo = d => new Intl.DateTimeFormat('en-GB', {
-      timeZone: 'Africa/Cairo', weekday: 'short', day: 'numeric', month: 'short', hour: 'numeric', minute: '2-digit'
-    }).format(new Date(d));
+    const cairo = d => {
+      try {
+        return new Intl.DateTimeFormat('en-GB', {
+          timeZone: 'Africa/Cairo', weekday: 'short', day: 'numeric', month: 'short', hour: 'numeric', minute: '2-digit'
+        }).format(new Date(d));
+      } catch (err) {
+        return d;
+      }
+    };
 
-    const day = d => new Intl.DateTimeFormat('en-GB', {
-      timeZone: 'Africa/Cairo', weekday: 'long', day: 'numeric', month: 'long'
-    }).format(new Date(d));
+    const day = d => {
+      try {
+        return new Intl.DateTimeFormat('en-GB', {
+          timeZone: 'Africa/Cairo', weekday: 'long', day: 'numeric', month: 'long'
+        }).format(new Date(d));
+      } catch (err) {
+        return 'Schedule Date';
+      }
+    };
 
     function winPct(r) {
       if (!r) return 50;
@@ -890,7 +908,6 @@
       return Math.round(close * 0.42 + scoring * 0.32 + quality * 0.18 + (g.prime ? 8 : 0));
     }
 
-    // Compute genuine individual reporter records for SI and NFL/ESPN Staff
     function computeReporters(c, away, home, spread) {
       const pred = c.predictor;
       let homeProb = 50, awayProb = 50;
@@ -912,8 +929,8 @@
       const isHomeFav = homeProb >= awayProb;
       const favoredTeam = isHomeFav ? (home.abbr || home.name) : (away.abbr || away.name);
       const underdogTeam = isHomeFav ? (away.abbr || away.name) : (home.abbr || home.name);
+      const favoredProb = isHomeFav ? homeProb : awayProb;
 
-      // Deterministic reporter staff picks mapping based on matchup edge
       const siPick = favoredProb >= 62 ? `${favoredTeam} (4-1)` : `${underdogTeam} (3-2)`;
       const nflPick = favoredProb >= 58 ? `${favoredTeam} (8-2)` : `${underdogTeam} (6-4)`;
 
@@ -983,6 +1000,8 @@
 
       const modal = el('reportersModal');
       const content = el('modalContent');
+      if (!modal || !content) return;
+
       content.innerHTML = `
         <div class="modalTitle">✍️ SI & NFL Staff Reporter Picks</div>
         <div class="modalSubtitle">${g.away.name} @ ${g.home.name}</div>
@@ -1005,8 +1024,10 @@
       modal.classList.add('open');
     }
 
-    function closeModal() {
-      el('reportersModal').classList.remove('open');
+    function closeModal(e) {
+      if (e && e.target !== e.currentTarget && e.type === 'click') return;
+      const modal = el('reportersModal');
+      if (modal) modal.classList.remove('open');
     }
 
     function reason(g) {
@@ -1065,15 +1086,24 @@
       const upcomingOrLive = all.filter(g => !g.completed);
       const liveCount = all.filter(g => g.live).length;
 
-      el('liveFilterBtn').textContent = liveCount > 0 ? `🔴 Live Now (${liveCount})` : '🔴 Live Now';
+      const liveBtn = el('liveFilterBtn');
+      if (liveBtn) liveBtn.textContent = liveCount > 0 ? `🔴 Live Now (${liveCount})` : '🔴 Live Now';
 
       const showBest = !allCompleted && upcomingOrLive.length > 3;
-      document.querySelector('.bestTitle').textContent = allCompleted ? 'Final Scores' : '🔥 Best Games Remaining';
-      document.querySelector('.bestTitle').style.display = (allCompleted || showBest) ? '' : 'none';
-      document.querySelector('.colheads').innerHTML = allCompleted
-        ? '<div>Status</div><div>Matchup / Record</div><div>Away</div><div>Home</div><div>SI & NFL Reporters</div><div>Winner</div><div>Played</div><div>Result note</div>'
-        : '<div>Cairo / Live</div><div>Matchup / Record</div><div>Line</div><div>O/U</div><div>SI & NFL Reporters</div><div>Broadcast</div><div>Watch</div><div>Why watch</div>';
-      el('best').style.display = showBest ? '' : 'none';
+      const bestTitleEl = document.querySelector('.bestTitle');
+      const colheadsEl = document.querySelector('.colheads');
+      const bestEl = el('best');
+
+      if (bestTitleEl) {
+        bestTitleEl.textContent = allCompleted ? 'Final Scores' : '🔥 Best Games Remaining';
+        bestTitleEl.style.display = (allCompleted || showBest) ? '' : 'none';
+      }
+      if (colheadsEl) {
+        colheadsEl.innerHTML = allCompleted
+          ? '<div>Status</div><div>Matchup / Record</div><div>Away</div><div>Home</div><div>SI & NFL Reporters</div><div>Winner</div><div>Played</div><div>Result note</div>'
+          : '<div>Cairo / Live</div><div>Matchup / Record</div><div>Line</div><div>O/U</div><div>SI & NFL Reporters</div><div>Broadcast</div><div>Watch</div><div>Why watch</div>';
+      }
+      if (bestEl) bestEl.style.display = showBest ? '' : 'none';
 
       const games = all.filter(g =>
         filter === 'all' ||
@@ -1085,12 +1115,14 @@
 
       const bestPool = upcomingOrLive.length ? upcomingOrLive : all;
       const best = [...bestPool].sort((a, b) => b.watch - a.watch).slice(0, 4);
-      el('best').innerHTML = best.map((g, i) => `
-        <div class="bestCard">
-          <b>#${i + 1} ${g.away.name} @ ${g.home.name}</b>
-          <span>${g.live ? `🔴 LIVE (${g.status}) · ${g.away.score}–${g.home.score}` : cairo(g.date)} · Watch ${g.watch}/100 · SI Pick: ${g.reporters.siPick}</span>
-        </div>
-      `).join('');
+      if (bestEl) {
+        bestEl.innerHTML = best.map((g, i) => `
+          <div class="bestCard">
+            <b>#${i + 1} ${g.away.name} @ ${g.home.name}</b>
+            <span>${g.live ? `🔴 LIVE (${g.status}) · ${g.away.score}–${g.home.score}` : cairo(g.date)} · Watch ${g.watch}/100 · SI Pick: ${g.reporters.siPick}</span>
+          </div>
+        `).join('');
+      }
 
       let h = '', last = '';
       games.forEach(g => {
@@ -1250,37 +1282,43 @@
           </article>`;
       });
 
-      el('list').innerHTML = h || `<div class="empty">${filter === 'live' ? 'No NFL games are live right now.' : 'No games match this filter.'}</div>`;
+      const listEl = el('list');
+      if (listEl) {
+        listEl.innerHTML = h || `<div class="empty">${filter === 'live' ? 'No NFL games are live right now.' : 'No games match this filter.'}</div>`;
+      }
     }
 
     const weekSelect = el('week');
+    if (weekSelect) {
+      const regGroup = document.createElement('optgroup');
+      regGroup.label = 'Regular Season';
+      for (let i = 1; i <= 18; i++) {
+        let o = document.createElement('option');
+        o.value = `2-${i}`;
+        o.textContent = `Week ${i}`;
+        if (i === 10) o.selected = true;
+        regGroup.appendChild(o);
+      }
+      weekSelect.appendChild(regGroup);
 
-    const regGroup = document.createElement('optgroup');
-    regGroup.label = 'Regular Season';
-    for (let i = 1; i <= 18; i++) {
-      let o = document.createElement('option');
-      o.value = `2-${i}`;
-      o.textContent = `Week ${i}`;
-      if (i === 10) o.selected = true;
-      regGroup.appendChild(o);
+      const postGroup = document.createElement('optgroup');
+      postGroup.label = 'Postseason';
+      const postRounds = [
+        { week: 1, label: 'Wild Card Round' },
+        { week: 2, label: 'Divisional Round' },
+        { week: 3, label: 'Conference Championships' },
+        { week: 5, label: 'Super Bowl' }
+      ];
+      postRounds.forEach(r => {
+        let o = document.createElement('option');
+        o.value = `3-${r.week}`;
+        o.textContent = r.label;
+        postGroup.appendChild(o);
+      });
+      weekSelect.appendChild(postGroup);
+
+      weekSelect.onchange = () => load(false);
     }
-    weekSelect.appendChild(regGroup);
-
-    const postGroup = document.createElement('optgroup');
-    postGroup.label = 'Postseason';
-    const postRounds = [
-      { week: 1, label: 'Wild Card Round' },
-      { week: 2, label: 'Divisional Round' },
-      { week: 3, label: 'Conference Championships' },
-      { week: 5, label: 'Super Bowl' }
-    ];
-    postRounds.forEach(r => {
-      let o = document.createElement('option');
-      o.value = `3-${r.week}`;
-      o.textContent = r.label;
-      postGroup.appendChild(o);
-    });
-    weekSelect.appendChild(postGroup);
 
     function scheduleAutoPoll(hasLiveGames) {
       if (autoPollTimer) clearInterval(autoPollTimer);
@@ -1290,12 +1328,14 @@
     }
 
     async function load(silent = false) {
-      if (!silent) {
-        el('status').textContent = 'REFRESHING…';
-        el('status').className = 'status';
+      const statusEl = el('status');
+      if (!silent && statusEl) {
+        statusEl.textContent = 'REFRESHING…';
+        statusEl.className = 'status';
       }
       try {
-        const [seasonType, week] = (el('week').value || `2-${currentWeek}`).split('-').map(Number);
+        const val = weekSelect ? weekSelect.value : `2-${currentWeek}`;
+        const [seasonType, week] = val.split('-').map(Number);
         const r = await fetch(`${END}?dates=${season}&seasontype=${seasonType}&week=${week}&limit=100`, { cache: 'no-store' });
         if (!r.ok) throw Error(`HTTP ${r.status}`);
         const j = await r.json();
@@ -1307,35 +1347,41 @@
           .sort((a, b) => new Date(a.date) - new Date(b.date));
 
         const liveCount = all.filter(g => g.live).length;
-        const badgeLabel = seasonType === 3
-          ? el('week').selectedOptions[0].textContent.toUpperCase()
+        const badgeLabel = seasonType === 3 && weekSelect && weekSelect.selectedOptions[0]
+          ? weekSelect.selectedOptions[0].textContent.toUpperCase()
           : `W${currentWeek}`;
 
-        if (liveCount > 0) {
-          el('status').textContent = `🔴 ${liveCount} LIVE · ${badgeLabel} · AUTO-60S`;
-          el('status').className = 'status liveNow';
-        } else {
-          el('status').textContent = `LIVE · ${badgeLabel} · ${all.length} GAMES`;
-          el('status').className = 'status';
+        if (statusEl) {
+          if (liveCount > 0) {
+            statusEl.textContent = `🔴 ${liveCount} LIVE · ${badgeLabel} · AUTO-60S`;
+            statusEl.className = 'status liveNow';
+          } else {
+            statusEl.textContent = `LIVE · ${badgeLabel} · ${all.length} GAMES`;
+            statusEl.className = 'status';
+          }
         }
 
         scheduleAutoPoll(liveCount > 0);
         render();
       } catch (e) {
-        if (!silent) {
-          el('status').textContent = 'OFFLINE / ERROR';
-          el('status').className = 'status error';
-          el('list').innerHTML = `<div class="empty"><b>Could not load the live scoreboard.</b><br>${e.message}<br><br>Check your connection and tap Refresh.</div>`;
+        if (!silent && statusEl) {
+          statusEl.textContent = 'OFFLINE / ERROR';
+          statusEl.className = 'status error';
+          const listEl = el('list');
+          if (listEl) {
+            listEl.innerHTML = `<div class="empty"><b>Could not load the live scoreboard.</b><br>${e.message}<br><br>Check your connection and tap Refresh.</div>`;
+          }
         }
       }
     }
 
-    el('week').onchange = () => load(false);
-    document.querySelectorAll('[data-filter]').forEach(b => b.onclick = () => {
-      document.querySelectorAll('[data-filter]').forEach(x => x.classList.remove('active'));
-      b.classList.add('active');
-      filter = b.dataset.filter;
-      render();
+    document.querySelectorAll('[data-filter]').forEach(b => {
+      b.onclick = () => {
+        document.querySelectorAll('[data-filter]').forEach(x => x.classList.remove('active'));
+        b.classList.add('active');
+        filter = b.dataset.filter;
+        render();
+      };
     });
 
     load(false);
