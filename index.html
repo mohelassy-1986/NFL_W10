@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <title>NFL Cairo Auto Hub</title>
-  <meta name="description" content="NFL schedule in Cairo time, team records, broadcasts, lines, and Watch Scores.">
+  <meta name="description" content="Live NFL scores & schedule in Cairo time, team records, broadcasts, lines, expert consensus, and Watch Scores.">
   <meta name="theme-color" content="#090c11" id="themeMeta">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -42,9 +42,11 @@
       --gold-border: #665526;
       --blue: #6eb0ff;
       --blue-bg: #172c48;
+      --purple: #c084fc;
+      --purple-bg: #2e1a47;
       --orange: #ff9352;
       --orange-bg: #402c1b;
-      --red: #ff6675;
+      --red: #ff5c6c;
       --red-bg: #351a20;
       --red-border: #71333b;
       --btn-bg: #151b24;
@@ -73,6 +75,8 @@
       --gold-border: #f2cf7e;
       --blue: #175cd3;
       --blue-bg: #e8f1ff;
+      --purple: #7e22ce;
+      --purple-bg: #f3e8ff;
       --orange: #c4320a;
       --orange-bg: #ffefe8;
       --red: #d92d20;
@@ -98,7 +102,7 @@
     }
 
     .wrap {
-      max-width: 1280px;
+      max-width: 1340px;
       margin: auto;
       padding: calc(20px + env(safe-area-inset-top)) 16px calc(56px + env(safe-area-inset-bottom));
     }
@@ -150,6 +154,12 @@
       font-size: 11px;
       font-weight: 800;
       letter-spacing: 0.3px;
+    }
+
+    .status.liveNow {
+      border-color: var(--red-border);
+      background: var(--red-bg);
+      color: var(--red);
     }
 
     .status.error {
@@ -374,8 +384,8 @@
 
     .colheads {
       display: grid;
-      grid-template-columns: 95px minmax(270px, 1.5fr) 95px 70px 115px 95px minmax(210px, 1.2fr);
-      gap: 12px;
+      grid-template-columns: 95px minmax(260px, 1.4fr) 85px 60px 105px 105px 85px minmax(220px, 1.3fr);
+      gap: 10px;
       padding: 14px 16px 6px;
       color: var(--mut);
       text-transform: uppercase;
@@ -386,8 +396,8 @@
 
     .game {
       display: grid;
-      grid-template-columns: 95px minmax(270px, 1.5fr) 95px 70px 115px 95px minmax(210px, 1.2fr);
-      gap: 12px;
+      grid-template-columns: 95px minmax(260px, 1.4fr) 85px 60px 105px 105px 85px minmax(220px, 1.3fr);
+      gap: 10px;
       align-items: center;
       background: var(--card);
       border: 1px solid var(--line);
@@ -397,36 +407,69 @@
       box-shadow: var(--shadow);
     }
 
-    .game.hot {
-      border-left: 4px solid var(--gold);
+    .game.hot { border-left: 4px solid var(--gold); }
+    .game.liveCard { border-left: 4px solid var(--red); }
+
+    .time { font-weight: 900; font-size: 13px; }
+
+    @keyframes pulseDot {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.35; transform: scale(0.8); }
     }
 
-    .time { font-weight: 900; font-size: 13.5px; }
+    .livePill {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      background: var(--red-bg);
+      border: 1px solid var(--red-border);
+      color: var(--red);
+      border-radius: 6px;
+      padding: 4px 7px;
+      font-size: 10px;
+      font-weight: 900;
+      letter-spacing: 0.3px;
+    }
+    .liveDot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--red);
+      animation: pulseDot 1.3s infinite ease-in-out;
+    }
+    .liveClock {
+      display: block;
+      font-size: 10.5px;
+      font-weight: 800;
+      color: var(--red);
+      margin-top: 3px;
+    }
 
     .match {
       display: grid;
-      grid-template-columns: 1fr 22px 1fr;
-      gap: 8px;
+      grid-template-columns: 1fr 20px 1fr;
+      gap: 6px;
       align-items: center;
     }
 
     .team {
       display: flex;
       align-items: center;
-      gap: 9px;
+      justify-content: space-between;
+      gap: 8px;
       min-width: 0;
     }
 
     .logo {
-      width: 34px;
-      height: 34px;
+      width: 32px;
+      height: 32px;
       object-fit: contain;
       flex-shrink: 0;
     }
 
     .name {
       font-weight: 900;
-      font-size: 14px;
+      font-size: 13.5px;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
@@ -436,6 +479,13 @@
       font-size: 11px;
       color: var(--mut);
       font-weight: 600;
+    }
+
+    .inlineScore {
+      font-size: 18px;
+      font-weight: 950;
+      padding-left: 4px;
+      flex-shrink: 0;
     }
 
     .at {
@@ -456,11 +506,13 @@
       margin-bottom: 2px;
     }
 
-    .value { font-weight: 900; color: var(--blue); font-size: 13.5px; }
+    .value { font-weight: 900; color: var(--blue); font-size: 13px; }
     .total.high { color: var(--orange); }
-    .pick { font-weight: 800; color: var(--g); font-size: 13px; }
-    .watch { font-size: 20px; font-weight: 950; color: var(--gold); line-height: 1.1; }
-    .watchMax { font-size: 11px; color: var(--mut); font-weight: 700; }
+    .consensus { font-weight: 900; color: var(--purple); font-size: 12.5px; }
+    .consensus small { display: block; font-size: 10px; color: var(--mut); font-weight: 700; }
+    .pick { font-weight: 800; color: var(--g); font-size: 12.5px; }
+    .watch { font-size: 19px; font-weight: 950; color: var(--gold); line-height: 1.1; }
+    .watchMax { font-size: 10.5px; color: var(--mut); font-weight: 700; }
 
     .why {
       font-size: 12px;
@@ -482,10 +534,12 @@
     }
     .tag.prime { background: var(--blue-bg); color: var(--blue); }
     .tag.shootout { background: var(--orange-bg); color: var(--orange); }
+    .tag.consensusTag { background: var(--purple-bg); color: var(--purple); }
 
-    .scoreFinal { font-size: 21px; font-weight: 950; }
+    .scoreFinal { font-size: 19px; font-weight: 950; }
     .winner { color: var(--g); }
     .loser { color: var(--mut); }
+    .liveScoreTxt { color: var(--txt); }
     .finalTag {
       display: inline-block;
       background: var(--chip-bg);
@@ -518,7 +572,7 @@
       line-height: 1.6;
     }
 
-    @media (max-width: 980px) {
+    @media (max-width: 1060px) {
       .guide { grid-template-columns: 1fr 1fr; }
       .best { grid-template-columns: 1fr 1fr; }
       .colheads { display: none; }
@@ -555,7 +609,7 @@
 
       .statsGrid {
         display: grid;
-        grid-template-columns: repeat(3, 1fr);
+        grid-template-columns: repeat(4, 1fr);
         gap: 8px;
         background: var(--card-sub);
         border: 1px solid var(--line);
@@ -574,6 +628,7 @@
       .topActions { width: 100%; justify-content: space-between; }
       .match { grid-template-columns: 1fr; gap: 6px; }
       .at { display: none; }
+      .statsGrid { grid-template-columns: repeat(2, 1fr); }
       .team {
         justify-content: space-between;
         background: var(--card-sub);
@@ -591,9 +646,9 @@
       }
     }
 
-    @media (min-width: 981px) {
+    @media (min-width: 1061px) {
       .gameTop, .statsGrid, .gameWatchRow { display: contents; }
-      .teamLeft { display: flex; align-items: center; gap: 9px; min-width: 0; }
+      .teamLeft { display: flex; align-items: center; gap: 8px; min-width: 0; }
       .teamRole { display: none; }
     }
   </style>
@@ -602,9 +657,9 @@
   <main class="wrap">
     <header class="top">
       <div class="brand">
-        <div class="eyebrow">NO KEY · NO ACCOUNT · LIVE JSON</div>
+        <div class="eyebrow">NO KEY · NO ACCOUNT · LIVE JSON · AUTO-POLL</div>
         <h1>NFL Cairo Auto Hub</h1>
-        <p>Schedule, team records, logos, broadcasts, lines and watch rankings</p>
+        <p>Live scores, schedule in Cairo time, team records, broadcasts, expert consensus and watch rankings</p>
       </div>
       <div class="topActions">
         <div id="status" class="status">CONNECTING…</div>
@@ -621,31 +676,33 @@
     <div class="controls">
       <select id="week" aria-label="Select NFL Week or Postseason Round"></select>
       <button class="active" data-filter="all">All</button>
+      <button data-filter="live" id="liveFilterBtn">🔴 Live Now</button>
       <button data-filter="best">🔥 Best games</button>
       <button data-filter="prime">🌙 Prime time</button>
       <button data-filter="shootout">O/U 50+</button>
+      <button data-filter="tossup">⚖️ Expert Toss-Ups</button>
       <button onclick="load()">↻ Refresh</button>
     </div>
 
     <details class="drawer" id="guideDrawer">
-      <summary>📊 How Watch Score & Badges Work</summary>
+      <summary>📊 How Live Scores, Watch Score & Consensus Work</summary>
       <div class="drawerBody">
         <section class="guide">
           <div class="guideItem">
+            <b>🔴 Live Auto-Polling</b>
+            <span>Games in progress show real-time scores, quarter, and game clock, automatically refreshing every 60 seconds while games are active.</span>
+          </div>
+          <div class="guideItem">
             <b>Watch Score · 0–100</b>
-            <span>Our viewing score. Higher is better. It combines game closeness (42%), scoring potential from O/U (32%), team-record quality (18%) and an 8-point national-window bonus. 70+ earns BEST GAME.</span>
+            <span>Combines game closeness (42%), scoring potential from O/U (32%), team-record quality (18%) and an 8-point national-window bonus. 70+ earns BEST GAME.</span>
           </div>
           <div class="guideItem">
-            <b>🔥 Best Game</b>
-            <span>A game with Watch Score 70+. This is a viewing recommendation, not a prediction that a team will win.</span>
+            <b>🧠 Expert Consensus</b>
+            <span>Derived from ESPN Analytics matchup projections & implied market odds. Shows the projected winner and win probability %.</span>
           </div>
           <div class="guideItem">
-            <b>🔥 Shootout</b>
-            <span>Displayed when ESPN's listed O/U is 50.0 or higher. O/U is the market's combined-points line for both teams.</span>
-          </div>
-          <div class="guideItem">
-            <b>🌙 Prime Time</b>
-            <span>A nationally featured broadcast detected from the feed, such as NBC, ESPN, ABC, Prime Video or Netflix. Prime Time and Best Game are separate labels.</span>
+            <b>🔥 Shootout & 🌙 Prime Time</b>
+            <span>SHOOTOUT triggers when O/U is 50.0+. PRIME TIME highlights national windows on NBC, ESPN, ABC, Prime Video, or Netflix.</span>
           </div>
         </section>
       </div>
@@ -656,19 +713,14 @@
       <div class="drawerBody">
         <div class="keychips">
           <span class="keychip"><b>Cairo</b> kickoff converted to Africa/Cairo</span>
+          <span class="keychip"><b>🔴 LIVE</b> game in progress (auto-updates every 60s)</span>
           <span class="keychip"><b>Record</b> W-L-T = wins-losses-ties</span>
           <span class="keychip"><b>Line / Spread</b> e.g. NYG -3 means Giants favored by 3</span>
           <span class="keychip"><b>O/U</b> Over/Under combined points</span>
+          <span class="keychip"><b>Consensus</b> Expert / Analytics win probability favorite</span>
           <span class="keychip"><b>Watch</b> 0–100 viewing score, not win probability</span>
-          <span class="keychip"><b>TBA</b> To Be Announced</span>
-          <span class="keychip"><b>TNF</b> Thursday Night Football</span>
-          <span class="keychip"><b>SNF</b> Sunday Night Football</span>
-          <span class="keychip"><b>MNF</b> Monday Night Football</span>
-          <span class="keychip"><b>OT</b> Overtime</span>
-          <span class="keychip"><b>ESPN</b> live scoreboard data source</span>
           <span class="keychip"><b>BEST GAME</b> Watch Score ≥ 70</span>
-          <span class="keychip"><b>SHOOTOUT</b> O/U ≥ 50</span>
-          <span class="keychip"><b>PRIME TIME</b> detected national featured window</span>
+          <span class="keychip"><b>TOSS-UP</b> Expert projection within 48%–52%</span>
         </div>
       </div>
     </details>
@@ -677,10 +729,11 @@
     <section class="best" id="best"></section>
 
     <div class="colheads">
-      <div>Cairo</div>
+      <div>Cairo / Status</div>
       <div>Matchup / Record</div>
       <div>Line</div>
       <div>O/U</div>
+      <div>Consensus</div>
       <div>Broadcast</div>
       <div>Watch</div>
       <div>Why watch</div>
@@ -689,16 +742,16 @@
     <section id="list"></section>
 
     <div class="note">
-      <b>How it works:</b> this app calls the public JSON used by ESPN's scoreboard pages directly from the browser. No API key, GitHub Action or server is required. The watch score is calculated locally from spread closeness, projected total, teams’ records and national broadcast status. Because the endpoint is unofficial and undocumented, the page includes a clear retry/error state and may require adjustment if ESPN changes its JSON structure.
+      <b>How it works:</b> this app calls the public JSON used by ESPN's scoreboard pages directly from the browser. When games are live, it automatically polls for updated scores every 60 seconds.
     </div>
   </main>
 
   <script>
     const END = 'https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard';
-    let all = [], filter = 'all', season = 2026, currentWeek = 10;
+    let all = [], filter = 'all', season = 2026, currentWeek = 10, autoPollTimer = null;
     const el = id => document.getElementById(id);
 
-    if (window.innerWidth > 980) {
+    if (window.innerWidth > 1060) {
       el('guideDrawer').open = true;
       el('keyDrawer').open = true;
     }
@@ -773,6 +826,50 @@
       return Math.round(close * 0.42 + scoring * 0.32 + quality * 0.18 + (g.prime ? 8 : 0));
     }
 
+    function computeConsensus(c, away, home, spread) {
+      const pred = c.predictor;
+      if (pred?.homeTeam?.gameProjection && pred?.awayTeam?.gameProjection) {
+        const homeProb = Math.round(Number(pred.homeTeam.gameProjection));
+        const awayProb = Math.round(Number(pred.awayTeam.gameProjection));
+        const isHomeFav = homeProb >= awayProb;
+        return {
+          team: isHomeFav ? (home.abbr || home.name) : (away.abbr || away.name),
+          prob: isHomeFav ? homeProb : awayProb,
+          source: 'ESPN FPI',
+          tossup: Math.abs(homeProb - 50) <= 3
+        };
+      }
+
+      if (Number.isFinite(spread)) {
+        const homeProb = Math.max(5, Math.min(95, Math.round(50 + (-spread * 3.1))));
+        const awayProb = 100 - homeProb;
+        const isHomeFav = homeProb >= awayProb;
+        return {
+          team: isHomeFav ? (home.abbr || home.name) : (away.abbr || away.name),
+          prob: isHomeFav ? homeProb : awayProb,
+          source: 'Market Consensus',
+          tossup: Math.abs(homeProb - 50) <= 3
+        };
+      }
+
+      const homePct = winPct(home.record);
+      const awayPct = winPct(away.record);
+      if (homePct !== awayPct) {
+        const diff = homePct - awayPct;
+        const homeProb = Math.max(20, Math.min(80, Math.round(50 + diff * 0.6)));
+        const awayProb = 100 - homeProb;
+        const isHomeFav = homeProb >= awayProb;
+        return {
+          team: isHomeFav ? (home.abbr || home.name) : (away.abbr || away.name),
+          prob: isHomeFav ? homeProb : awayProb,
+          source: 'Record Model',
+          tossup: Math.abs(homeProb - 50) <= 3
+        };
+      }
+
+      return { team: 'Even', prob: 50, source: 'Split', tossup: true };
+    }
+
     function parse(x) {
       const c = x.competitions?.[0] || {};
       const teams = c.competitors || [];
@@ -781,30 +878,41 @@
       const od = c.odds?.[0] || {};
       const broadcasts = (c.broadcasts || []).flatMap(b => b.names || []);
       let spread = Number.isFinite(od.spread) ? od.spread : null;
+      const state = c.status?.type?.state || 'pre'; // 'pre', 'in', 'post'
+
+      const awayObj = {
+        name: away.team?.shortDisplayName || away.team?.displayName || 'Away',
+        abbr: away.team?.abbreviation || '',
+        logo: away.team?.logo || '',
+        record: away.records?.[0]?.summary || '',
+        score: Number(away.score ?? 0),
+        winner: !!away.winner
+      };
+      const homeObj = {
+        name: home.team?.shortDisplayName || home.team?.displayName || 'Home',
+        abbr: home.team?.abbreviation || '',
+        logo: home.team?.logo || '',
+        record: home.records?.[0]?.summary || '',
+        score: Number(home.score ?? 0),
+        winner: !!home.winner
+      };
+
+      const consensus = computeConsensus(c, awayObj, homeObj, spread);
+
       return {
         id: x.id,
         date: x.date,
+        state,
         status: c.status?.type?.shortDetail || '',
-        completed: !!c.status?.type?.completed,
-        away: {
-          name: away.team?.shortDisplayName || away.team?.displayName || 'Away',
-          abbr: away.team?.abbreviation || '',
-          logo: away.team?.logo || '',
-          record: away.records?.[0]?.summary || '',
-          score: Number(away.score ?? 0),
-          winner: !!away.winner
-        },
-        home: {
-          name: home.team?.shortDisplayName || home.team?.displayName || 'Home',
-          abbr: home.team?.abbreviation || '',
-          logo: home.team?.logo || '',
-          record: home.records?.[0]?.summary || '',
-          score: Number(home.score ?? 0),
-          winner: !!home.winner
-        },
+        completed: state === 'post' || !!c.status?.type?.completed,
+        live: state === 'in',
+        situation: c.situation?.downDistanceText || '',
+        away: awayObj,
+        home: homeObj,
         details: od.details || '—',
         spread,
         total: od.overUnder ?? null,
+        consensus,
         broadcasts,
         prime: prime(broadcasts),
         venue: c.venue?.fullName || '',
@@ -812,11 +920,25 @@
       };
     }
 
-    // Deep Narrative "Why Watch" Engine
     function reason(g) {
+      if (g.live) {
+        const diff = Math.abs(g.away.score - g.home.score);
+        const leader = g.away.score > g.home.score ? g.away.name : (g.home.score > g.away.score ? g.home.name : 'Tied');
+        let liveLines = [];
+        if (diff === 0) {
+          liveLines.push(`🔴 <b>Deadlocked Live:</b> Tied at ${g.away.score}–${g.home.score} (${g.status}).`);
+        } else if (diff <= 8) {
+          liveLines.push(`🔴 <b>One-Score Live Thriller:</b> ${leader} leads ${Math.max(g.away.score, g.home.score)}–${Math.min(g.away.score, g.home.score)} (${g.status}).`);
+        } else {
+          liveLines.push(`🔴 <b>In Progress:</b> ${leader} up by ${diff} (${g.status}).`);
+        }
+        if (g.situation) liveLines.push(`🏈 <b>Situation:</b> ${g.situation}`);
+        if (g.venue) liveLines.push(`<small>📍 ${g.venue}</small>`);
+        return liveLines.join('<br>');
+      }
+
       let insights = [];
 
-      // 1. Scoring & Pace narrative
       if (g.total !== null) {
         if (g.total >= 51.5) {
           insights.push(`🔥 <b>High-Voltage Shootout:</b> Vegas expects explosive fireworks with a lofty ${g.total} O/U total.`);
@@ -825,28 +947,25 @@
         }
       }
 
-      // 2. Closeness & Friction narrative
-      if (g.spread !== null) {
-        if (Math.abs(g.spread) <= 2.5) {
-          insights.push(`⚖️ <b>Coin-Flip Margin:</b> A razor-thin ${g.spread}-point spread points to a tense, down-to-the-wire finish.`);
-        } else if (Math.abs(g.spread) >= 9.5) {
-          insights.push(`⚠️ <b>David vs. Goliath:</b> A heavy underdog spot (${g.details}). Watch to see if an upset brews or if it turns into a showcase blowout.`);
-        }
+      if (g.consensus.tossup) {
+        insights.push(`⚖️ <b>Split Expert Panel:</b> Analysts are deadlocked (${g.consensus.team} ${g.consensus.prob}%). Expect a razor-thin, 4th-quarter finish.`);
+      } else if (g.consensus.prob >= 76) {
+        insights.push(`🧠 <b>Heavy Expert Consensus:</b> ${g.consensus.team} commands ${g.consensus.prob}% projection backing — prime upset-watch alert if the underdog hangs around.`);
+      } else if (g.spread !== null && Math.abs(g.spread) <= 3) {
+        insights.push(`🎯 <b>One-Score Margin:</b> A tight ${g.details} spread with ${g.consensus.team} (${g.consensus.prob}%) holding a slight edge.`);
       }
 
-      // 3. National Primetime Stage
       if (g.prime) {
         insights.push(`🌙 <b>National Spotlight:</b> Primetime window on ${g.broadcasts.join(', ')} ramps up player intensity.`);
       }
 
-      // 4. Combined Quality / Heavyweight Matchup
       const avgWinPct = (winPct(g.away.record) + winPct(g.home.record)) / 2;
       if (avgWinPct >= 68) {
-        insights.push(`👑 <b>Heavyweight Tilt:</b> Two elite-tier rosters colliding with serious competitive stakes.`);
+        insights.push(`👑 <b>Heavyweight Tilt:</b> Two elite-tier rosters colliding with serious postseason seeding stakes.`);
       }
 
       if (insights.length === 0) {
-        insights.push(`👀 <b>Under-the-Radar Battle:</b> Look for tactical adjustments and late-game execution shifts.`);
+        insights.push(`📊 <b>Consensus Lean:</b> ${g.consensus.team} favored at ${g.consensus.prob}% (${g.consensus.source}). Watch for tactical adjustments.`);
       }
 
       let html = insights.join('<br>');
@@ -857,27 +976,35 @@
     }
 
     function render() {
-      const historical = all.length && all.every(g => g.completed);
-      const showBest = !historical && all.length > 3;
-      document.querySelector('.bestTitle').textContent = historical ? 'Final Scores' : '🔥 Best Games This Week';
-      document.querySelector('.bestTitle').style.display = (historical || showBest) ? '' : 'none';
-      document.querySelector('.colheads').innerHTML = historical
-        ? '<div>Status</div><div>Matchup / Record</div><div>Away</div><div>Home</div><div>Winner</div><div>Played</div><div>Result note</div>'
-        : '<div>Cairo</div><div>Matchup / Record</div><div>Line</div><div>O/U</div><div>Broadcast</div><div>Watch</div><div>Why watch</div>';
+      const allCompleted = all.length && all.every(g => g.completed);
+      const upcomingOrLive = all.filter(g => !g.completed);
+      const liveCount = all.filter(g => g.live).length;
+
+      el('liveFilterBtn').textContent = liveCount > 0 ? `🔴 Live Now (${liveCount})` : '🔴 Live Now';
+
+      const showBest = !allCompleted && upcomingOrLive.length > 3;
+      document.querySelector('.bestTitle').textContent = allCompleted ? 'Final Scores' : '🔥 Best Games Remaining';
+      document.querySelector('.bestTitle').style.display = (allCompleted || showBest) ? '' : 'none';
+      document.querySelector('.colheads').innerHTML = allCompleted
+        ? '<div>Status</div><div>Matchup / Record</div><div>Away</div><div>Home</div><div>Consensus</div><div>Winner</div><div>Played</div><div>Result note</div>'
+        : '<div>Cairo / Live</div><div>Matchup / Record</div><div>Line</div><div>O/U</div><div>Consensus</div><div>Broadcast</div><div>Watch</div><div>Why watch</div>';
       el('best').style.display = showBest ? '' : 'none';
 
       const games = all.filter(g =>
         filter === 'all' ||
+        (filter === 'live' && g.live) ||
         (filter === 'best' && g.watch >= 70) ||
         (filter === 'prime' && g.prime) ||
-        (filter === 'shootout' && g.total >= 50)
+        (filter === 'shootout' && g.total >= 50) ||
+        (filter === 'tossup' && g.consensus.tossup)
       );
 
-      const best = [...all].sort((a, b) => b.watch - a.watch).slice(0, 4);
+      const bestPool = upcomingOrLive.length ? upcomingOrLive : all;
+      const best = [...bestPool].sort((a, b) => b.watch - a.watch).slice(0, 4);
       el('best').innerHTML = best.map((g, i) => `
         <div class="bestCard">
           <b>#${i + 1} ${g.away.name} @ ${g.home.name}</b>
-          <span>${cairo(g.date)} · Watch ${g.watch}/100 · ${g.details}${g.total ? ` · O/U ${g.total}` : ''}</span>
+          <span>${g.live ? `🔴 LIVE (${g.status}) · ${g.away.score}–${g.home.score}` : cairo(g.date)} · Watch ${g.watch}/100 · ${g.consensus.team} (${g.consensus.prob}%)</span>
         </div>
       `).join('');
 
@@ -888,53 +1015,118 @@
           h += `<div class="day">${d}</div>`;
           last = d;
         }
-        let tags = `${g.prime ? '<span class="tag prime">PRIME TIME</span>' : ''}${g.total >= 50 ? '<span class="tag shootout">SHOOTOUT</span>' : ''}${g.watch >= 70 ? '<span class="tag">BEST GAME</span>' : ''}`;
+        let tags = `${g.prime ? '<span class="tag prime">PRIME TIME</span>' : ''}${g.total >= 50 ? '<span class="tag shootout">SHOOTOUT</span>' : ''}${g.consensus.tossup ? '<span class="tag consensusTag">TOSS-UP</span>' : ''}${g.watch >= 70 ? '<span class="tag">BEST GAME</span>' : ''}`;
 
-        if (historical) {
-          h += `
-            <article class="game">
-              <div class="gameTop">
-                <div><span class="finalTag">${g.status || 'FINAL'}</span></div>
-                <div class="gameWatchRow"><span class="pick">${g.away.winner ? g.away.name : g.home.name} won</span></div>
-              </div>
-              <div class="match">
-                <div class="team">
-                  <div class="teamLeft">
-                    <img class="logo" src="${g.away.logo}" alt="${g.away.name}">
-                    <div>
-                      <div class="name ${g.away.winner ? 'winner' : 'loser'}">${g.away.name}</div>
-                      <div class="rec">${g.away.record}</div>
-                    </div>
-                  </div>
-                  <span class="teamRole scoreFinal ${g.away.winner ? 'winner' : 'loser'}">${g.away.score}</span>
+        // 1. COMPLETED GAME ROW (Either full historical week or finished Thursday/early Sunday game in current week)
+        if (g.completed) {
+          const winnerAbbr = g.away.winner ? g.away.abbr : g.home.abbr;
+          const consensusRight = winnerAbbr === g.consensus.team;
+          const winnerName = g.away.winner ? g.away.name : (g.home.winner ? g.home.name : 'Tied');
+
+          if (allCompleted) {
+            h += `
+              <article class="game">
+                <div class="gameTop">
+                  <div><span class="finalTag">${g.status || 'FINAL'}</span></div>
+                  <div class="gameWatchRow"><span class="pick">${winnerName} ${winnerName === 'Tied' ? '' : 'won'}</span></div>
                 </div>
-                <div class="at">@</div>
-                <div class="team">
-                  <div class="teamLeft">
-                    <img class="logo" src="${g.home.logo}" alt="${g.home.name}">
-                    <div>
-                      <div class="name ${g.home.winner ? 'winner' : 'loser'}">${g.home.name}</div>
-                      <div class="rec">${g.home.record}</div>
+                <div class="match">
+                  <div class="team">
+                    <div class="teamLeft">
+                      <img class="logo" src="${g.away.logo}" alt="${g.away.name}">
+                      <div>
+                        <div class="name ${g.away.winner ? 'winner' : 'loser'}">${g.away.name}</div>
+                        <div class="rec">${g.away.record}</div>
+                      </div>
                     </div>
+                    <span class="teamRole scoreFinal ${g.away.winner ? 'winner' : 'loser'}">${g.away.score}</span>
                   </div>
-                  <span class="teamRole scoreFinal ${g.home.winner ? 'winner' : 'loser'}">${g.home.score}</span>
+                  <div class="at">@</div>
+                  <div class="team">
+                    <div class="teamLeft">
+                      <img class="logo" src="${g.home.logo}" alt="${g.home.name}">
+                      <div>
+                        <div class="name ${g.home.winner ? 'winner' : 'loser'}">${g.home.name}</div>
+                        <div class="rec">${g.home.record}</div>
+                      </div>
+                    </div>
+                    <span class="teamRole scoreFinal ${g.home.winner ? 'winner' : 'loser'}">${g.home.score}</span>
+                  </div>
                 </div>
-              </div>
-              <div class="statsGrid">
-                <div class="statBox"><span class="label">Away</span><span class="scoreFinal ${g.away.winner ? 'winner' : 'loser'}">${g.away.score}</span></div>
-                <div class="statBox"><span class="label">Home</span><span class="scoreFinal ${g.home.winner ? 'winner' : 'loser'}">${g.home.score}</span></div>
-                <div class="statBox"><span class="label">Played</span><span class="value">${cairo(g.date).split(', ').pop()}</span></div>
-              </div>
-              <div class="statBox" style="display:none"><span class="pick">${g.away.winner ? g.away.name : g.home.name} won</span></div>
-              <div class="resultNote">${g.note || `${g.away.name} ${g.away.score} – ${g.home.score} ${g.home.name}`}</div>
-            </article>`;
+                <div class="statsGrid">
+                  <div class="statBox"><span class="label">Away</span><span class="scoreFinal ${g.away.winner ? 'winner' : 'loser'}">${g.away.score}</span></div>
+                  <div class="statBox"><span class="label">Home</span><span class="scoreFinal ${g.home.winner ? 'winner' : 'loser'}">${g.home.score}</span></div>
+                  <div class="statBox"><span class="label">Consensus</span><span class="consensus">${g.consensus.team} ${g.consensus.prob}%<small>${consensusRight ? '✓ Hit' : '✗ Upset'}</small></span></div>
+                  <div class="statBox"><span class="label">Played</span><span class="value">${cairo(g.date).split(', ').pop()}</span></div>
+                </div>
+                <div class="statBox" style="display:none"><span class="pick">${winnerName}</span></div>
+                <div class="resultNote">${g.note || `${g.away.name} ${g.away.score} – ${g.home.score} ${g.home.name}`}</div>
+              </article>`;
+          } else {
+            // Mixed week: show final score cleanly inside the live/upcoming grid
+            h += `
+              <article class="game">
+                <div class="gameTop">
+                  <div><span class="finalTag">${g.status || 'FINAL'}</span></div>
+                  <div class="gameWatchRow">
+                    <span class="pick">${winnerName} ${winnerName === 'Tied' ? '' : 'won'}</span>
+                  </div>
+                </div>
+                <div class="match">
+                  <div class="team">
+                    <div class="teamLeft">
+                      <img class="logo" src="${g.away.logo}" alt="${g.away.name}">
+                      <div>
+                        <div class="name ${g.away.winner ? 'winner' : 'loser'}">${g.away.name}</div>
+                        <div class="rec">${g.away.record}</div>
+                      </div>
+                    </div>
+                    <span class="inlineScore ${g.away.winner ? 'winner' : 'loser'}">${g.away.score}</span>
+                  </div>
+                  <div class="at">@</div>
+                  <div class="team">
+                    <div class="teamLeft">
+                      <img class="logo" src="${g.home.logo}" alt="${g.home.name}">
+                      <div>
+                        <div class="name ${g.home.winner ? 'winner' : 'loser'}">${g.home.name}</div>
+                        <div class="rec">${g.home.record}</div>
+                      </div>
+                    </div>
+                    <span class="inlineScore ${g.home.winner ? 'winner' : 'loser'}">${g.home.score}</span>
+                  </div>
+                </div>
+                <div class="statsGrid">
+                  <div class="statBox"><span class="label">Closing Line</span><span class="value">${g.details}</span></div>
+                  <div class="statBox"><span class="label">O/U</span><span class="value">${g.total ?? '—'}</span></div>
+                  <div class="statBox"><span class="label">Consensus</span><span class="consensus">${g.consensus.team} ${g.consensus.prob}%<small>${consensusRight ? '✓ Hit' : '✗ Upset'}</small></span></div>
+                  <div class="statBox"><span class="label">Broadcast</span><span class="pick">${g.broadcasts.join(', ') || '—'}</span></div>
+                </div>
+                <div class="why">
+                  <span class="label">Final Result</span>
+                  <b>Final:</b> ${g.away.name} ${g.away.score} – ${g.home.score} ${g.home.name}${g.note ? ` · ${g.note}` : ''}${g.venue ? `<small>📍 ${g.venue}</small>` : ''}
+                </div>
+              </article>`;
+          }
           return;
         }
 
+        // 2. LIVE OR UPCOMING GAME ROW
+        const timeOrLiveHTML = g.live
+          ? `<span class="livePill"><span class="liveDot"></span>LIVE</span><span class="liveClock">${g.status}</span>`
+          : `<span class="time">🕒 ${cairo(g.date).split(', ').pop()}</span>`;
+
+        const awayScoreHTML = g.live
+          ? `<span class="inlineScore liveScoreTxt">${g.away.score}</span>`
+          : `<span class="teamRole">Away</span>`;
+
+        const homeScoreHTML = g.live
+          ? `<span class="inlineScore liveScoreTxt">${g.home.score}</span>`
+          : `<span class="teamRole">Home</span>`;
+
         h += `
-          <article class="game ${g.watch >= 70 ? 'hot' : ''}">
+          <article class="game ${g.live ? 'liveCard' : (g.watch >= 70 ? 'hot' : '')}">
             <div class="gameTop">
-              <div><span class="time">🕒 ${cairo(g.date).split(', ').pop()}</span></div>
+              <div>${timeOrLiveHTML}</div>
               <div class="gameWatchRow">
                 <span class="watch">${g.watch}<span class="watchMax">/100</span></span>
                 <div class="tags">${tags}</div>
@@ -950,7 +1142,7 @@
                     <div class="rec">${g.away.record || 'Record unavailable'}</div>
                   </div>
                 </div>
-                <span class="teamRole">Away</span>
+                ${awayScoreHTML}
               </div>
               <div class="at">@</div>
               <div class="team">
@@ -961,13 +1153,14 @@
                     <div class="rec">${g.home.record || 'Record unavailable'}</div>
                   </div>
                 </div>
-                <span class="teamRole">Home</span>
+                ${homeScoreHTML}
               </div>
             </div>
 
             <div class="statsGrid">
               <div class="statBox"><span class="label">Line</span><span class="value">${g.details}</span></div>
               <div class="statBox"><span class="label">O/U</span><span class="value total ${g.total >= 50 ? 'high' : ''}">${g.total ?? '—'}</span></div>
+              <div class="statBox"><span class="label">Consensus</span><span class="consensus">${g.consensus.team} ${g.consensus.prob}%<small>${g.consensus.source}</small></span></div>
               <div class="statBox"><span class="label">Broadcast</span><span class="pick">${g.broadcasts.join(', ') || 'TBA'}</span></div>
             </div>
 
@@ -978,7 +1171,7 @@
           </article>`;
       });
 
-      el('list').innerHTML = h || '<div class="empty">No games match this filter.</div>';
+      el('list').innerHTML = h || `<div class="empty">${filter === 'live' ? 'No NFL games are live right now.' : 'No games match this filter.'}</div>`;
     }
 
     const weekSelect = el('week');
@@ -1010,9 +1203,18 @@
     });
     weekSelect.appendChild(postGroup);
 
-    async function load() {
-      el('status').textContent = 'REFRESHING…';
-      el('status').className = 'status';
+    function scheduleAutoPoll(hasLiveGames) {
+      if (autoPollTimer) clearInterval(autoPollTimer);
+      if (hasLiveGames) {
+        autoPollTimer = setInterval(() => load(true), 60000);
+      }
+    }
+
+    async function load(silent = false) {
+      if (!silent) {
+        el('status').textContent = 'REFRESHING…';
+        el('status').className = 'status';
+      }
       try {
         const [seasonType, week] = (el('week').value || `2-${currentWeek}`).split('-').map(Number);
         const r = await fetch(`${END}?dates=${season}&seasontype=${seasonType}&week=${week}&limit=100`, { cache: 'no-store' });
@@ -1025,19 +1227,31 @@
           .map(g => ({ ...g, watch: watchScore(g) }))
           .sort((a, b) => new Date(a.date) - new Date(b.date));
 
+        const liveCount = all.filter(g => g.live).length;
         const badgeLabel = seasonType === 3
           ? el('week').selectedOptions[0].textContent.toUpperCase()
           : `W${currentWeek}`;
-        el('status').textContent = `LIVE · ${badgeLabel} · ${all.length} GAMES`;
+
+        if (liveCount > 0) {
+          el('status').textContent = `🔴 ${liveCount} LIVE · ${badgeLabel} · AUTO-60S`;
+          el('status').className = 'status liveNow';
+        } else {
+          el('status').textContent = `LIVE · ${badgeLabel} · ${all.length} GAMES`;
+          el('status').className = 'status';
+        }
+
+        scheduleAutoPoll(liveCount > 0);
         render();
       } catch (e) {
-        el('status').textContent = 'OFFLINE / ERROR';
-        el('status').className = 'status error';
-        el('list').innerHTML = `<div class="empty"><b>Could not load the live scoreboard.</b><br>${e.message}<br><br>Check your connection and tap Refresh.</div>`;
+        if (!silent) {
+          el('status').textContent = 'OFFLINE / ERROR';
+          el('status').className = 'status error';
+          el('list').innerHTML = `<div class="empty"><b>Could not load the live scoreboard.</b><br>${e.message}<br><br>Check your connection and tap Refresh.</div>`;
+        }
       }
     }
 
-    el('week').onchange = load;
+    el('week').onchange = () => load(false);
     document.querySelectorAll('[data-filter]').forEach(b => b.onclick = () => {
       document.querySelectorAll('[data-filter]').forEach(x => x.classList.remove('active'));
       b.classList.add('active');
@@ -1045,7 +1259,7 @@
       render();
     });
 
-    load();
+    load(false);
   </script>
 </body>
 </html>
