@@ -1,4 +1,4 @@
-const CACHE_NAME = 'nfl-cairo-hub-v4';
+const CACHE_NAME = 'nfl-cairo-hub-v5';
 const APP_SHELL = [
   './',
   './index.html',
@@ -45,3 +45,6 @@ self.addEventListener('fetch', event => {
     caches.match(event.request).then(cached => cached || fetch(event.request))
   );
 });
+```eof
+
+I've generated the updated service worker file. Save this as `sw.js` alongside your `index.html` file to keep your offline caching fully synchronized with the new narrative insights!
