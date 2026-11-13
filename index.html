@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <title>US Sports Cairo Auto Hub</title>
-  <meta name="description" content="Live NFL, NBA, MLB & NHL scores, Cairo time schedule, team records, broadcasts, model consensus and watch rankings.">
+  <meta name="description" content="Live NFL, NBA, MLB & NHL scores, daily & monthly Cairo schedules, team records, broadcasts, model consensus and watch rankings.">
   <meta name="theme-color" content="#090c11" id="themeMeta">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -249,6 +249,7 @@
 
     .controls select,
     .controls input[type="date"],
+    .controls input[type="month"],
     .controls button {
       flex-shrink: 0;
       height: 40px;
@@ -265,9 +266,33 @@
     }
 
     .controls select,
-    .controls input[type="date"] {
+    .controls input[type="date"],
+    .controls input[type="month"] {
       color: var(--txt);
       cursor: pointer;
+    }
+
+    .spanToggle {
+      display: inline-flex;
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 3px;
+      flex-shrink: 0;
+      box-shadow: var(--shadow);
+    }
+    .spanToggle button {
+      height: 32px;
+      padding: 0 11px;
+      border: none;
+      background: transparent;
+      box-shadow: none;
+      border-radius: 7px;
+      font-size: 12px;
+    }
+    .spanToggle button.active {
+      background: var(--blue-bg);
+      color: var(--blue);
     }
 
     .dateNav {
@@ -770,7 +795,7 @@
       <div class="brand">
         <div class="eyebrow">NO KEY · NO ACCOUNT · LIVE JSON · AUTO-POLL</div>
         <h1 id="hubTitle">US Sports Cairo Auto Hub</h1>
-        <p>Live NFL, NBA, MLB & NHL scores, Cairo time schedule, team records, broadcasts, model consensus and watch rankings</p>
+        <p>Live NFL, NBA, MLB & NHL scores, daily & monthly Cairo schedules, records, broadcasts, model consensus and watch rankings</p>
       </div>
       <div class="topActions">
         <div id="status" class="status" aria-live="polite">CONNECTING…</div>
@@ -796,11 +821,24 @@
       <!-- NFL Week Selector -->
       <select id="week" aria-label="Select NFL Week or Postseason Round"></select>
 
-      <!-- NBA / MLB / NHL Single Date Navigation -->
+      <!-- NBA / MLB / NHL Daily vs Monthly Toggle -->
+      <div class="spanToggle" id="spanToggle" style="display:none;" role="group" aria-label="Schedule Span">
+        <button type="button" data-span="daily" class="active">Daily</button>
+        <button type="button" data-span="monthly">Monthly</button>
+      </div>
+
+      <!-- Daily Date Navigation -->
       <div class="dateNav" id="dateNav" style="display:none;">
         <button type="button" id="prevDayBtn" title="Previous Day" aria-label="Previous Day">◀</button>
         <input type="date" id="gameDate" aria-label="Select Game Date">
         <button type="button" id="nextDayBtn" title="Next Day" aria-label="Next Day">▶</button>
+      </div>
+
+      <!-- Monthly Overview Navigation -->
+      <div class="dateNav" id="monthNav" style="display:none;">
+        <button type="button" id="prevMonthBtn" title="Previous Month" aria-label="Previous Month">◀</button>
+        <input type="month" id="gameMonth" aria-label="Select Month">
+        <button type="button" id="nextMonthBtn" title="Next Month" aria-label="Next Month">▶</button>
       </div>
 
       <button class="active" data-filter="all" type="button">All</button>
@@ -828,8 +866,8 @@
             <span>A transparent probability model derived from ESPN projections and sportsbook lines — <em>not</em> scraped staff picks. Tap any lean for details.</span>
           </div>
           <div class="guideItem">
-            <b>🔥 High-Scoring & 🌙 Prime Time</b>
-            <span>SHOOTOUT triggers on high-total games (NFL 50+, NBA 232+, MLB 9.5+, NHL 6.5+). PRIME TIME highlights major national US broadcasts.</span>
+            <b>📅 Daily & Monthly Views</b>
+            <span>For NBA, MLB, and NHL, switch between a focused single-day slate or a full month overview with top game rankings across the entire month.</span>
           </div>
         </section>
       </div>
@@ -904,7 +942,7 @@
         name: 'NBA',
         icon: '🏀',
         endpoint: 'https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard',
-        mode: 'date',
+        mode: 'calendar',
         closeWeight: 0.42,
         scoringWeight: 0.32,
         qualityWeight: 0.18,
@@ -926,7 +964,7 @@
         name: 'MLB',
         icon: '⚾',
         endpoint: 'https://site.api.espn.com/apis/site/v2/sports/baseball/mlb/scoreboard',
-        mode: 'date',
+        mode: 'calendar',
         closeWeight: 0.42,
         scoringWeight: 0.32,
         qualityWeight: 0.18,
@@ -948,7 +986,7 @@
         name: 'NHL',
         icon: '🏒',
         endpoint: 'https://site.api.espn.com/apis/site/v2/sports/hockey/nhl/scoreboard',
-        mode: 'date',
+        mode: 'calendar',
         closeWeight: 0.42,
         scoringWeight: 0.32,
         qualityWeight: 0.18,
@@ -972,11 +1010,13 @@
     let all = [];
     let currentSport = localStorage.getItem('us-sports-cairo-sport') || 'nfl';
     if (!SPORTS[currentSport]) currentSport = 'nfl';
+    let calendarSpan = localStorage.getItem('us-sports-cairo-span') || 'daily'; // 'daily' | 'monthly'
     let filter = 'all';
     let season = new Date().getFullYear();
     let currentWeek = 1;
     let autoPollTimer = null;
     let inFlight = false;
+    let loadGeneration = 0;
 
     const el = (id) => document.getElementById(id);
     const cfg = () => SPORTS[currentSport];
@@ -995,6 +1035,9 @@
     });
     const fmtTime = new Intl.DateTimeFormat('en-GB', {
       timeZone: 'Africa/Cairo', hour: '2-digit', minute: '2-digit', hour12: false
+    });
+    const fmtMonthLabel = new Intl.DateTimeFormat('en-US', {
+      timeZone: 'UTC', month: 'long', year: 'numeric'
     });
 
     const cairo = (d) => { try { return fmtDate.format(new Date(d)); } catch { return d; } };
@@ -1035,6 +1078,52 @@
       } finally {
         clearTimeout(timer);
       }
+    }
+
+    /**
+     * Fetches all single-day slates for a YYYY-MM month in parallel batches of 7
+     * so ESPN's single-date endpoint works without HTTP 400 errors.
+     */
+    async function fetchMonthEvents(endpoint, yyyyMm, genId, onProgress) {
+      const [year, month] = yyyyMm.split('-').map(Number);
+      const daysInMonth = new Date(Date.UTC(year, month, 0)).getUTCDate();
+      const dateStrings = [];
+
+      for (let d = 1; d <= daysInMonth; d++) {
+        const mm = String(month).padStart(2, '0');
+        const dd = String(d).padStart(2, '0');
+        dateStrings.push(`${year}${mm}${dd}`);
+      }
+
+      const eventMap = new Map();
+      const BATCH_SIZE = 7;
+
+      for (let i = 0; i < dateStrings.length; i += BATCH_SIZE) {
+        if (genId !== loadGeneration) return null; // Cancelled by newer user action
+        const batch = dateStrings.slice(i, i + BATCH_SIZE);
+        if (onProgress) {
+          onProgress(Math.min(daysInMonth, i + batch.length), daysInMonth);
+        }
+
+        const results = await Promise.allSettled(
+          batch.map((dt) =>
+            fetchWithTimeout(`${endpoint}?dates=${dt}&limit=100`).then((r) => {
+              if (!r.ok) throw new Error(`HTTP ${r.status}`);
+              return r.json();
+            })
+          )
+        );
+
+        for (const res of results) {
+          if (res.status === 'fulfilled' && Array.isArray(res.value?.events)) {
+            for (const ev of res.value.events) {
+              if (ev?.id) eventMap.set(ev.id, ev);
+            }
+          }
+        }
+      }
+
+      return Array.from(eventMap.values());
     }
 
     // ---------- Parsing ----------
@@ -1328,8 +1417,12 @@
       const upcoming = all.filter((g) => !g.completed);
       const showBest = !allCompleted && upcoming.length > 3;
 
+      const scopeLabel = c.mode === 'calendar' && calendarSpan === 'monthly' ? 'This Month' : '';
+
       if (bestTitleEl) {
-        bestTitleEl.textContent = allCompleted ? `🏁 ${c.name} Final Scores` : `🔥 Best ${c.name} Games`;
+        bestTitleEl.textContent = allCompleted
+          ? `🏁 ${c.name} Final Scores`
+          : `🔥 Best ${c.name} Games ${scopeLabel}`.trim();
         bestTitleEl.style.display = (allCompleted || showBest) ? '' : 'none';
       }
       if (bestEl) bestEl.style.display = showBest ? '' : 'none';
@@ -1509,10 +1602,13 @@
       });
     }
 
-    // ---------- Date & Week Selectors ----------
+    // ---------- Date, Month & Week Selectors ----------
     const weekSelect = el('week');
+    const spanToggle = el('spanToggle');
     const dateNav = el('dateNav');
+    const monthNav = el('monthNav');
     const dateInput = /** @type {HTMLInputElement} */ (el('gameDate'));
+    const monthInput = /** @type {HTMLInputElement} */ (el('gameMonth'));
 
     function getUSDateString(offsetDays = 0) {
       const d = new Date(Date.now() - 6 * 3600 * 1000 + offsetDays * 86400 * 1000);
@@ -1521,7 +1617,17 @@
 
     if (dateInput) {
       dateInput.value = getUSDateString(0);
-      dateInput.addEventListener('change', () => load());
+      dateInput.addEventListener('change', () => {
+        if (monthInput && dateInput.value) {
+          monthInput.value = dateInput.value.slice(0, 7);
+        }
+        load();
+      });
+    }
+
+    if (monthInput) {
+      monthInput.value = getUSDateString(0).slice(0, 7);
+      monthInput.addEventListener('change', () => load());
     }
 
     el('prevDayBtn')?.addEventListener('click', () => {
@@ -1529,6 +1635,7 @@
       const d = new Date(dateInput.value + 'T12:00:00Z');
       d.setUTCDate(d.getUTCDate() - 1);
       dateInput.value = d.toISOString().slice(0, 10);
+      if (monthInput) monthInput.value = dateInput.value.slice(0, 7);
       load();
     });
 
@@ -1537,7 +1644,36 @@
       const d = new Date(dateInput.value + 'T12:00:00Z');
       d.setUTCDate(d.getUTCDate() + 1);
       dateInput.value = d.toISOString().slice(0, 10);
+      if (monthInput) monthInput.value = dateInput.value.slice(0, 7);
       load();
+    });
+
+    el('prevMonthBtn')?.addEventListener('click', () => {
+      if (!monthInput) return;
+      const [y, m] = monthInput.value.split('-').map(Number);
+      const d = new Date(Date.UTC(y, m - 2, 1));
+      monthInput.value = d.toISOString().slice(0, 7);
+      load();
+    });
+
+    el('nextMonthBtn')?.addEventListener('click', () => {
+      if (!monthInput) return;
+      const [y, m] = monthInput.value.split('-').map(Number);
+      const d = new Date(Date.UTC(y, m, 1));
+      monthInput.value = d.toISOString().slice(0, 7);
+      load();
+    });
+
+    const spanButtons = Array.from(document.querySelectorAll('[data-span]'));
+    spanButtons.forEach((b) => {
+      b.addEventListener('click', () => {
+        const nextSpan = /** @type {HTMLElement} */ (b).dataset.span;
+        if (!nextSpan || nextSpan === calendarSpan) return;
+        calendarSpan = nextSpan;
+        localStorage.setItem('us-sports-cairo-span', calendarSpan);
+        syncSportUI();
+        load();
+      });
     });
 
     if (weekSelect) {
@@ -1577,8 +1713,15 @@
         b.classList.toggle('active', /** @type {HTMLElement} */ (b).dataset.sport === currentSport);
       });
 
-      if (weekSelect) weekSelect.style.display = c.mode === 'week' ? '' : 'none';
-      if (dateNav) dateNav.style.display = c.mode === 'date' ? 'inline-flex' : 'none';
+      const isCalendar = c.mode === 'calendar';
+      if (weekSelect) weekSelect.style.display = !isCalendar ? '' : 'none';
+      if (spanToggle) spanToggle.style.display = isCalendar ? 'inline-flex' : 'none';
+      if (dateNav) dateNav.style.display = isCalendar && calendarSpan === 'daily' ? 'inline-flex' : 'none';
+      if (monthNav) monthNav.style.display = isCalendar && calendarSpan === 'monthly' ? 'inline-flex' : 'none';
+
+      spanButtons.forEach((b) => {
+        b.classList.toggle('active', /** @type {HTMLElement} */ (b).dataset.span === calendarSpan);
+      });
 
       const shootoutBtn = el('shootoutBtn');
       if (shootoutBtn) shootoutBtn.textContent = `O/U ${c.shootoutThreshold}+`;
@@ -1623,7 +1766,7 @@
 
     // ---------- Load ----------
     async function load(silent = false) {
-      if (inFlight) return;
+      const genId = ++loadGeneration;
       inFlight = true;
 
       const c = cfg();
@@ -1634,36 +1777,54 @@
       }
 
       try {
-        let url = '';
+        let events = [];
         let label = '';
 
         if (c.mode === 'week') {
           const val = weekSelect?.value || `2-${currentWeek}`;
           const [seasonType, week] = val.split('-').map(Number);
-          url = `${c.endpoint}?dates=${season}&seasontype=${seasonType}&week=${week}&limit=100`;
+          const url = `${c.endpoint}?dates=${season}&seasontype=${seasonType}&week=${week}&limit=100`;
           label = seasonType === 3 && weekSelect?.selectedOptions[0]
             ? weekSelect.selectedOptions[0].textContent.toUpperCase()
             : `W${week}`;
-        } else {
-          const isoDate = dateInput?.value || getUSDateString(0);
-          const yyyymmdd = isoDate.replace(/-/g, '');
-          url = `${c.endpoint}?dates=${yyyymmdd}&limit=100`;
-          label = isoDate;
-        }
 
-        const r = await fetchWithTimeout(url);
-        if (!r.ok) throw new Error(`HTTP ${r.status}`);
+          const r = await fetchWithTimeout(url);
+          if (!r.ok) throw new Error(`HTTP ${r.status}`);
+          const j = await r.json();
+          if (genId !== loadGeneration) return;
 
-        const j = await r.json();
-        if (c.mode === 'week') {
           season = j.leagues?.[0]?.season?.year || season;
           currentWeek = j.week?.number || currentWeek;
           if (j.week?.number && !weekSelect?.value?.startsWith('3-')) {
             label = `W${currentWeek}`;
           }
+          events = j.events || [];
+        } else if (calendarSpan === 'monthly') {
+          const yyyyMm = monthInput?.value || getUSDateString(0).slice(0, 7);
+          const [y, m] = yyyyMm.split('-').map(Number);
+          label = fmtMonthLabel.format(new Date(Date.UTC(y, m - 1, 1))).toUpperCase();
+
+          const fetched = await fetchMonthEvents(c.endpoint, yyyyMm, genId, (done, total) => {
+            if (!silent && statusEl && genId === loadGeneration) {
+              statusEl.textContent = `LOADING ${label} (${done}/${total} DAYS)…`;
+            }
+          });
+          if (fetched === null || genId !== loadGeneration) return;
+          events = fetched;
+        } else {
+          const isoDate = dateInput?.value || getUSDateString(0);
+          const yyyymmdd = isoDate.replace(/-/g, '');
+          const url = `${c.endpoint}?dates=${yyyymmdd}&limit=100`;
+          label = isoDate;
+
+          const r = await fetchWithTimeout(url);
+          if (!r.ok) throw new Error(`HTTP ${r.status}`);
+          const j = await r.json();
+          if (genId !== loadGeneration) return;
+          events = j.events || [];
         }
 
-        all = (j.events || []).map((ev) => {
+        all = events.map((ev) => {
           const g = parse(ev);
           g.watch = watchScore(g);
           return g;
@@ -1684,6 +1845,7 @@
         scheduleAutoPoll(liveCount > 0);
         render();
       } catch (err) {
+        if (genId !== loadGeneration) return;
         if (!silent && statusEl) {
           statusEl.textContent = 'OFFLINE / ERROR';
           statusEl.className = 'status error';
@@ -1693,7 +1855,7 @@
           }
         }
       } finally {
-        inFlight = false;
+        if (genId === loadGeneration) inFlight = false;
       }
     }
 
