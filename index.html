@@ -75,7 +75,7 @@
       --gold-border: #f2cf7e;
       --blue: #175cd3;
       --blue-bg: #e8f1ff;
-      --purple: #7e22ce;
+      --purple: #6b21a8;
       --purple-bg: #f3e8ff;
       --orange: #c4320a;
       --orange-bg: #ffefe8;
@@ -104,7 +104,7 @@
     .wrap {
       max-width: 1340px;
       margin: auto;
-      padding: calc(14px + env(safe-area-inset-top)) 14px calc(48px + env(safe-area-inset-bottom));
+      padding: calc(14px + env(safe-area-inset-top)) 16px calc(48px + env(safe-area-inset-bottom)) 16px;
     }
 
     .top {
@@ -184,16 +184,17 @@
       display: none;
     }
 
-    /* Scroll Fade Wrapper to signal horizontal scroll & avoid floating edge overlays */
+    /* Scroll Fade Wrapper to prevent right-edge accessibility overlap */
     .scrollFadeWrap {
       position: relative;
       margin-right: -4px;
+      padding-right: 18px;
     }
     .scrollFadeWrap::after {
       content: "";
       position: absolute;
       top: 0;
-      right: 0;
+      right: 18px;
       bottom: 0;
       width: 28px;
       background: linear-gradient(to right, transparent, var(--bg));
@@ -205,7 +206,6 @@
       display: flex;
       gap: 6px;
       margin: 8px 0 10px;
-      padding-right: 28px;
       overflow-x: auto;
       scrollbar-width: none;
     }
@@ -260,7 +260,7 @@
       align-items: center;
       gap: 6px;
       overflow-x: auto;
-      padding: 0 28px 2px 0;
+      padding-bottom: 2px;
       scrollbar-width: none;
     }
     .controlRow::-webkit-scrollbar { display: none; }
@@ -274,12 +274,16 @@
       border: 1px solid var(--line);
       background: var(--btn-bg);
       color: var(--btn-txt);
-      padding: 0 9px;
+      padding: 0 10px;
       border-radius: 8px;
       font-size: 11.5px;
       font-weight: 800;
       font-family: inherit;
       box-shadow: var(--shadow);
+    }
+
+    .controlRow select {
+      min-width: 110px; /* Prevents "Weekly" from being clipped */
     }
 
     .controlRow select,
@@ -351,7 +355,7 @@
       cursor: not-allowed;
     }
 
-    /* Horizontal Swipe Best Games Reel - High Contrast Fix */
+    /* Horizontal Swipe Best Games Reel */
     .bestHeader {
       display: flex;
       justify-content: space-between;
@@ -370,7 +374,7 @@
       overflow-x: auto;
       scroll-snap-type: x mandatory;
       scrollbar-width: none;
-      padding: 0 28px 4px 0;
+      padding-bottom: 4px;
     }
     .best-scroll::-webkit-scrollbar { display: none; }
 
@@ -520,20 +524,31 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 6px;
+      gap: 8px;
       min-width: 0;
       cursor: pointer;
-      padding: 3px 5px;
+      padding: 3px 6px;
       border-radius: 6px;
       transition: background 0.15s ease;
     }
     .team:hover { background: var(--card-sub); }
+
+    .teamLeft {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      min-width: 0;
+    }
 
     .logo {
       width: 28px;
       height: 28px;
       object-fit: contain;
       flex-shrink: 0;
+    }
+
+    .nameInfo {
+      min-width: 0;
     }
 
     .name {
@@ -607,6 +622,7 @@
       font-weight: 900;
     }
     .tag.prime { background: var(--blue-bg); color: var(--blue); }
+    .tag.lateNight { background: var(--purple-bg); color: var(--purple); }
     .tag.shootout { background: var(--orange-bg); color: var(--orange); }
 
     .scoreFinal { font-size: 17px; font-weight: 950; }
@@ -737,7 +753,7 @@
         padding: 2px 0;
       }
 
-      .logo { width: 32px; height: 32px; }
+      .logo { width: 30px; height: 30px; }
       .name { font-size: 13.5px; }
 
       .statsGrid {
@@ -755,7 +771,7 @@
     }
 
     @media (max-width: 600px) {
-      .wrap { padding: calc(10px + env(safe-area-inset-top)) 10px calc(36px + env(safe-area-inset-bottom)); }
+      .wrap { padding: calc(10px + env(safe-area-inset-top)) 12px calc(36px + env(safe-area-inset-bottom)) 12px; }
       .topActions { width: 100%; justify-content: space-between; }
       .match { grid-template-columns: 1fr; gap: 6px; }
       .at { display: none; }
@@ -767,20 +783,10 @@
         border-radius: 7px;
         border: 1px solid var(--line);
       }
-      .teamLeft { display: flex; align-items: center; gap: 8px; min-width: 0; }
-      .teamRole {
-        font-size: 9px;
-        font-weight: 800;
-        color: var(--mut);
-        text-transform: uppercase;
-        flex-shrink: 0;
-      }
     }
 
     @media (min-width: 1061px) {
       .gameTop, .statsGrid, .gameWatchRow { display: contents; }
-      .teamLeft { display: flex; align-items: center; gap: 8px; min-width: 0; }
-      .teamRole { display: none; }
     }
   </style>
 </head>
@@ -893,16 +899,16 @@
       <div class="modalSubtitle">How scores, watch rankings, and filters work in Cairo time</div>
 
       <div class="modalSection">
-        <b>👁️ Watch Score (0–100)</b>
-        <span>An excitement rating (not a TV rating) combining game closeness, O/U scoring potential, team records, and national TV bonuses. 70+ earns <b>BEST GAME</b>.</span>
+        <b>👁️ Hype Meter (0–100)</b>
+        <span>An excitement rating measuring matchup potential based on spread closeness, combined O/U scoring pace, team records, and national spotlight bonuses. 70+ earns <b>BEST GAME</b>.</span>
       </div>
       <div class="modalSection">
         <b>📊 Model Pick (Pre-Game Projection)</b>
         <span>Calculated before kickoff/tipoff from ESPN projections and betting lines. On finished games, it shows the pre-game favorite alongside the final score.</span>
       </div>
       <div class="modalSection">
-        <b>☀️ Evening Filter</b>
-        <span>Isolates games starting between 19:00 and 00:30 Cairo time (EET) for easy bedtime viewing.</span>
+        <b>☀️ Evening vs. 🦉 Late Night</b>
+        <span>Evening games fall between 19:00 and 00:30 Cairo time. Games kicking off between midnight and 05:00 AM are tagged as <b>Late Night</b>.</span>
       </div>
       <div class="modalSection">
         <b>⭐ My Teams</b>
@@ -1073,7 +1079,18 @@
         const d = new Date(dateStr);
         const cairoHourStr = new Intl.DateTimeFormat('en-GB', { timeZone: 'Africa/Cairo', hour: 'numeric', hour12: false }).format(d);
         const h = parseInt(cairoHourStr, 10);
-        return h >= 19 || h <= 0;
+        return h >= 19 && h <= 23;
+      } catch {
+        return false;
+      }
+    }
+
+    function isLateNight(dateStr) {
+      try {
+        const d = new Date(dateStr);
+        const cairoHourStr = new Intl.DateTimeFormat('en-GB', { timeZone: 'Africa/Cairo', hour: 'numeric', hour12: false }).format(d);
+        const h = parseInt(cairoHourStr, 10);
+        return h >= 0 && h < 6; // Midnight to 5 AM Cairo
       } catch {
         return false;
       }
@@ -1209,6 +1226,7 @@
       const home = parseTeam(homeRaw);
       const prime = isPrime(broadcasts);
       const evening = isEvening(event.date);
+      const lateNight = isLateNight(event.date);
       const lean = computeLean(c, away, home, spread);
 
       return {
@@ -1230,6 +1248,7 @@
         broadcasts,
         prime,
         evening,
+        lateNight,
         venue: c.venue?.fullName || '',
         note: c.notes?.[0]?.headline || '',
         watch: 0
@@ -1279,8 +1298,9 @@
     function gameTagsHTML(g) {
       const c = cfg();
       return [
+        g.lateNight ? '<span class="tag lateNight">🦉 LATE NIGHT</span>' : '',
         g.evening ? '<span class="tag prime">☀️ EVENING</span>' : '',
-        g.prime ? '<span class="tag prime">PRIME TIME</span>' : '',
+        g.prime && !g.lateNight ? '<span class="tag prime">PRIME TIME</span>' : '',
         g.watch >= c.bestThreshold ? '<span class="tag">BEST GAME</span>' : ''
       ].join('');
     }
@@ -1299,14 +1319,14 @@
 
       const awayStarred = starredTeams.has(g.away.name);
       const homeStarred = starredTeams.has(g.home.name);
-      const awayScore = g.live ? `<span class="inlineScore liveScoreTxt">${g.away.score}</span>` : `<span class="teamRole">Away</span>`;
-      const homeScore = g.live ? `<span class="inlineScore liveScoreTxt">${g.home.score}</span>` : `<span class="teamRole">Home</span>`;
+      const awayScore = g.live ? `<span class="inlineScore liveScoreTxt">${g.away.score}</span>` : '';
+      const homeScore = g.live ? `<span class="inlineScore liveScoreTxt">${g.home.score}</span>` : '';
 
       return `
         <article class="game ${g.live ? 'liveCard' : g.watch >= c.bestThreshold ? 'hot' : ''}">
           <div class="gameTop">
             <div>${timeOrLive}</div>
-            <div class="gameWatchRow" title="Excitement & Closeness Rating">
+            <div class="gameWatchRow" title="Hype Meter: matchup excitement potential">
               <span class="watch">👁️ ${g.watch}<span class="watchMax">/100</span></span>
               <div class="tags">${gameTagsHTML(g)}</div>
             </div>
@@ -1316,7 +1336,7 @@
             <div class="team" title="Click to star/unstar" onclick="toggleStar('${esc(g.away.name)}', event)">
               <div class="teamLeft">
                 <img class="logo" src="${esc(g.away.logo)}" alt="" loading="lazy">
-                <div>
+                <div class="nameInfo">
                   <div class="name ${awayStarred ? 'starred' : ''}">${awayStarred ? '⭐ ' : ''}${esc(g.away.name)}</div>
                   <div class="rec">Rec: ${esc(g.away.record)}</div>
                 </div>
@@ -1327,7 +1347,7 @@
             <div class="team" title="Click to star/unstar" onclick="toggleStar('${esc(g.home.name)}', event)">
               <div class="teamLeft">
                 <img class="logo" src="${esc(g.home.logo)}" alt="" loading="lazy">
-                <div>
+                <div class="nameInfo">
                   <div class="name ${homeStarred ? 'starred' : ''}">${homeStarred ? '⭐ ' : ''}${esc(g.home.name)}</div>
                   <div class="rec">Rec: ${esc(g.home.record)}</div>
                 </div>
@@ -1365,7 +1385,7 @@
               <div class="team" onclick="toggleStar('${esc(g.away.name)}', event)">
                 <div class="teamLeft">
                   <img class="logo" src="${esc(g.away.logo)}" alt="" loading="lazy">
-                  <div>
+                  <div class="nameInfo">
                     <div class="name ${awayStarred ? 'starred' : ''} ${g.away.winner ? 'winner' : 'loser'}">${awayStarred ? '⭐ ' : ''}${esc(g.away.name)}</div>
                     <div class="rec">Rec: ${esc(g.away.record)}</div>
                   </div>
@@ -1376,7 +1396,7 @@
               <div class="team" onclick="toggleStar('${esc(g.home.name)}', event)">
                 <div class="teamLeft">
                   <img class="logo" src="${esc(g.home.logo)}" alt="" loading="lazy">
-                  <div>
+                  <div class="nameInfo">
                     <div class="name ${homeStarred ? 'starred' : ''} ${g.home.winner ? 'winner' : 'loser'}">${homeStarred ? '⭐ ' : ''}${esc(g.home.name)}</div>
                     <div class="rec">Rec: ${esc(g.home.record)}</div>
                   </div>
@@ -1404,7 +1424,7 @@
             <div class="team" onclick="toggleStar('${esc(g.away.name)}', event)">
               <div class="teamLeft">
                 <img class="logo" src="${esc(g.away.logo)}" alt="" loading="lazy">
-                <div>
+                <div class="nameInfo">
                   <div class="name ${awayStarred ? 'starred' : ''} ${g.away.winner ? 'winner' : 'loser'}">${awayStarred ? '⭐ ' : ''}${esc(g.away.name)}</div>
                   <div class="rec">Rec: ${esc(g.away.record)}</div>
                 </div>
@@ -1415,7 +1435,7 @@
             <div class="team" onclick="toggleStar('${esc(g.home.name)}', event)">
               <div class="teamLeft">
                 <img class="logo" src="${esc(g.home.logo)}" alt="" loading="lazy">
-                <div>
+                <div class="nameInfo">
                   <div class="name ${homeStarred ? 'starred' : ''} ${g.home.winner ? 'winner' : 'loser'}">${homeStarred ? '⭐ ' : ''}${esc(g.home.name)}</div>
                   <div class="rec">Rec: ${esc(g.home.record)}</div>
                 </div>
@@ -1446,7 +1466,7 @@
 
       const sortBtn = el('sortToggle');
       if (sortBtn) {
-        sortBtn.textContent = sortMode === 'watch' ? '🔥 By Watch Score' : '📅 By Date';
+        sortBtn.textContent = sortMode === 'watch' ? '🔥 By Hype' : '📅 By Date';
         sortBtn.classList.toggle('active', sortMode === 'watch');
       }
 
@@ -1471,14 +1491,14 @@
       if (colheadsEl) {
         colheadsEl.innerHTML = allCompleted
           ? '<div>Status</div><div>Matchup / Record</div><div>Away</div><div>Home</div><div>Pre-Game Pick</div><div>Winner</div><div>Played</div><div>Result note</div>'
-          : '<div>Cairo (EET)</div><div>Matchup / Record</div><div>Spread</div><div>O/U</div><div>Model Pick</div><div>Broadcast</div><div>Watch Rating</div><div>Why watch</div>';
+          : '<div>Cairo (EET)</div><div>Matchup / Record</div><div>Spread</div><div>O/U</div><div>Model Pick</div><div>Broadcast</div><div>Hype Meter</div><div>Why watch</div>';
       }
 
       let games = all.filter((g) => {
         if (filter === 'live') return g.live;
         if (filter === 'best') return g.watch >= c.bestThreshold;
         if (filter === 'evening') return g.evening;
-        if (filter === 'prime') return g.prime;
+        if (filter === 'prime') return g.prime || g.lateNight;
         if (filter === 'starred') return starredTeams.has(g.away.name) || starredTeams.has(g.home.name);
         return true;
       });
@@ -1496,7 +1516,7 @@
               <span class="bestRank">#${i + 1}</span>
               <span class="bestMatchTitle">${esc(g.away.name)} @ ${esc(g.home.name)}</span>
             </div>
-            <span class="bestCardMeta">${g.live ? `🔴 LIVE (${esc(g.status)})` : esc(cairo(g.date))} · 👁️ ${g.watch}/100</span>
+            <span class="bestCardMeta">${g.live ? `🔴 LIVE (${esc(g.status)})` : esc(cairo(g.date))} · 👁️ ${g.watch}/100 Hype</span>
           </div>`).join('');
       }
 
@@ -1897,3 +1917,4 @@
   </script>
 </body>
 </html>
+
